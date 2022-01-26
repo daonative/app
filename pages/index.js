@@ -17,9 +17,10 @@
 import { useState } from 'react'
 
 import SidebarNavigation from '../components/SidebarNavigation'
-import Feed from '../components/Feed'
 import HeaderNavigation from '../components/HeaderNavigation'
 import KPIs from '../components/KPIs'
+import Feed from '../components/Feed'
+import Tasks from '../components/Tasks'
 
 
 export default function Dashboard() {
@@ -42,14 +43,16 @@ export default function Dashboard() {
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <h1 className="text-2xl font-semibold text-gray-900">DAOnative</h1>
-                <p className="py-4 text-sm">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
+                <p className="py-2 text-sm">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
               </div>
               <div className="py-4 max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">KPIs</h3>
                 <KPIs />
               </div>
               <div className="py-4 max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <Feed />
+              </div>
+              <div className="py-4 max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                <Tasks />
               </div>
             </div>
           </main>
