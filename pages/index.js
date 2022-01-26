@@ -19,23 +19,23 @@ import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
   BellIcon,
   CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
+  CollectionIcon,
+  ClipboardCheckIcon,
   HomeIcon,
-  InboxIcon,
   MenuAlt2Icon,
   UsersIcon,
   XIcon,
-} from '@heroicons/react/outline'
-import { SearchIcon } from '@heroicons/react/solid'
+  SearchIcon
+} from '@heroicons/react/solid'
+
+import DAOnativeLogo from '../components/DAOnativeLogo.svg'
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
+  { name: 'Bounties', href: '#', icon: CollectionIcon, current: false },
+  { name: 'Tasks', href: '#', icon: ClipboardCheckIcon, current: false },
+  { name: 'Events', href: '#', icon: CalendarIcon, current: false },
+  { name: 'Members', href: '#', icon: UsersIcon, current: false },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -147,11 +147,7 @@ export default function Example() {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex-1 flex flex-col min-h-0 bg-gray-800">
             <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                alt="Workflow"
-              />
+              <DAOnativeLogo className="mx-auto" />
             </div>
             <div className="flex-1 flex flex-col overflow-y-auto">
               <nav className="flex-1 px-2 py-4 space-y-1">
