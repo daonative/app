@@ -25,6 +25,7 @@ import {
   SearchIcon
 } from '@heroicons/react/solid'
 import SidebarNavigation from '../components/SidebarNavigation'
+import Moment from 'react-moment'
 
 const userNavigation = [
   { name: 'Disconnect', href: '#' },
@@ -141,11 +142,13 @@ const Feed = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{event.description}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="flex items-center gap-4">
-                          <img className="h-10 w-10 rounded-full" src={event.pfp} alt="" />
+                        <img className="h-10 w-10 rounded-full" src={event.pfp} alt="" />
                         {event.author}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{event.date.toString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <Moment date={event.date} fromNowDuring={1000} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
