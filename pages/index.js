@@ -101,6 +101,122 @@ const HeaderNavigation = ({ onShowSidebar }) => {
   )
 }
 
+const feed = [
+  { description: 'Deployed app.daonative.xyz', pfp: '', author: 'Laurent', date: new Date() },
+  { description: 'Landed our first user interview', pfp: '', author: 'Ben', date: new Date() },
+]
+
+const Feed = () => {
+  return (
+    <div className="flex flex-col">
+      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Feed
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Author
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {feed.map((event, eventIdx) => (
+                  <tr key={event.email} className={eventIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{event.description}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{event.author}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{event.date.toString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const KPIs = () => (
+  <div className="grid grid-cols-3 py-4 gap-6">
+    <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
+      <div className="h-min rounded-full bg-blue-100 p-4">
+        <ChartBarIcon className="h-8 text-blue-500" />
+      </div>
+      <div>
+        <div>
+          <span className="font-bold">10</span>
+        </div>
+        <div>
+          <span className="">DAOs organized</span>
+        </div>
+        <div>
+          <span>
+            <ChevronUpIcon className="h-5 text-green-600 inline-block" />
+          </span>
+          <span className="text-sm text-green-600">25%</span>{' '}
+          <span className="text-sm">last month</span>
+        </div>
+      </div>
+    </div>
+    <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
+      <div className="h-min rounded-full bg-blue-100 p-4">
+        <ChartBarIcon className="h-8 text-blue-500" />
+      </div>
+      <div>
+        <div>
+          <span className="font-bold">10</span>
+        </div>
+        <div>
+          <span className="">DAOs organized</span>
+        </div>
+        <div>
+          <span>
+            <ChevronUpIcon className="h-5 text-green-600 inline-block" />
+          </span>
+          <span className="text-sm text-green-600">25%</span>{' '}
+          <span className="text-sm">last month</span>
+        </div>
+      </div>
+    </div>
+    <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
+      <div className="h-min rounded-full bg-blue-100 p-4">
+        <ChartBarIcon className="h-8 text-blue-500" />
+      </div>
+      <div>
+        <div>
+          <span className="font-bold">10</span>
+        </div>
+        <div>
+          <span className="">DAOs organized</span>
+        </div>
+        <div>
+          <span>
+            <ChevronUpIcon className="h-5 text-green-600 inline-block" />
+          </span>
+          <span className="text-sm text-green-600">25%</span>{' '}
+          <span className="text-sm">last month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
 export default function Dashboard() {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   return (
@@ -125,70 +241,10 @@ export default function Dashboard() {
               </div>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <h1 className="text-2xl font-semibold text-gray-900">KPIs</h1>
-                {/* Replace with your content */}
-                <div className="grid grid-cols-3 py-4 gap-6">
-                  <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
-                    <div className="h-min rounded-full bg-blue-100 p-4">
-                      <ChartBarIcon className="h-8 text-blue-500" />
-                    </div>
-                    <div>
-                      <div>
-                        <span className="font-bold">10</span>
-                      </div>
-                      <div>
-                        <span className="">DAOs organized</span>
-                      </div>
-                      <div>
-                        <span>
-                          <ChevronUpIcon className="h-5 text-green-600 inline-block" />
-                        </span>
-                        <span className="text-sm text-green-600">25%</span>{' '}
-                        <span className="text-sm">last month</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
-                    <div className="h-min rounded-full bg-blue-100 p-4">
-                      <ChartBarIcon className="h-8 text-blue-500" />
-                    </div>
-                    <div>
-                      <div>
-                        <span className="font-bold">10</span>
-                      </div>
-                      <div>
-                        <span className="">DAOs organized</span>
-                      </div>
-                      <div>
-                        <span>
-                          <ChevronUpIcon className="h-5 text-green-600 inline-block" />
-                        </span>
-                        <span className="text-sm text-green-600">25%</span>{' '}
-                        <span className="text-sm">last month</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 rounded-lg flex gap-4 p-4">
-                    <div className="h-min rounded-full bg-blue-100 p-4">
-                      <ChartBarIcon className="h-8 text-blue-500" />
-                    </div>
-                    <div>
-                      <div>
-                        <span className="font-bold">10</span>
-                      </div>
-                      <div>
-                        <span className="">DAOs organized</span>
-                      </div>
-                      <div>
-                        <span>
-                          <ChevronUpIcon className="h-5 text-green-600 inline-block" />
-                        </span>
-                        <span className="text-sm text-green-600">25%</span>{' '}
-                        <span className="text-sm">last month</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* /End replace */}
+                <KPIs />
+              </div>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                <Feed />
               </div>
             </div>
           </main>
