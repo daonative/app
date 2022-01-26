@@ -32,7 +32,6 @@ const Tasks = () => {
               <tbody>
                 {tasks.map((task, taskIdx) => (
                   <tr key={taskIdx} className={taskIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  {console.log(task.date)}
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{task.description}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <Moment date={task.deadline} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD"/>
