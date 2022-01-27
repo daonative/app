@@ -1,9 +1,9 @@
 import Moment from 'react-moment';
 
 const tasks = [
-  { description: 'Deploy static version of the dashboard', deadline: new Date("2022-01-31T00:00:00") },
-  { description: 'Add authentication', deadline: new Date("2022-02-01T00:00:00") },
-  { description: 'Allow membership minting', deadline: new Date("2022-02-10T00:00:00") },
+  { description: 'Deploy static version of the dashboard', deadline: new Date("2022-01-31T00:00:00+00:00") },
+  { description: 'Add authentication', deadline: new Date("2022-02-01T00:00:00+00:00") },
+  { description: 'Allow membership minting', deadline: new Date("2022-02-10T00:00:00+00:00") },
 ]
 
 const Tasks = () => {

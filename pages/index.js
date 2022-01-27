@@ -22,6 +22,7 @@ import KPIs from '../components/KPIs'
 import Feed from '../components/Feed'
 import Tasks from '../components/Tasks'
 import Members from '../components/Members'
+import TreasuryChart from '../components/TreasuryChart'
 
 export default function Dashboard() {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
@@ -55,6 +56,9 @@ export default function Dashboard() {
             </div>
           </main>
           <aside className="py-6 w-full md:max-w-xs">
+            <div className="py-4 px-4">
+              <TreasuryChart />
+            </div>
             <div className="py-4 px-4">
               <Members />
             </div>
