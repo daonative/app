@@ -23,6 +23,7 @@ import Feed from '../components/Feed'
 import Tasks from '../components/Tasks'
 import Members from '../components/Members'
 import TreasuryChart from '../components/TreasuryChart'
+import UpcomingEvents from '../components/UpcomingEvents'
 
 export default function Dashboard() {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
@@ -56,6 +57,9 @@ export default function Dashboard() {
             </div>
           </main>
           <aside className="py-6 w-full md:max-w-xs">
+            <div className="py-4 px-4">
+              <UpcomingEvents />
+            </div>
             <div className="py-4 px-4">
               <TreasuryChart />
             </div>
