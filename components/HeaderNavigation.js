@@ -20,7 +20,21 @@ const HeaderNavigation = ({ onShowSidebar }) => {
           <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
         </button>
         <div className="flex-1 px-4 flex justify-between">
-          <div className="flex-1 flex">
+          <div className="flex-1 flex items-center">
+            <div className="invisible md:visible flex">
+              <input
+                type="text"
+                name="work"
+                className="w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="What did you do today?"
+              />
+              <button
+                type="button"
+                className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Log work
+              </button>
+            </div>
           </div>
           <div className="ml-4 flex items-center md:ml-6">
             <button
