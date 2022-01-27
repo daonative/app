@@ -4,21 +4,21 @@ import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Catego
 ChartJS.register(LineElement, PointElement, LinearScale, Title, CategoryScale);
 
 const data = {
-  labels: [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ],
+    labels: [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
   datasets: [
     {
       label: '',
@@ -52,42 +52,48 @@ const options = {
       display: false,
     }
   },
+  elements: {
+    point: {
+      radius: 0
+    }
+  },
+  layout: {
+    padding: -20
+  },
   scales: {
     yAxes: {
       ticks: {
-        color: 'rgba(255, 255, 255, 1)'
+        display: false
       },
       grid: {
         display: false,
-        drawBorder: false,
-      },
+        drawBorder: false
+      }
     },
-
     xAxes: {
       ticks: {
-        color: 'rgba(255, 255, 255, 1)'
+        display: false
       },
       grid: {
-        circular: true,
-        borderColor: 'rgba(255, 255, 255, .2)',
-        color: 'rgba(255, 255, 255, .2)',
-        borderDash: [5, 5]
+        display: false,
+        drawBorder: false
       },
-    },
-  },
-  layout: {
-    padding: {
-      right: 10,
-    },
+    }
   },
 };
 
-const TreasuryChart = () => (
+const TreasuryChart = () => {
+  return (
   <div className="rounded shadow-xl overflow-hidden w-full md:flex">
-    <div className="flex w-full px-5 pb-4 pt-8 bg-indigo-500 text-white items-center">
+    <div className="w-full bg-indigo-500 text-white items-center">
+      <div className="flex justify-between p-6">
+        <p>Treasury</p>
+        <p className="text-lg font-bold">2.32 ETH</p>
+      </div>
       <Line type="line" data={data} options={options} />
     </div>
   </div>
-)
+  )
+}
 
 export default TreasuryChart
