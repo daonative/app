@@ -9,8 +9,6 @@ import {
   XIcon,
 } from '@heroicons/react/solid'
 
-import DAOnativeLogo from '../public/DAOnativeLogo.svg'
-
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
   { name: 'Bounties', href: '#', icon: CollectionIcon, current: false },
