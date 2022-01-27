@@ -11,19 +11,19 @@ const Tasks = () => {
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table className="table-fixed min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900 sm:rounded-lg">
+            <table className="table-fixed min-w-full divide-y divide-gray-200 dark:divide-daonative-gray-900">
+              <thead className="bg-gray-50 dark:bg-daonative-dark-100 text-gray-500 dark:text-daonative-gray-200">
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     My tasks
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 w-48 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 w-48 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     deadline
                   </th>
@@ -31,9 +31,9 @@ const Tasks = () => {
               </thead>
               <tbody>
                 {tasks.map((task, taskIdx) => (
-                  <tr key={taskIdx} className={taskIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{task.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={taskIdx} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{task.description}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Moment date={task.deadline} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD"/>
                     </td>
                   </tr>
