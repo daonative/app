@@ -14,6 +14,7 @@ const members = [
 const Members = () => (
   <div className="bg-white rounded-md p-4 shadow rounded-lg">
     <h3>Members</h3>
+    <p className="text-xs font-medium text-gray-500">2</p>
     <ul role="list" className="divide-y divide-gray-200 w-full">
       {members.map((member, memberIdx) => (
         <li key={memberIdx} className="py-4 flex justify-between">
