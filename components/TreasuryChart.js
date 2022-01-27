@@ -84,7 +84,7 @@ const options = {
 
 const TreasuryChart = () => {
   return (
-  <div className="rounded shadow-xl overflow-hidden w-full md:flex">
+  <div className="rounded-lg shadow overflow-hidden w-full md:flex">
     <div className="w-full bg-indigo-500 text-white items-center">
       <div className="flex justify-between p-6">
         <p>Treasury</p>

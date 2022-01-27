@@ -12,7 +12,7 @@ const members = [
 ];
 
 const Members = () => (
-  <div className="bg-white rounded-md p-4 shadow rounded-lg">
+  <div className="bg-white p-4 shadow rounded-lg">
     <h3>Members</h3>
     <p className="text-xs font-medium text-gray-500">2</p>
     <ul role="list" className="divide-y divide-gray-200 w-full">
