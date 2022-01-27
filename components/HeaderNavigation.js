@@ -25,7 +25,7 @@ const HeaderNavigation = ({ onShowSidebar }) => {
               <input
                 type="text"
                 name="work"
-                className="w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 placeholder="What did you do today?"
               />
               <button
