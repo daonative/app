@@ -10,7 +10,7 @@ const events = [
 ];
 
 const UpcomingEvents = () => (
-  <div className="py-4">
+  <div className="">
     <h3 className="dark:text-daonative-gray-300">Upcoming Events</h3>
     <ul role="list" className="w-full py-4 text-sm dark:text-daonative-gray-100">
       {events.map((event, eventIdx) => (

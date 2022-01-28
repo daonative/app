@@ -56,8 +56,8 @@ export default function Dashboard() {
               <Tasks />
             </div>
           </main>
-          <aside className="py-6 w-full md:max-w-xs">
-            <div className="py-4 px-4">
+          <aside className="w-full md:max-w-xs md:py-6">
+            <div className="px-4">
               <UpcomingEvents />
             </div>
             <div className="py-4 px-4">
