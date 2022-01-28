@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   darkMode: 'class',
   content: [
@@ -16,6 +18,9 @@ module.exports = {
         "daonative-gray-400": "#70708A",
         "daonative-gray-900": "#40405F"
       }
+    },
+    fontFamily: {
+      sans: ['Inter', ...defaultTheme.fontFamily.sans],
     },
   },
   plugins: [
