@@ -6,7 +6,7 @@ const Dashboard = () => (
       <div className="flex flex-col items-center ">
         <img src="./DAOnativeLogo.svg" className="w-32 h-32 m-6" />
         <h1 className="text-3xl text-daonative-gray-300">DAOnative</h1>
-        <p className="py-6 text-gray-200">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
+        <p className="p-6 text-gray-200">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
         <div className="flex">
           <input
             type="text"
