@@ -9,6 +9,8 @@ import {
   XIcon,
 } from '@heroicons/react/solid'
 
+import ConnectWalletButton from '../components/ConnectWalletButton'
+
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
   { name: 'Bounties', href: '#', icon: CollectionIcon, current: false },
@@ -21,8 +23,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const SidebarNavigation = ({showMobile, onClose}) => (
-  <> 
+const SidebarNavigation = ({ showMobile, onClose }) => (
+  <>
     <Transition.Root show={showMobile} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={onClose}>
         <Transition.Child
@@ -91,6 +93,9 @@ const SidebarNavigation = ({showMobile, onClose}) => (
                   </a>
                 ))}
               </nav>
+              <div className="p-5">
+                <ConnectWalletButton />
+              </div>
             </div>
           </div>
         </Transition.Child>
@@ -127,6 +132,9 @@ const SidebarNavigation = ({showMobile, onClose}) => (
               </a>
             ))}
           </nav>
+          <div className="py-5 px-4">
+            <ConnectWalletButton />
+          </div>
         </div>
       </div>
     </div>
