@@ -1,23 +1,14 @@
 import '../styles/globals.css'
 
-import { ChainId, DAppProvider } from '@usedapp/core'
+import { UseWalletProvider } from 'use-wallet'
 import { Toaster } from 'react-hot-toast'
-
-
-
-const config = {
-  readOnlyChainId: ChainId.Polygon,
-  readOnlyUrls: {
-    [ChainId.Polygon]: process.env.NEXT_PUBLIC_POLYGON_RPC,
-  },
-}
 
 function MyApp({ Component, pageProps }) {
   return (
-    <DAppProvider config={config}>
+    <UseWalletProvider chainId={137}>
       <Toaster />
       <Component {...pageProps} />
-    </DAppProvider>
+    </UseWalletProvider>
   )
 }
 
