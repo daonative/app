@@ -1,11 +1,20 @@
+import { useWallet } from 'use-wallet'
 import ConnectWalletButton from '../components/ConnectWalletButton'
+import authenticate from '../lib/authenticate'
 import useDarkMode from '../lib/useDarkMode'
+import useEthers from '../lib/useEthers'
 import useIsConnected from '../lib/useIsConnected'
 
 const Join = () => {
+  const wallet = useWallet()
+  const ethers = useEthers()
   const isConnected = useIsConnected()
 
   useDarkMode()
+
+  const createDAO = async () => {
+    await authenticate(wallet.account, ethers)
+  }
 
   return (
     <div className="overflow-hidden w-full h-screen">
@@ -25,6 +34,7 @@ const Join = () => {
                 <button
                   type="button"
                   className="place-self-center my-2 md:mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={() => createDAO()}
                 >
                   Create your DAO
                 </button>
