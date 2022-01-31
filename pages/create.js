@@ -14,7 +14,7 @@ const Join = () => {
           <img src="./DAOnativeLogo.svg" className="w-32 h-32 m-6" />
           {isConnected && (
             <>
-              <p className="p-6 text-gray-200 font-bold">What's the name of your DAO?</p>
+              <p className="p-6 text-gray-200 font-bold">What&apos;s the name of your DAO?</p>
               <div className="flex flex-col md:flex-row w-full">
                 <input
                   type="text"
