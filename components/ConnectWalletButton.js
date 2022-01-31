@@ -11,7 +11,7 @@ const ShortAddress = ({ length = 6, children }) => (
 
 const Button = ({ children, onClick }) => (
   <button
-    className="rounded-lg dark:text-gray-100 dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200 dark:hover:text-daonative-gray-200 py-6 w-full"
+    className="rounded-lg dark:text-gray-100 dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200 dark:hover:text-daonative-gray-200 flex justify-center items-center h-full w-full"
     onClick={onClick}>
     {children}
   </button>

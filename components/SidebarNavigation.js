@@ -93,8 +93,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
                   </a>
                 ))}
               </nav>
-              <div className="p-5">
-                <ConnectWalletButton />
+              <div className="py-5 px-4 h-24">
+                <ConnectWalletButton onClick={onClose} />
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
               </a>
             ))}
           </nav>
-          <div className="py-5 px-4">
+          <div className="py-5 px-4 h-24">
             <ConnectWalletButton />
           </div>
         </div>
