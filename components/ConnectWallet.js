@@ -2,8 +2,10 @@ import { MetaMask } from '@web3-react/metamask'
 import { initializeConnector } from '@web3-react/core'
 
 
-const [metaMask, hooks] = initializeConnector((actions) => new MetaMask(actions))
+export const [metaMask, hooks] = initializeConnector((actions) => new MetaMask(actions))
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+
+
 
 const ShortAddress = ({ length = 6, children }) => (
   typeof children === "string" ? (
