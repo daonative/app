@@ -120,7 +120,7 @@ const ConnectWalletButton = () => {
       )}
       {isConnected && (
         <Button onClick={() => wallet.reset()}>
-          <ShortAddress>{wallet.account}</ShortAddress> ({wallet.chainId})
+          <ShortAddress>{wallet.account}</ShortAddress>
         </Button>
       )}
     </>
