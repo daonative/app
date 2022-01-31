@@ -11,7 +11,7 @@ const ShortAddress = ({ length = 6, children }) => (
 
 const Button = ({ children, onClick }) => (
   <button
-    className="rounded-lg dark:text-gray-100 dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200 dark:hover:text-daonative-gray-200 flex justify-center items-center h-full w-full"
+    className="rounded-lg text-gray-100 bg-daonative-dark-100 hover:bg-daonative-dark-200 hover:text-daonative-gray-200 flex justify-center items-center h-full w-full"
     onClick={onClick}>
     {children}
   </button>
@@ -20,11 +20,22 @@ const Button = ({ children, onClick }) => (
 const MetaMaskButton = ({ onClick }) => (
   <button
     type="button"
-    className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 mr-2 mb-2 w-full h-16"
+    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center dark:bg-daonative-dark-200 dark:text-daonative-gray-200 dark:hover:bg-daonative-dark-100 w-full h-16"
     onClick={onClick}
   >
     <img src="./metamask.svg" className="h-8 mr-4" />
-    Connect with MetaMask
+    MetaMask
+  </button>
+)
+
+const WalletConnectButton = ({ onClick }) => (
+  <button
+    type="button"
+    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center dark:bg-daonative-dark-200 dark:text-daonative-gray-200 dark:hover:bg-daonative-dark-100 w-full h-16"
+    onClick={onClick}
+  >
+    <img src="./walletconnect.svg" className="h-8 mr-4" />
+    WalletConnect
   </button>
 )
 
@@ -50,7 +61,8 @@ const ConnectWalletModal = ({ open, onClose }) => {
     setShowConnecting(false)
   }, [open])
 
-  const connectWithMetamask = () => wallet.connect('injected')
+  const handleMetaMask = () => wallet.connect('injected')
+  const handleWalletConnect = () => wallet.connect('walletconnect')
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -81,10 +93,10 @@ const ConnectWalletModal = ({ open, onClose }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+            <div className="inline-block align-bottom bg-white dark:bg-daonative-dark-300 rounded-lg px-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full">
               {showConnecting && (
-                <div className="mt-5 sm:mt-6 flex">
-                  <div className="text-black h-6 w-6 mr-2">
+                <div className="mt-5 sm:mt-6 flex text-black dark:text-daonative-gray-100">
+                  <div className="h-6 w-6 mr-2">
                     <Spinner />
                   </div>
                   <div>
@@ -92,8 +104,11 @@ const ConnectWalletModal = ({ open, onClose }) => {
                   </div>
                 </div>
               )}
-              <div className="mt-5 sm:mt-6">
-                <MetaMaskButton onClick={() => connectWithMetamask()} />
+              <div className="my-4">
+                <MetaMaskButton onClick={() => handleMetaMask()} />
+              </div>
+              <div className="my-4">
+                <WalletConnectButton onClick={() => handleWalletConnect()} />
               </div>
             </div>
           </Transition.Child>
