@@ -1,5 +1,3 @@
-import DAOnativeLogo from "../public/DAOnativeLogo.svg"
-
 const Dashboard = () => (
   <div className="overflow-hidden bg-daonative-dark-300 text-daonative-gray-100 w-full h-screen">
     <main className="flex justify-center items-center h-screen">
