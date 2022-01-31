@@ -18,6 +18,7 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
             rel="stylesheet"
           />
+          <title>DAOnative</title>
         </Head>
         <body className="antialiased h-full bg-gray-100 dark:bg-daonative-dark-300 dark:text-daonative-gray-100">
           <Main />

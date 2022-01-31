@@ -19,7 +19,6 @@ export default function Dashboard() {
   const onToggleDarkMode = () => setDarkMode(!darkMode)
 
   useEffect(() => {
-    console.log(darkMode)
     if (darkMode) {
       document.documentElement.classList.add('dark')
     } else {
