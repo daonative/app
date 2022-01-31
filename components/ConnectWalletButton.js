@@ -35,9 +35,10 @@ const ConnectWalletModal = ({ open, onClose }) => {
   const isConnecting = wallet.status === "connecting"
   const isConnected = wallet.status === "connected"
 
+  // Close the modal when the status becomes "connected"
   useEffect(() => {
     if (isConnected) onClose()
-  }, [isConnected])
+  }, [isConnected, onClose])
 
   // Avoid showing the connecting loader for a split second
   useEffect(() => {
