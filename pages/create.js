@@ -1,3 +1,5 @@
+import { getAuth } from 'firebase/auth'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { useWallet } from 'use-wallet'
 import ConnectWalletButton from '../components/ConnectWalletButton'
 import authenticate from '../lib/authenticate'
@@ -5,15 +7,21 @@ import useDarkMode from '../lib/useDarkMode'
 import useEthers from '../lib/useEthers'
 import useIsConnected from '../lib/useIsConnected'
 
+const auth = getAuth()
+
 const Join = () => {
   const wallet = useWallet()
   const ethers = useEthers()
   const isConnected = useIsConnected()
+  const [user] = useAuthState(auth)
 
   useDarkMode()
 
+  const isAuthenticated = !!user
+
   const createDAO = async () => {
-    await authenticate(wallet.account, ethers)
+    if(!isAuthenticated)
+      await authenticate(wallet.account, ethers)
   }
 
   return (
