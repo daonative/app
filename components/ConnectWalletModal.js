@@ -1,16 +1,7 @@
 import { useWallet } from 'use-wallet'
-import { Fragment, useEffect, useState } from 'react'
+import { createContext, Fragment, useEffect, useState, useContext } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from './Spinner';
-import ShortAddress from './ShortAddress';
-
-const Button = ({ children, onClick }) => (
-  <button
-    className="rounded-lg text-gray-100 bg-daonative-dark-100 hover:bg-daonative-dark-200 hover:text-daonative-gray-200 flex justify-center items-center h-full w-full"
-    onClick={onClick}>
-    {children}
-  </button>
-)
 
 const MetaMaskButton = ({ onClick }) => (
   <button
@@ -113,29 +104,23 @@ const ConnectWalletModal = ({ open, onClose }) => {
   )
 }
 
+const ConnectWalletModalContext = createContext()
+export const ConnectWalletModalProvider = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const ConnectWalletButton = () => {
-  const [modalOpen, setModalOpen] = useState(false)
-  const wallet = useWallet()
-
-  const isConnected = wallet.status === "connected"
-
-  const showModal = () => setModalOpen(true)
-  const closeModal = () => setModalOpen(false)
+  const openConnectWalletModal = () => setIsOpen(true)
+  const closeConnectWalletModal = () => setIsOpen(false)
 
   return (
-    <>
-      <ConnectWalletModal open={modalOpen} onClose={() => closeModal()} />
-      {!isConnected && (
-        <Button onClick={() => showModal()}>Connect</Button>
-      )}
-      {isConnected && (
-        <Button onClick={() => wallet.reset()}>
-          <ShortAddress>{wallet.account}</ShortAddress>
-        </Button>
-      )}
-    </>
+    <ConnectWalletModalContext.Provider value={{ openConnectWalletModal, closeConnectWalletModal }}>
+      <ConnectWalletModal open={isOpen} onClose={closeConnectWalletModal} />
+      {children}
+    </ConnectWalletModalContext.Provider>
   )
 }
 
-export default ConnectWalletButton
+export const useConnectWalletModal = () => {
+  return useContext(ConnectWalletModalContext);
+}
+
+export default ConnectWalletModal

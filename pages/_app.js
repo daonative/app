@@ -4,6 +4,7 @@ import { UseWalletProvider } from 'use-wallet'
 import { Toaster } from 'react-hot-toast'
 import { initializeApp } from "firebase/app";
 import Head from 'next/head';
+import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,6 +13,8 @@ const firebaseConfig = {
 }
 
 initializeApp(firebaseConfig)
+
+
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -32,8 +35,10 @@ function MyApp({ Component, pageProps }) {
           }
         }}
       >
-        <Toaster />
-        <Component {...pageProps} />
+        <ConnectWalletModalProvider>
+          <Toaster />
+          <Component {...pageProps} />
+        </ConnectWalletModalProvider>
       </UseWalletProvider>
     </>
   )
