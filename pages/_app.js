@@ -14,7 +14,6 @@ const firebaseConfig = {
 initializeApp(firebaseConfig)
 
 function MyApp({ Component, pageProps }) {
-  console.log(process.env.NEXT_PUBLIC_POLYGON_RPC)
   return (
     <>
       <Head>
@@ -24,10 +23,11 @@ function MyApp({ Component, pageProps }) {
         chainId={137}
         connectors={{
           walletconnect: {
+            bridge: 'https://bridge.walletconnect.org',
             rpc: {
-              1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-              4: 'https://rinkeby.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-              137: process.env.NEXT_PUBLIC_POLYGON_RPC
+              1: process.env.NEXT_PUBLIC_RPC_MAINNET,
+              4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
+              137: process.env.NEXT_PUBLIC_RPC_POLYGON
             }
           }
         }}
