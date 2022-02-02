@@ -1,22 +1,24 @@
 import {
   ArrowSmDownIcon,
   ArrowSmUpIcon,
-  ChartBarIcon,
+  CalendarIcon,
   MailOpenIcon,
-  CursorClickIcon
+  AcademicCapIcon
 } from '@heroicons/react/solid';
 import { classNames } from "../lib/utils";
 
+const daysToLaunch = Math.floor((new Date('2022-02-11T00:00:00') - new Date())/ (1000 * 3600 * 24))
+
 const stats = [
-  { name: 'DAOs organized', stat: '10', icon: ChartBarIcon, change: '2', changeType: 'increase' },
-  { name: 'Waitinglist', stat: '6', icon: MailOpenIcon, change: '2', changeType: 'increase' },
-  { name: 'Proposals', stat: '3', icon: CursorClickIcon },
+  { name: 'Days to launch', stat: daysToLaunch.toString(), icon: CalendarIcon, },
+  { name: 'Waitinglist', stat: '11', icon: MailOpenIcon },
+  { name: 'User interviews output', stat: '5', icon: AcademicCapIcon },
 ]
 
 const KPIs = () => {
   return (
     <div>
-      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <dl className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-3">
         {stats.map((item, itemIdx) => (
           <div
             key={itemIdx}
