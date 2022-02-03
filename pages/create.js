@@ -12,13 +12,13 @@ import useIsConnected from '../lib/useIsConnected'
 import toast from 'react-hot-toast'
 import { roomCreatorAbi } from '../lib/abi'
 
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-
-
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { ethers } from 'ethers'
 
+const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
+
 const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA913'
-const REQUIRE_AUTHENTICATION = true
+const REQUIRE_AUTHENTICATION = false
 
 const auth = getAuth()
 
@@ -38,18 +38,37 @@ const Join = () => {
 
   const isAuthenticated = !!user
 
-  const createRoom = async (name) => {
+  const deployRoomContract = async (name) => {
     const signer = provider.getSigner(account)
-    console.log(ethers)
-    const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorAbi, signer)
-    contract.on('RoomCreated', (event) => {
-      const db = getFirestore()
-      const roomRef = doc(db, 'rooms', name)
-      setDoc(roomRef, { treasury: event }, { merge: true })
-      setIsLoading(false)
-    })
+    const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorInterface, signer)
     return await contract.createRoom(name)
   }
+
+  const saveRoom = async (name, address) => {
+      const db = getFirestore()
+      const roomsCollection = collection(db, 'rooms')
+      await addDoc(roomsCollection, { name, treasury: address })
+  }
+
+  const getRoomAddressFromCreationTxReceipt = (txReceipt) => (
+    txReceipt.logs
+      // Parse log events
+      .map((log) => {
+        try {
+          return roomCreatorInterface.parseLog(log)
+        } catch (e) {
+          return undefined
+        }
+      })
+      // Get rid of the unknown events
+      .filter((event) => event !== undefined)
+      // Keep only RoomCreated events
+      .filter((event) => event.name === "RoomCreated")
+      // Take the first argument which is the room address
+      .map((event) => event.args[0])
+      // Take the first address (there is only one)
+      .shift()
+  )
 
   const handleCreateRoom = async (data) => {
     if (!account) return
@@ -62,13 +81,17 @@ const Join = () => {
     setIsLoading(true)
 
     try {
-      const tx = await createRoom(data.name)
-      await tx.wait()
+      const tx = await deployRoomContract(data.name)
+      const receipt = await tx.wait()
+      const address = getRoomAddressFromCreationTxReceipt(receipt)
+      saveRoom(data.name, address)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
       console.error(e)
       const errorMessage = e?.message || 'Error'
       toast.error(errorMessage, { id: toastId })
+    } finally {
+      setIsLoading(false)
     }
   }
 
