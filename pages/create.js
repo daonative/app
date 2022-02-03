@@ -26,7 +26,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const Join = () => {
+const Create = () => {
   const { account } = useWallet()
   const provider = useProvider()
   const isConnected = useIsConnected()
@@ -135,4 +135,4 @@ const Join = () => {
   )
 }
 
-export default Join
+export default Create
