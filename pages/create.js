@@ -14,6 +14,7 @@ import { roomCreatorAbi } from '../lib/abi'
 
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { ethers } from 'ethers'
+import { useRouter } from 'next/router'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 
@@ -33,6 +34,7 @@ const Create = () => {
   const [user] = useAuthState(auth)
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit } = useForm()
+  const router = useRouter()
 
   useDarkMode()
 
@@ -44,10 +46,11 @@ const Create = () => {
     return await contract.createRoom(name)
   }
 
-  const saveRoom = async (name, address) => {
-      const db = getFirestore()
-      const roomsCollection = collection(db, 'rooms')
-      await addDoc(roomsCollection, { name, treasury: address })
+  const createRoom = async (name, address) => {
+    const db = getFirestore()
+    const roomsCollection = collection(db, 'rooms')
+    const roomRef = await addDoc(roomsCollection, { name, treasury: address })
+    return roomRef.id
   }
 
   const getRoomAddressFromCreationTxReceipt = (txReceipt) => (
@@ -84,7 +87,8 @@ const Create = () => {
       const tx = await deployRoomContract(data.name)
       const receipt = await tx.wait()
       const address = getRoomAddressFromCreationTxReceipt(receipt)
-      saveRoom(data.name, address)
+      const roomId = createRoom(data.name, address)
+      router.push(`/dao/${roomId}/join`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
       console.error(e)
