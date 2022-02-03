@@ -87,7 +87,7 @@ const Create = () => {
       const tx = await deployRoomContract(data.name)
       const receipt = await tx.wait()
       const address = getRoomAddressFromCreationTxReceipt(receipt)
-      const roomId = createRoom(data.name, address)
+      const roomId = await createRoom(data.name, address)
       router.push(`/dao/${roomId}/join`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {

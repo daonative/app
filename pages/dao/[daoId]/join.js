@@ -3,21 +3,59 @@ import ConnectWalletButton from '../../../components/ConnectWalletButton'
 import useDarkMode from '../../../lib/useDarkMode'
 import useIsConnected from '../../../lib/useIsConnected'
 import { useForm } from 'react-hook-form'
-import { doc, getDoc, getFirestore } from 'firebase/firestore'
+import { arrayUnion, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { membershipAbi } from '../../../lib/abi'
+import { ethers } from 'ethers'
+import { useWallet } from 'use-wallet'
+import toast from 'react-hot-toast'
+import useProvider from '../../../lib/useProvider'
+
+const MEMBERSHIP_CONTRACT_ADDRESS = '0x596574B19e4374Fe186a59944a62F8E39F2545F7'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const Join = ({ dao }) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const { account } = useWallet()
   const isConnected = useIsConnected()
+  const provider = useProvider()
+  const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit } = useForm()
 
   useDarkMode()
 
-  const handleJoinDAO = (data) => {
+  const createMembershipToken = async (roomId) => {
+    const signer = provider.getSigner(account)
+    const contract = new ethers.Contract(MEMBERSHIP_CONTRACT_ADDRESS, membershipAbi, signer)
+    return await contract.safeMint(account, roomId)
+  }
 
+  const createMembership = async (roomId, name) => {
+    const db = getFirestore()
+    const userRef = doc(db, 'users', account)
+    await setDoc(userRef, { rooms: arrayUnion(roomId), name }, { merge: true})
+  }
+
+  const handleJoinDAO = async (data) => {
+    if (!account) return
+
+    const toastId = toast.loading('Loading')
+    setIsLoading(true)
+
+    try {
+      const tx = await createMembershipToken(dao.roomId)
+      await tx.wait()
+      await createMembership(dao.roomId, data.name)
+      router.push(`/dao/${roomId}`)
+      toast.success('Confirmed', { id: toastId })
+    } catch (e) {
+      console.error(e)
+      const errorMessage = e?.message || 'Error'
+      toast.error(errorMessage, { id: toastId })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -74,7 +112,7 @@ const getRoom = async (roomId) => {
 
 export async function getServerSideProps ({ res, params }) {
   const { daoId } = params
-  const room = await getRoom(daoId)
+  const room = {roomId: daoId, ...await getRoom(daoId)}
 
   if (!room) {
     res.statusCode = 404
