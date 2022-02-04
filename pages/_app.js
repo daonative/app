@@ -14,8 +14,6 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig)
 
-
-
 function MyApp({ Component, pageProps }) {
   return (
     <>
