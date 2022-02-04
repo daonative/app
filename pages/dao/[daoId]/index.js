@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy } from "firebase/firestore"
+import { useRouter } from 'next/router';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
+import { isFirestoreDate } from '../../../lib/utils';
 
 import SidebarNavigation from '../../../components/SidebarNavigation'
 import HeaderNavigation from '../../../components/HeaderNavigation'
@@ -11,7 +14,8 @@ import Tasks from '../../../components/Tasks'
 import Members from '../../../components/Members'
 import TreasuryChart from '../../../components/TreasuryChart'
 import UpcomingEvents from '../../../components/UpcomingEvents'
-import { isFirestoreDate } from '../../../lib/utils'
+
+const db = getFirestore()
 
 const getMembers = async (roomId) => {
   const db = getFirestore()
@@ -31,6 +35,7 @@ const getFeed = async (roomId) => {
     return {
       ...item,
       created: isFirestoreDate(item?.created) ? item.created.toMillis() : '',
+      eventId: doc.id
     }
   })
 }
@@ -46,8 +51,19 @@ export const getServerSideProps = async ({ params }) => {
 }
 
 export default function Dashboard({ members, feed }) {
+  const { query: params } = useRouter()
+  const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
+  const [newFeedItems] = useCollectionData(
+    query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
+  )
+
+  // Use the passed 
+  const feedEvents = newFeedItems?.map((event) => ({
+    ...event,
+    created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
+  })) || feed
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
@@ -75,7 +91,7 @@ export default function Dashboard({ members, feed }) {
               <KPIs />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed feed={feed} />
+              <Feed feed={feedEvents} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Tasks />
