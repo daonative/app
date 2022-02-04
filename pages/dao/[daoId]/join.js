@@ -128,7 +128,7 @@ const Join = ({ dao }) => {
     <div className="overflow-hidden w-full h-screen">
       <main className="flex justify-center items-center h-screen">
         <div className="flex flex-col items-center ">
-          <img src="/DAOnativeLogo.svg" className={classNames("w-32 h-32 m-6", isLoading && "animate-spin")} />
+          <img src="/DAOnativeLogo.svg" className={classNames("w-32 h-32 m-6", isLoading && "animate-spin-slow")} />
           {isConnected && !isLoading && (
             <>
               <h1 className="text-xl text-daonative-gray-300 pb-2">{dao?.name}</h1>

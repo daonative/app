@@ -116,7 +116,7 @@ const Create = () => {
     <div className="overflow-hidden w-full h-screen">
       <main className="flex justify-center items-center h-screen">
         <div className="flex flex-col items-center ">
-          <img src="./DAOnativeLogo.svg" className={classNames("w-32 h-32 m-6", isLoading && "animate-spin")} />
+          <img src="./DAOnativeLogo.svg" className={classNames("w-32 h-32 m-6", isLoading && "animate-spin-slow")} />
           {isConnected && !isLoading && (
             <>
               <p className="p-6 text-gray-200 font-bold">What&apos;s the name of your DAO?</p>
