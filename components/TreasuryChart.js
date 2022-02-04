@@ -88,7 +88,7 @@ const TreasuryChart = () => {
     <div className="w-full bg-indigo-500 text-white items-center">
       <div className="flex justify-between p-6">
         <p>Treasury</p>
-        <p className="text-lg font-bold">2.32 ETH</p>
+        <p className="text-lg font-bold">0 MATIC</p>
       </div>
       <Line type="line" data={data} options={options} />
     </div>

@@ -11,7 +11,7 @@ const daysToLaunch = Math.floor((new Date('2022-02-11T00:00:00') - new Date())/ 
 
 const stats = [
   { name: 'Days to launch', stat: daysToLaunch.toString(), icon: CalendarIcon, },
-  { name: 'Waitinglist', stat: '11', icon: MailOpenIcon },
+  { name: 'Waiting list', stat: '11', icon: MailOpenIcon },
   { name: 'User interviews output', stat: '5', icon: AcademicCapIcon },
 ]
 
