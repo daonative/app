@@ -13,15 +13,16 @@ import useProvider from '../lib/useProvider';
 import { addDoc, collection, getFirestore, serverTimestamp, where, query } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import Spinner from './Spinner';
 
 const auth = getAuth()
 const db = getFirestore()
 
 const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
-  const { account, reset } = useWallet()
+  const { account, reset: disconnect } = useWallet()
   const isConnected = useIsConnected()
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
   const [user] = useAuthState(auth)
   const provider = useProvider()
   const { query: params } = useRouter()
@@ -49,6 +50,8 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
       authorName: membership?.name || null,
       created: serverTimestamp()
     })
+
+    reset()
   }
 
   return (
@@ -72,12 +75,20 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
                   className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
                   placeholder="What did you do today?"
                 />
-                <button
-                  type="submit"
-                  className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
-                >
-                  Log work
-                </button>
+                {isSubmitting ? (
+                  <div
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 w-24"
+                  >
+                    <span className="w-4 h-4 mx-auto"><Spinner /></span>
+                  </div>
+                ) : (
+                  <button
+                    type="submit"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 w-24"
+                  >
+                    Log work
+                  </button>
+                )}
               </form>
             )}
           </div>
@@ -136,7 +147,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
                     <Menu.Item>
                       <button
                         className="block px-4 py-2 text-sm text-gray-700 w-full h-full"
-                        onClick={reset}
+                        onClick={disconnect}
                       >
                         Disconnect
                       </button>

@@ -59,7 +59,6 @@ export default function Dashboard({ members, feed }) {
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
 
-  // Use the passed 
   const feedEvents = newFeedItems?.map((event) => ({
     ...event,
     created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
