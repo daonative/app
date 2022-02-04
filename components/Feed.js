@@ -1,11 +1,7 @@
 import Moment from 'react-moment';
+import ShortAddress from './ShortAddress';
 
-const feed = [
-  { description: 'Deployed app.daonative.xyz', pfp: 'https://ipfs.io/ipfs/Qmc1DJWoEsVkjbJsMCnceFH1roF8QSnwK7iEhRKiBDqy9d', author: 'Laurent', date: new Date("Wed Jan 26 2022 18:19:37 GMT+0100") },
-  { description: 'Landed our first user interview', pfp: 'https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6', author: 'Ben', date: new Date("Wed Jan 25 2022 18:19:37 GMT+0100") },
-]
-
-const Feed = () => {
+const Feed = ({ feed }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -40,8 +36,12 @@ const Feed = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-4">
-                        <img className="h-10 w-10 rounded-full" src={event.pfp} alt="" />
-                        {event.author}
+                        <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />
+                        {event.authorName ? (
+                          <>{event.authorName}</>
+                        ) : (
+                          <ShortAddress>{event.authorAccount}</ShortAddress>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">

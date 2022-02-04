@@ -3,7 +3,7 @@ import ConnectWalletButton from '../../../components/ConnectWalletButton'
 import useDarkMode from '../../../lib/useDarkMode'
 import useIsConnected from '../../../lib/useIsConnected'
 import { useForm } from 'react-hook-form'
-import { arrayUnion, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { addDoc, arrayUnion, collection, doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
 import { membershipAbi } from '../../../lib/abi'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
@@ -64,6 +64,19 @@ const Join = ({ dao }) => {
     const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
     const membershipRef = doc(db, 'memberships', membershipId)
     await setDoc(membershipRef, { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS })
+    return membershipId
+  }
+
+  const createMembershipFeedEntry = async (roomId, name) => {
+    const db = getFirestore()
+    const feedRef = collection(db, 'feed')
+    await addDoc(feedRef, {
+      roomId,
+      description: "A new member joined",
+      authorAccount: account,
+      authorName: name,
+      created: serverTimestamp()
+    })
   }
 
   const getMembershipTokenIdFromTxReceipt = (txReceipt) => (
@@ -99,6 +112,7 @@ const Join = ({ dao }) => {
       const receipt = await tx.wait()
       const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
       await createMembership(dao.roomId, tokenId, data.name)
+      await createMembershipFeedEntry(dao.roomId, data.name)
       await router.push(`/dao/${dao.roomId}`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {

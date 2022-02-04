@@ -12,7 +12,7 @@ import useIsConnected from '../lib/useIsConnected'
 import toast from 'react-hot-toast'
 import { roomCreatorAbi } from '../lib/abi'
 
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
@@ -53,6 +53,18 @@ const Create = () => {
     return roomRef.id
   }
 
+
+  const createRoomFeedEntry = async (roomId, name) => {
+    const db = getFirestore()
+    const feedRef = collection(db, 'feed')
+    await addDoc(feedRef, {
+      roomId,
+      description: `${name} just got created`,
+      authorAccount: account,
+      created: serverTimestamp()
+    })
+  }
+
   const getRoomAddressFromCreationTxReceipt = (txReceipt) => (
     txReceipt.logs
       // Parse log events
@@ -88,6 +100,7 @@ const Create = () => {
       const receipt = await tx.wait()
       const address = getRoomAddressFromCreationTxReceipt(receipt)
       const roomId = await createRoom(data.name, address)
+      await createRoomFeedEntry(roomId, data.name)
       await router.push(`/dao/${roomId}/join`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {

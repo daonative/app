@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore"
+import { getFirestore, collection, getDocs, query, where, orderBy } from "firebase/firestore"
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 
@@ -11,25 +11,41 @@ import Tasks from '../../../components/Tasks'
 import Members from '../../../components/Members'
 import TreasuryChart from '../../../components/TreasuryChart'
 import UpcomingEvents from '../../../components/UpcomingEvents'
+import { isFirestoreDate } from '../../../lib/utils'
 
 const getMembers = async (roomId) => {
   const db = getFirestore()
   const membershipsRef = collection(db, 'memberships')
   const membershipsQuery = query(membershipsRef, where('roomId', '==', roomId))
   const snapshot = await getDocs(membershipsQuery)
-  return snapshot.docs.map((doc) => doc.data())
+  return snapshot.docs.map((doc) => ({ membershipId: doc.id, ...doc.data()}))
+}
+
+const getFeed = async (roomId) => {
+  const db = getFirestore()
+  const feedRef = collection(db, 'feed')
+  const feedQuery = query(feedRef, where('roomId', '==', roomId), orderBy('created', 'desc'))
+  const snapshot = await getDocs(feedQuery)
+  return snapshot.docs.map((doc) => {
+    const item = doc.data()
+    return {
+      ...item,
+      created: isFirestoreDate(item?.created) ? item.created.toMillis() : '',
+    }
+  })
 }
 
 export const getServerSideProps = async ({ params }) => {
-  const { daoId } = params
-  const members = await getMembers(daoId)
+  const { daoId: roomId } = params
+  const members = await getMembers(roomId)
+  const feed = await getFeed(roomId)
 
   return {
-    props: { members }
+    props: { members, feed }
   }
 }
 
-export default function Dashboard({ members }) {
+export default function Dashboard({ members, feed }) {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
 
@@ -59,7 +75,7 @@ export default function Dashboard({ members }) {
               <KPIs />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed />
+              <Feed feed={feed} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Tasks />
