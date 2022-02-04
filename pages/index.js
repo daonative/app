@@ -45,14 +45,18 @@ const Home = ({ rooms }) => {
   }
 
   return (
-    <ul>
-      {rooms
-        .filter(room => membershipRooms.includes(room.roomId))
-        .map(room => (
-          <li key={room.roomId}><Link href={`/dao/${room.roomId}/`}>{room.name}</Link></li>
-        ))
-      }
-    </ul>
+    <div className="w-full h-screen flex flex-col items-center justify-center">
+      <ul className="text-center text-xl">
+        {rooms
+          .filter(room => membershipRooms.includes(room.roomId))
+          .map(room => (
+            <li key={room.roomId} className="m-2 py-2 px-6 rounded-md dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200">
+              <Link href={`/dao/${room.roomId}/`}>{room.name}</Link>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   )
 }
 
