@@ -9,8 +9,10 @@ import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import toast from 'react-hot-toast'
 import useProvider from '../../../lib/useProvider'
+import { useRouter } from 'next/router'
 
-const MEMBERSHIP_CONTRACT_ADDRESS = '0x596574B19e4374Fe186a59944a62F8E39F2545F7'
+const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
+const membershipInterface = new ethers.utils.Interface(membershipAbi)
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -22,20 +24,44 @@ const Join = ({ dao }) => {
   const provider = useProvider()
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit } = useForm()
+  const router = useRouter()
 
   useDarkMode()
 
   const createMembershipToken = async (roomId) => {
     const signer = provider.getSigner(account)
-    const contract = new ethers.Contract(MEMBERSHIP_CONTRACT_ADDRESS, membershipAbi, signer)
+    const contract = new ethers.Contract(MEMBERSHIP_CONTRACT_ADDRESS, membershipInterface, signer)
     return await contract.safeMint(account, roomId)
   }
 
-  const createMembership = async (roomId, name) => {
+  const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const userRef = doc(db, 'users', account)
-    await setDoc(userRef, { rooms: arrayUnion(roomId), name }, { merge: true})
+    const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
+    const membershipRef = doc(db, 'memberships', membershipId)
+    await setDoc(membershipRef, { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS })
   }
+
+  const getMembershipTokenIdFromTxReceipt = (txReceipt) => (
+    txReceipt.logs
+      // Parse log events
+      .map((log) => {
+        try {
+          const event = membershipInterface.parseLog(log)
+          console.log(event)
+          return event
+        } catch (e) {
+          return undefined
+        }
+      })
+      // Get rid of the unknown events
+      .filter((event) => event !== undefined)
+      // Keep only Transfer events
+      .filter((event) => event.name === "Transfer")
+      // Take the third argument which is the token id
+      .map((event) => event.args[2].toString())
+      // Take the first token id (there is only one)
+      .shift()
+  )
 
   const handleJoinDAO = async (data) => {
     if (!account) return
@@ -45,9 +71,10 @@ const Join = ({ dao }) => {
 
     try {
       const tx = await createMembershipToken(dao.roomId)
-      await tx.wait()
-      await createMembership(dao.roomId, data.name)
-      router.push(`/dao/${roomId}`)
+      const receipt = await tx.wait()
+      const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
+      await createMembership(dao.roomId, tokenId, data.name)
+      router.push(`/dao/${dao.roomId}`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
       console.error(e)
