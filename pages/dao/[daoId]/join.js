@@ -18,6 +18,31 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const getRoom = async (roomId) => {
+  const db = getFirestore()
+  const roomRef = doc(db, 'rooms', roomId)
+  const roomSnap = await getDoc(roomRef)
+
+  if (!roomSnap.exists()) {
+    return null
+  }
+
+  return roomSnap.data()
+}
+
+export const getServerSideProps = async ({ res, params }) => {
+  const { daoId } = params
+  const room = {roomId: daoId, ...await getRoom(daoId)}
+
+  if (!room) {
+    res.statusCode = 404
+  }
+
+  return {
+    props: { dao: room }
+  }
+}
+
 const Join = ({ dao }) => {
   const { account } = useWallet()
   const isConnected = useIsConnected()
@@ -123,31 +148,6 @@ const Join = ({ dao }) => {
       </main>
     </div >
   )
-}
-
-const getRoom = async (roomId) => {
-  const db = getFirestore()
-  const roomRef = doc(db, 'rooms', roomId)
-  const roomSnap = await getDoc(roomRef)
-
-  if (!roomSnap.exists()) {
-    return null
-  }
-
-  return roomSnap.data()
-}
-
-export async function getServerSideProps ({ res, params }) {
-  const { daoId } = params
-  const room = {roomId: daoId, ...await getRoom(daoId)}
-
-  if (!room) {
-    res.statusCode = 404
-  }
-
-  return {
-    props: { dao: room }
-  }
 }
 
 export default Join

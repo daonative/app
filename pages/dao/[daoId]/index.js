@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore"
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 
@@ -11,7 +12,24 @@ import Members from '../../../components/Members'
 import TreasuryChart from '../../../components/TreasuryChart'
 import UpcomingEvents from '../../../components/UpcomingEvents'
 
-export default function Dashboard() {
+const getMembers = async (roomId) => {
+  const db = getFirestore()
+  const membershipsRef = collection(db, 'memberships')
+  const membershipsQuery = query(membershipsRef, where('roomId', '==', roomId))
+  const snapshot = await getDocs(membershipsQuery)
+  return snapshot.docs.map((doc) => doc.data())
+}
+
+export const getServerSideProps = async ({ params }) => {
+  const { daoId } = params
+  const members = await getMembers(daoId)
+
+  return {
+    props: { members }
+  }
+}
+
+export default function Dashboard({ members }) {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
 
@@ -55,7 +73,7 @@ export default function Dashboard() {
               <TreasuryChart />
             </div>
             <div className="py-4 px-4">
-              <Members />
+              <Members members={members} />
             </div>
           </aside>
         </div>
