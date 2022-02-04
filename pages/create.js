@@ -88,7 +88,7 @@ const Create = () => {
       const receipt = await tx.wait()
       const address = getRoomAddressFromCreationTxReceipt(receipt)
       const roomId = await createRoom(data.name, address)
-      router.push(`/dao/${roomId}/join`)
+      await router.push(`/dao/${roomId}/join`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
       console.error(e)

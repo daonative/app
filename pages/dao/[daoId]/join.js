@@ -74,7 +74,7 @@ const Join = ({ dao }) => {
       const receipt = await tx.wait()
       const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
       await createMembership(dao.roomId, tokenId, data.name)
-      router.push(`/dao/${dao.roomId}`)
+      await router.push(`/dao/${dao.roomId}`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
       console.error(e)
