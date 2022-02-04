@@ -10,10 +10,12 @@ import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import authenticate from '../lib/authenticate';
 import useProvider from '../lib/useProvider';
-import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, serverTimestamp, where, query } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 
 const auth = getAuth()
+const db = getFirestore()
 
 const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
@@ -22,8 +24,13 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const { register, handleSubmit } = useForm()
   const [user] = useAuthState(auth)
   const provider = useProvider()
-  const { query } = useRouter()
-  const roomId = query?.daoId
+  const { query: params } = useRouter()
+  const roomId = params?.daoId
+  const [memberships] = useCollectionDataOnce(
+    query(collection(db, 'memberships'), where('account', '==', account || ''), where('roomId', '==', roomId))
+  )
+  const membership = memberships?.length > 0 && memberships[0]
+  const isMember = !!membership
 
   const isAuthenticated = !!user
 
@@ -39,6 +46,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
       roomId,
       description: data.work,
       authorAccount: account,
+      authorName: membership?.name || null,
       created: serverTimestamp()
     })
   }
@@ -56,7 +64,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
         </button>
         <div className="flex-1 px-4 flex justify-between">
           <div className="flex-1 flex items-center">
-            {isConnected && (
+            {isMember && (
               <form className="invisible md:visible flex" onSubmit={handleSubmit(logWork)}>
                 <input
                   {...register("work")}
