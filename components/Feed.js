@@ -45,7 +45,7 @@ const Feed = ({ feed }) => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Moment date={event.date} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD"/>
+                      <Moment date={event.created} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD"/>
                     </td>
                   </tr>
                 ))}
