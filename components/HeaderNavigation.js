@@ -14,9 +14,10 @@ import { addDoc, collection, getFirestore, serverTimestamp, where, query } from 
 import { useRouter } from 'next/router';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import Spinner from './Spinner';
+import useMembership from '../lib/useMembership';
 
 const auth = getAuth()
-const db = getFirestore()
+export const db = getFirestore()
 
 const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
@@ -27,10 +28,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const provider = useProvider()
   const { query: params } = useRouter()
   const roomId = params?.daoId
-  const [memberships] = useCollectionDataOnce(
-    query(collection(db, 'memberships'), where('account', '==', account || ''), where('roomId', '==', roomId))
-  )
-  const membership = memberships?.length > 0 && memberships[0]
+  const membership = useMembership(account, roomId)
   const isMember = !!membership
 
   const isAuthenticated = !!user
