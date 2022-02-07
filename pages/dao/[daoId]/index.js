@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc } from "firebase/firestore"
+import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
@@ -14,6 +14,7 @@ import Tasks from '../../../components/Tasks'
 import Members from '../../../components/Members'
 import TreasuryChart from '../../../components/TreasuryChart'
 import UpcomingEvents from '../../../components/UpcomingEvents'
+import { useForm } from 'react-hook-form';
 
 const db = getFirestore()
 
@@ -21,7 +22,7 @@ const getMembers = async (roomId) => {
   const membershipsRef = collection(db, 'memberships')
   const membershipsQuery = query(membershipsRef, where('roomId', '==', roomId))
   const snapshot = await getDocs(membershipsQuery)
-  return snapshot.docs.map((doc) => ({ membershipId: doc.id, ...doc.data()}))
+  return snapshot.docs.map((doc) => ({ membershipId: doc.id, ...doc.data() }))
 }
 
 const getFeed = async (roomId) => {
@@ -85,6 +86,45 @@ export default function Dashboard({ members, feed, dao }) {
     }
   }, [darkMode])
 
+  const Mission = ({ roomId, mission }) => {
+    const [showForm, setShowForm] = useState(false)
+    const [currentMission, setCurrentMission] = useState(mission)
+    const { register, handleSubmit } = useForm({ defaultValues: { mission } })
+
+    const setMission = async (data) => {
+      const { mission } = data
+      const roomRef = doc(db, 'rooms', roomId)
+      await updateDoc(roomRef, { mission })
+
+      setCurrentMission(mission)
+      setShowForm(false)
+    }
+
+    const handleEditClick = () => setShowForm(true)
+
+    if (showForm) {
+      return (
+        <form onSubmit={handleSubmit(setMission)}>
+          <input type="text" {...register('mission')} className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"/>
+        </form>
+      )
+    }
+
+    return (
+      <p className="group py-2 text-sm">
+        {currentMission ? (
+          <>
+            {currentMission}
+            <span className="invisible group-hover:visible text-xs" onClick={handleEditClick}>{' '}(edit)</span>
+          </>
+        ) : (
+          <span onClick={handleEditClick}>Write your mission here...</span>
+        )
+        }
+      </p >
+    )
+  }
+
   return (
     <>
       <div>
@@ -94,7 +134,7 @@ export default function Dashboard({ members, feed, dao }) {
           <main className="w-full py-6">
             <div className="mx-auto px-4 sm:px-6 md:px-8">
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-daonative-gray-200">{dao.name}</h1>
-              <p className="py-2 text-sm">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
+              <Mission roomId={roomId} mission={dao.mission} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <KPIs />
