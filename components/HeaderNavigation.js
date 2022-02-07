@@ -10,9 +10,8 @@ import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import authenticate from '../lib/authenticate';
 import useProvider from '../lib/useProvider';
-import { addDoc, collection, getFirestore, serverTimestamp, where, query } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/router';
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
 

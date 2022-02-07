@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
         <title>DAOnative</title>
       </Head>
       <UseWalletProvider
+        autoConnect={true}
         chainId={137}
         connectors={{
           walletconnect: {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, getDocs, query, where, orderBy } from "firebase/firestore"
+import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
@@ -18,7 +18,6 @@ import UpcomingEvents from '../../../components/UpcomingEvents'
 const db = getFirestore()
 
 const getMembers = async (roomId) => {
-  const db = getFirestore()
   const membershipsRef = collection(db, 'memberships')
   const membershipsQuery = query(membershipsRef, where('roomId', '==', roomId))
   const snapshot = await getDocs(membershipsQuery)
@@ -26,7 +25,6 @@ const getMembers = async (roomId) => {
 }
 
 const getFeed = async (roomId) => {
-  const db = getFirestore()
   const feedRef = collection(db, 'feed')
   const feedQuery = query(feedRef, where('roomId', '==', roomId), orderBy('created', 'desc'))
   const snapshot = await getDocs(feedQuery)
@@ -40,17 +38,29 @@ const getFeed = async (roomId) => {
   })
 }
 
+const getRoom = async (roomId) => {
+  const roomRef = doc(db, 'rooms', roomId)
+  const roomSnap = await getDoc(roomRef)
+
+  if (!roomSnap.exists()) {
+    return null
+  }
+
+  return roomSnap.data()
+}
+
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
   const members = await getMembers(roomId)
   const feed = await getFeed(roomId)
+  const room = await getRoom(roomId)
 
   return {
-    props: { members, feed }
+    props: { members, feed, dao: room }
   }
 }
 
-export default function Dashboard({ members, feed }) {
+export default function Dashboard({ members, feed, dao }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
@@ -83,7 +93,7 @@ export default function Dashboard({ members, feed }) {
         <div className="md:pl-64 flex-row md:flex overflow-hidden dark:bg-daonative-dark-300 dark:text-daonative-gray-100">
           <main className="w-full py-6">
             <div className="mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-daonative-gray-200">DAOnative</h1>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-daonative-gray-200">{dao.name}</h1>
               <p className="py-2 text-sm">We help you focus on your community by making it easy to create, fund, and manage a DAO.</p>
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
