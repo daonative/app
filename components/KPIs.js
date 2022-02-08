@@ -13,9 +13,9 @@ import { classNames } from "../lib/utils";
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 
 const kpiDefaults = {
-  0: { name: 'Click to set KPI', indicator: 'N/A', icon: ChartBarIcon },
-  1: { name: 'Click to set KPI', indicator: 'N/A', icon: AdjustmentsIcon },
-  2: { name: 'Click to set KPI', indicator: 'N/A', icon: BeakerIcon }
+  0: { icon: ChartBarIcon },
+  1: { icon: AdjustmentsIcon },
+  2: { icon: BeakerIcon }
 }
 
 const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
