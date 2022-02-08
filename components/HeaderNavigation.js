@@ -14,6 +14,7 @@ import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/fire
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
+import PFP from './PFP';
 
 const auth = getAuth()
 
@@ -44,7 +45,8 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
       description: data.work,
       authorAccount: account,
       authorName: membership?.name || null,
-      created: serverTimestamp()
+      created: serverTimestamp(),
+      type: "work"
     })
 
     reset()
@@ -121,10 +123,12 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
                 <div>
                   <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  dark:bg-daonative-dark-100 dark:text-daonative-gray-100 rounded-full">
                     <span className="sr-only">Open user menu</span>
-                    <img
+                    {/*<img
                       className="h-8 w-8 rounded-full"
                       src="https://ipfs.io/ipfs/Qmc1DJWoEsVkjbJsMCnceFH1roF8QSnwK7iEhRKiBDqy9d"
                       alt="" />
+                    */}
+                    <PFP address={account} size={32} />
                     <div className="px-2">
                       <ShortAddress>{account}</ShortAddress>
                     </div>

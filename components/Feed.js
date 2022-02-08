@@ -1,4 +1,5 @@
 import Moment from 'react-moment';
+import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
 const Feed = ({ feed }) => {
@@ -36,7 +37,8 @@ const Feed = ({ feed }) => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-4">
-                        <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />
+                        <PFP address={event.authorAccount} size={40} />
+                        {/* <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />*/}
                         {event.authorName ? (
                           <>{event.authorName}</>
                         ) : (
