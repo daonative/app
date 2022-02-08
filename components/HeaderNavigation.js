@@ -16,7 +16,6 @@ import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
 
 const auth = getAuth()
-export const db = getFirestore()
 
 const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
   const { openConnectWalletModal } = useConnectWalletModal()

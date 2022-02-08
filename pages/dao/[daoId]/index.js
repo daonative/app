@@ -61,6 +61,45 @@ export const getServerSideProps = async ({ params }) => {
   }
 }
 
+const Mission = ({ roomId, mission }) => {
+  const [showForm, setShowForm] = useState(false)
+  const [currentMission, setCurrentMission] = useState(mission)
+  const { register, handleSubmit } = useForm({ defaultValues: { mission } })
+
+  const setMission = async (data) => {
+    const { mission } = data
+    const roomRef = doc(db, 'rooms', roomId)
+    await updateDoc(roomRef, { mission })
+
+    setCurrentMission(mission)
+    setShowForm(false)
+  }
+
+  const handleEditClick = () => setShowForm(true)
+
+  if (showForm) {
+    return (
+      <form onSubmit={handleSubmit(setMission)}>
+        <input type="text" {...register('mission')} className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"/>
+      </form>
+    )
+  }
+
+  return (
+    <p className="group py-2 text-sm">
+      {currentMission ? (
+        <>
+          {currentMission}
+          <span className="invisible group-hover:visible text-xs" onClick={handleEditClick}>{' '}(edit)</span>
+        </>
+      ) : (
+        <span onClick={handleEditClick}>Write your mission here...</span>
+      )
+      }
+    </p >
+  )
+}
+
 export default function Dashboard({ members, feed, dao }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
@@ -86,45 +125,6 @@ export default function Dashboard({ members, feed, dao }) {
     }
   }, [darkMode])
 
-  const Mission = ({ roomId, mission }) => {
-    const [showForm, setShowForm] = useState(false)
-    const [currentMission, setCurrentMission] = useState(mission)
-    const { register, handleSubmit } = useForm({ defaultValues: { mission } })
-
-    const setMission = async (data) => {
-      const { mission } = data
-      const roomRef = doc(db, 'rooms', roomId)
-      await updateDoc(roomRef, { mission })
-
-      setCurrentMission(mission)
-      setShowForm(false)
-    }
-
-    const handleEditClick = () => setShowForm(true)
-
-    if (showForm) {
-      return (
-        <form onSubmit={handleSubmit(setMission)}>
-          <input type="text" {...register('mission')} className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"/>
-        </form>
-      )
-    }
-
-    return (
-      <p className="group py-2 text-sm">
-        {currentMission ? (
-          <>
-            {currentMission}
-            <span className="invisible group-hover:visible text-xs" onClick={handleEditClick}>{' '}(edit)</span>
-          </>
-        ) : (
-          <span onClick={handleEditClick}>Write your mission here...</span>
-        )
-        }
-      </p >
-    )
-  }
-
   return (
     <>
       <div>
@@ -137,7 +137,7 @@ export default function Dashboard({ members, feed, dao }) {
               <Mission roomId={roomId} mission={dao.mission} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <KPIs />
+              <KPIs roomId={roomId} kpis={dao.kpis || {}} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Feed feed={feedEvents} />
