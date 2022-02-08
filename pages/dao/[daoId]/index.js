@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 import { isFirestoreDate } from '../../../lib/utils';
@@ -105,13 +105,14 @@ export default function Dashboard({ members, feed, dao }) {
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
-  const [newFeedItems] = useCollectionData(
+  const [newFeedItems] = useCollection(
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
 
-  const feedEvents = newFeedItems?.map((event) => ({
-    ...event,
+  const feedEvents = newFeedItems?.docs.map((doc) => ({
+    ...doc.data(),
     created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
+    eventId: doc.id
   })) || feed
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)

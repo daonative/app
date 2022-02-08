@@ -3,6 +3,10 @@ import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
 const Feed = ({ feed }) => {
+  const reviewWork = (id) => {
+    console.log(id)
+  }
+
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -21,6 +25,18 @@ const Feed = ({ feed }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
+                    Impact
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
+                    Praise
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
                     Author
                   </th>
                   <th
@@ -29,12 +45,20 @@ const Feed = ({ feed }) => {
                   >
                     Date
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {feed.map((event, eventIdx) => (
-                  <tr key={eventIdx} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
+                {feed.map((event) => (
+                  <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-4">
                         <PFP address={event.authorAccount} size={40} />
@@ -48,6 +72,11 @@ const Feed = ({ feed }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Moment date={event.created} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {event.type === "work" && (
+                        <span className="hover:cursor-pointer underline" onClick={() => reviewWork(event.eventId)}>Review</span>
+                      )}
                     </td>
                   </tr>
                 ))}
