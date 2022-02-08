@@ -111,8 +111,8 @@ const Join = ({ dao }) => {
       const tx = await createMembershipToken(dao.roomId)
       const receipt = await tx.wait()
       const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
-      await createMembership(dao.roomId, tokenId, data.name)
-      await createMembershipFeedEntry(dao.roomId, data.name)
+      await createMembership(dao.roomId, tokenId, data.memberName)
+      await createMembershipFeedEntry(dao.roomId, data.memberName)
       await router.push(`/dao/${dao.roomId}`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
@@ -135,7 +135,7 @@ const Join = ({ dao }) => {
               <form onSubmit={handleSubmit(handleJoinDAO)}>
                 <div className="flex flex-col md:flex-row w-full">
                   <input
-                    {...register("name")}
+                    {...register("memberName")}
                     type="text"
                     className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
                     placeholder="How should we call you?"

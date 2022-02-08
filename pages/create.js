@@ -96,11 +96,11 @@ const Create = () => {
     setIsLoading(true)
 
     try {
-      const tx = await deployRoomContract(data.name)
+      const tx = await deployRoomContract(data.daoName)
       const receipt = await tx.wait()
       const address = getRoomAddressFromCreationTxReceipt(receipt)
-      const roomId = await createRoom(data.name, address)
-      await createRoomFeedEntry(roomId, data.name)
+      const roomId = await createRoom(data.daoName, address)
+      await createRoomFeedEntry(roomId, data.daoName)
       await router.push(`/dao/${roomId}/join`)
       toast.success('Confirmed', { id: toastId })
     } catch (e) {
@@ -123,7 +123,7 @@ const Create = () => {
               <form onSubmit={handleSubmit(handleCreateRoom)}>
                 <div className="flex flex-col md:flex-row w-full">
                   <input
-                    {...register("name")}
+                    {...register("daoName")}
                     type="text"
                     className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
                     placeholder="School DAO"
