@@ -9,7 +9,7 @@ import ShortAddress from './ShortAddress';
 import Spinner from './Spinner';
 
 const ReviewModal = ({ show, onClose, event, KPIs }) => {
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm()
+  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
 
   const metrics = mergeKPIsAndDefaults(KPIs)
 
@@ -27,27 +27,35 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
         <ModalTitle>Which goal does this help with?</ModalTitle>
         <ModalBody>
           <div className="flex flex-col gap-y-6">
-            <ul className="flex flex-row gap-x-4 justify-center w-full">
-              {Object.entries(metrics)
-                .filter(([_, metric]) => !!metric.name)
-                .map(([id, metric]) => (
-                  <li key={metric.id} className="w-1/3 h-full grow">
-                    <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
-                      <input className="sr-only peer" type="radio" value={id} {...register('kpi', { required: true })} />
-                      {metric.name}
-                      <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
-                        <metric.icon className="h-8 w-8 text-blue-500" />
-                      </div>
-                    </label>
-                  </li>
-                )
-                )}
-            </ul>
+            <div>
+              <ul className="flex flex-row gap-x-4 justify-center w-full">
+                {Object.entries(metrics)
+                  .filter(([_, metric]) => !!metric.name)
+                  .map(([id, metric]) => (
+                    <li key={metric.id} className="w-1/3 h-full grow">
+                      <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
+                        <input className="sr-only peer" type="radio" value={id} {...register('kpi', { required: true })} />
+                        {metric.name}
+                        <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
+                          <metric.icon className="h-8 w-8 text-blue-500" />
+                        </div>
+                      </label>
+                    </li>
+                  )
+                  )}
+              </ul>
+              {errors.kpi && (
+                <span className="text-xs text-red-400">You need to select a goal.</span>
+              )}
+            </div>
             <div>
               <label className="block text-sm font-medium pb-2">
                 How much praise do you want to give?
               </label>
               <input type="number" {...register("praise", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              {errors.kpi && (
+                <span className="text-xs text-red-400">You need to chose a praise amount.</span>
+              )}
             </div>
           </div>
         </ModalBody>
