@@ -25,18 +25,6 @@ const Feed = ({ feed }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
-                    Impact
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                  >
-                    Praise
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                  >
                     Author
                   </th>
                   <th
@@ -57,8 +45,6 @@ const Feed = ({ feed }) => {
                 {feed.map((event) => (
                   <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-4">
                         <PFP address={event.authorAccount} size={40} />
