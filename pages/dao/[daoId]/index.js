@@ -89,16 +89,10 @@ const Mission = ({ roomId, mission }) => {
   }
 
   return (
-    <p className="group py-2 text-sm">
-      {currentMission ? (
-        <>
-          {currentMission}
-          <span className="invisible group-hover:visible text-xs" onClick={handleEditClick}>{' '}(edit)</span>
-        </>
-      ) : (
-        <span onClick={handleEditClick}>Write your mission here...</span>
-      )
-      }
+    <p className="py-2 text-sm">
+      <span onClick={handleEditClick} className="hover:cursor-pointer">
+        {currentMission || "Write your mission here..."}
+      </span>
     </p >
   )
 }

@@ -1,3 +1,4 @@
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Moment from 'react-moment';
@@ -5,18 +6,20 @@ import { mergeKPIsAndDefaults } from './KPIs';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
+import Spinner from './Spinner';
 
-const ReviewModal = ({ show, onClose, onSave, eventId, KPIs }) => {
-  const { register, handleSubmit, watch } = useForm()
+const ReviewModal = ({ show, onClose, event, KPIs }) => {
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   const metrics = mergeKPIsAndDefaults(KPIs)
 
-  const addReview = (data) => {
-    onSave(data)
+  const addReview = async (data) => {
+    const praise = parseInt(data.praise) + parseInt(event?.praise || 0)
+    const db = getFirestore()
+    const eventRef = doc(db, 'feed', event.eventId)
+    await updateDoc(eventRef, { praise, impact: data.kpi })
     onClose()
   }
-
-  console.log(watch())
 
   return (
     <Modal show={show} onClose={onClose}>
@@ -30,7 +33,7 @@ const ReviewModal = ({ show, onClose, onSave, eventId, KPIs }) => {
                 .map(([id, metric]) => (
                   <li key={metric.id} className="w-1/3 h-full grow">
                     <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
-                      <input className="sr-only peer" type="radio" value={id} {...register('kpi')} />
+                      <input className="sr-only peer" type="radio" value={id} {...register('kpi', { required: true })} />
                       {metric.name}
                       <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
                         <metric.icon className="h-8 w-8 text-blue-500" />
@@ -41,10 +44,10 @@ const ReviewModal = ({ show, onClose, onSave, eventId, KPIs }) => {
                 )}
             </ul>
             <div>
-              <label htmlFor="name" className="block text-sm font-medium pb-2">
+              <label className="block text-sm font-medium pb-2">
                 How much praise do you want to give?
               </label>
-              <input type="text" {...register("name")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="number" {...register("praise", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
             </div>
           </div>
         </ModalBody>
@@ -52,8 +55,13 @@ const ReviewModal = ({ show, onClose, onSave, eventId, KPIs }) => {
           <button
             type="submit"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+            disabled={isSubmitting}
           >
-            Give praise
+            {isSubmitting ? (
+              <span className="w-4 h-4 mx-auto"><Spinner /></span>
+            ) : (
+              <>Give praise</>
+            )}
           </button>
         </ModalActionFooter>
       </form>
@@ -63,6 +71,7 @@ const ReviewModal = ({ show, onClose, onSave, eventId, KPIs }) => {
 
 const Feed = ({ feed, kpis }) => {
   const [reviewId, setReviewId] = useState()
+  const metrics = mergeKPIsAndDefaults(kpis)
 
   const handleReviewWork = (id) => {
     setReviewId(id)
@@ -91,6 +100,12 @@ const Feed = ({ feed, kpis }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
+                    Praise
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
                     Author
                   </th>
                   <th
@@ -108,33 +123,44 @@ const Feed = ({ feed, kpis }) => {
                 </tr>
               </thead>
               <tbody>
-                {feed.map((event) => (
-                  <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <div className="flex items-center gap-4">
-                        <PFP address={event.authorAccount} size={40} />
-                        {/* <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />*/}
-                        {event.authorName ? (
-                          <>{event.authorName}</>
+                {feed.map((event) => {
+                  const ImpactIcon = event.impact && metrics[event.impact]?.icon
+                  return (
+                    <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
+                        {ImpactIcon ? (
+                          <ImpactIcon className="h-4 w-4" />
                         ) : (
-                          <ShortAddress>{event.authorAccount}</ShortAddress>
+                          <></>
                         )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Moment date={event.created} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {event.type === "work" && (
-                        <>
-                          <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
-                          <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} eventId={event.eventId} KPIs={kpis} />
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        {event.praise}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <div className="flex items-center gap-4">
+                          <PFP address={event.authorAccount} size={40} />
+                          {/* <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />*/}
+                          {event.authorName ? (
+                            <>{event.authorName}</>
+                          ) : (
+                            <ShortAddress>{event.authorAccount}</ShortAddress>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <Moment date={event.created} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {event.type === "work" && (
+                          <>
+                            <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
+                            <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} event={event} KPIs={kpis} />
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
