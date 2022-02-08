@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
+import { useCollection, useCollectionData, useDocument } from 'react-firebase-hooks/firestore';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 import { isFirestoreDate } from '../../../lib/utils';
@@ -47,7 +47,10 @@ const getRoom = async (roomId) => {
     return null
   }
 
-  return roomSnap.data()
+  return {
+    ...roomSnap.data(),
+    roomId: roomSnap.id
+  }
 }
 
 export const getServerSideProps = async ({ params }) => {
@@ -100,23 +103,31 @@ const Mission = ({ roomId, mission }) => {
   )
 }
 
-export default function Dashboard({ members, feed, dao }) {
+export default function Dashboard({ members, feed: initialFeed, dao: initialDAO }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
-  const [newFeedItems] = useCollection(
+  const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
+  const [feedSnapshot] = useCollection(
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
 
-  const feedEvents = newFeedItems?.docs.map((doc) => {
+  const dao = daoSnapshot ? {
+    ...daoSnapshot.data(),
+    roomId: daoSnapshot.id
+  } : initialDAO
+
+  const feed = feedSnapshot?.docs.map((doc) => {
     const event = doc.data()
     return {
       ...event,
       created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
       eventId: doc.id
     }
-  }) || feed
+  }) || initialFeed
+
+  const kpis = dao.kpis || {}
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
@@ -141,10 +152,10 @@ export default function Dashboard({ members, feed, dao }) {
               <Mission roomId={roomId} mission={dao.mission} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <KPIs roomId={roomId} kpis={dao.kpis || {}} />
+              <KPIs roomId={roomId} kpis={kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed feed={feedEvents} />
+              <Feed feed={feed} kpis={kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Tasks />

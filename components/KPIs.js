@@ -18,6 +18,18 @@ const kpiDefaults = {
   2: { icon: BeakerIcon }
 }
 
+export const mergeKPIsAndDefaults = (kpis) => (
+  Object.keys(kpiDefaults).sort().reduce(
+    (obj, idx) => {
+      return {
+        [idx]: { ...kpiDefaults[idx], ...kpis[idx] },
+        ...obj
+      }
+    },
+    {}
+  )
+)
+
 const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
   const { register, handleSubmit } = useForm({defaultValues})
 
@@ -109,15 +121,7 @@ const KPIs = ({ kpis: initialKPIs, roomId }) => {
   const [kpis, setKPIs] = useState(initialKPIs)
 
   // merge the KPI values with the default KPI values
-  const metrics = Object.keys(kpiDefaults).sort().reduce(
-    (obj, idx) => {
-      return {
-        [idx]: { ...kpiDefaults[idx], ...kpis[idx] },
-        ...obj
-      }
-    },
-    {}
-  )
+  const metrics = mergeKPIsAndDefaults(kpis)
 
   const handleUpdateMetric = async (metricId, data) => {
     const newMetric = { [metricId]: { ...kpis[metricId], ...data } }
@@ -132,7 +136,7 @@ const KPIs = ({ kpis: initialKPIs, roomId }) => {
   return (
     <div>
       <dl className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-3">
-        {Object.keys(kpiDefaults).sort().map(metricId => {
+        {Object.keys(metrics).sort().map(metricId => {
           return (
             <Metric
               key={metricId}
