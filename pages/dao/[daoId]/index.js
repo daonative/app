@@ -80,7 +80,7 @@ const Mission = ({ roomId, mission }) => {
   if (showForm) {
     return (
       <form onSubmit={handleSubmit(setMission)}>
-        <input type="text" {...register('mission')} className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"/>
+        <input type="text" {...register('mission')} className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
       </form>
     )
   }
@@ -109,11 +109,14 @@ export default function Dashboard({ members, feed, dao }) {
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
 
-  const feedEvents = newFeedItems?.docs.map((doc) => ({
-    ...doc.data(),
-    created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
-    eventId: doc.id
-  })) || feed
+  const feedEvents = newFeedItems?.docs.map((doc) => {
+    const event = doc.data()
+    return {
+      ...event,
+      created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
+      eventId: doc.id
+    }
+  }) || feed
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
