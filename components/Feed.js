@@ -1,7 +1,9 @@
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Moment from 'react-moment';
+import { useWallet } from 'use-wallet';
+import useMembership from '../lib/useMembership';
 import { mergeKPIsAndDefaults } from './KPIs';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 import PFP from './PFP';
@@ -10,14 +12,18 @@ import Spinner from './Spinner';
 
 const ReviewModal = ({ show, onClose, event, KPIs }) => {
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
+  const { account } = useWallet()
 
   const metrics = mergeKPIsAndDefaults(KPIs)
 
   const addReview = async (data) => {
-    const praise = parseInt(data.praise) + parseInt(event?.praise || 0)
+    const praise = parseInt(data.praise)
     const db = getFirestore()
     const eventRef = doc(db, 'feed', event.eventId)
-    await updateDoc(eventRef, { praise, impact: data.kpi })
+    await updateDoc(eventRef, {
+      praises: arrayUnion({ praise, impact: data.kpi, appraiser: account }),
+      appraisers: arrayUnion(account)
+    })
     onClose()
   }
 
@@ -77,9 +83,12 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
   )
 }
 
-const Feed = ({ feed, kpis }) => {
+const Feed = ({ feed, kpis, roomId }) => {
   const [reviewId, setReviewId] = useState()
   const metrics = mergeKPIsAndDefaults(kpis)
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
+  const isMember = !!membership
 
   const handleReviewWork = (id) => {
     setReviewId(id)
@@ -122,27 +131,39 @@ const Feed = ({ feed, kpis }) => {
                   >
                     Date
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                  >
-                    Actions
-                  </th>
+                  {isMember && (
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
                 {feed.map((event) => {
-                  const ImpactIcon = event.impact && metrics[event.impact]?.icon
+                  const totalPraise = event.praises?.reduce((total, currentPraise) => total + currentPraise.praise, 0)
+                  const allImpacts = event.praises?.map(praise => praise.impact)
+                  const impacts = allImpacts ? [...allImpacts] : []
+
+                  const canReview = (
+                    event.type === "work" &&
+                    event.authorAccount !== account &&
+                    !event.appraisers?.includes(account)
+                  )
+
                   return (
                     <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
-                        {ImpactIcon ? (
-                          <ImpactIcon className="h-4 w-4" />
-                        ) : (
-                          <></>
-                        )}
-                        {event.praise}
+                        {totalPraise}
+                        <div className="flex gap-2">
+                          {impacts.map((id) => {
+                            const ImpactIcon = metrics[id]?.icon
+                            return ImpactIcon && <ImpactIcon className="h-4 w-4" />
+                          })}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <div className="flex items-center gap-4">
@@ -158,14 +179,17 @@ const Feed = ({ feed, kpis }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <Moment date={event.created} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {event.type === "work" && (
-                          <>
-                            <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
-                            <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} event={event} KPIs={kpis} />
-                          </>
-                        )}
-                      </td>
+                      {isMember && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {canReview && (
+                            <>
+                              <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
+                              <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} event={event} KPIs={kpis} />
+                            </>
+                          )}
+                        </td>
+
+                      )}
                     </tr>
                   )
                 })}

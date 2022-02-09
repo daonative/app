@@ -1,7 +1,7 @@
 const ComingSoonBadge = () => (
-  <div className="bg-daonative-dark-100 rounded-md inline text-xs px-2 py-0.5 bg-indigo-600 text-daonative-gray-100 align-middle">
+  <span className="bg-daonative-dark-100 text-daonative-gray-100 inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium">
     coming soon
-  </div>
-);
+  </span>
+)
 
 export default ComingSoonBadge

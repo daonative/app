@@ -152,7 +152,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
               <KPIs roomId={roomId} kpis={dao.kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed feed={feed} kpis={dao.kpis} />
+              <Feed roomId={roomId} feed={feed} kpis={dao.kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Tasks />
