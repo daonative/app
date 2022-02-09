@@ -85,7 +85,6 @@ const Join = ({ dao }) => {
       .map((log) => {
         try {
           const event = membershipInterface.parseLog(log)
-          console.log(event)
           return event
         } catch (e) {
           return undefined
