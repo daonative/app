@@ -143,7 +143,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                     event.type === "work" &&
                     event.authorAccount !== account &&
                     !event.appraisers?.includes(account)
-                  ) || true
+                  )
 
                   return (
                     <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
