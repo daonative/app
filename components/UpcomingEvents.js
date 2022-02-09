@@ -7,6 +7,11 @@ const events = [
     date: new Date("2022-02-11T00:00:00+00:00"),
     link: 'https://ethdenver.com'
   },
+  {
+    name: 'MΞTAPOD pitch',
+    date: new Date("2022-02-16T00:00:00+00:00"),
+    link: 'https://metapod.gg'
+  },
 ];
 
 const UpcomingEvents = () => (

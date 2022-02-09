@@ -91,10 +91,11 @@ const Treasury = ({ chartEnabled = false, address}) => {
 
   useInterval(async () => {
     if (!address) return
-    console.log(address)
+
     const provider = new providers.JsonRpcProvider(
       process.env.NEXT_PUBLIC_RPC_POLYGON
     )
+
     const balance = await provider.getBalance(address)
     setBalanceTotal(balance)
   }, 3000)
