@@ -21,7 +21,7 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
     const db = getFirestore()
     const eventRef = doc(db, 'feed', event.eventId)
     await updateDoc(eventRef, {
-      praises: arrayUnion({ praise, impact: data.kpi, appraiser: account }),
+      praises: arrayUnion({ praise, impact: data.impact, appraiser: account }),
       appraisers: arrayUnion(account)
     })
     onClose()
@@ -38,9 +38,9 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
                 {Object.entries(metrics)
                   .filter(([_, metric]) => !!metric.name)
                   .map(([id, metric]) => (
-                    <li key={metric.id} className="w-1/3 h-full grow">
+                    <li key={id} className="w-1/3 h-full grow" htmlFor={`kpi-${id}`}>
                       <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
-                        <input className="sr-only peer" type="radio" value={id} {...register('kpi', { required: true })} />
+                        <input className="sr-only peer" type="radio" value={id} {...register('impact', { required: true })} id={`kpi-${id}`} />
                         {metric.name}
                         <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
                           <metric.icon className="h-8 w-8 text-blue-500" />
@@ -50,7 +50,7 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
                   )
                   )}
               </ul>
-              {errors.kpi && (
+              {errors.metric && (
                 <span className="text-xs text-red-400">You need to select a goal.</span>
               )}
             </div>
@@ -59,7 +59,7 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
                 How much praise do you want to give?
               </label>
               <input type="number" {...register("praise", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
-              {errors.kpi && (
+              {errors.praise && (
                 <span className="text-xs text-red-400">You need to chose a praise amount.</span>
               )}
             </div>
@@ -90,14 +90,8 @@ const Feed = ({ feed, kpis, roomId }) => {
   const membership = useMembership(account, roomId)
   const isMember = !!membership
 
-  const handleReviewWork = (id) => {
-    setReviewId(id)
-    console.log(id)
-  }
-
-  const handleCloseReviewModal = () => {
-    setReviewId(undefined)
-  }
+  const handleReviewWork = (id) => setReviewId(id)
+  const handleCloseReviewModal = () => setReviewId(undefined)
 
   return (
     <div className="flex flex-col">
@@ -144,14 +138,12 @@ const Feed = ({ feed, kpis, roomId }) => {
               <tbody>
                 {feed.map((event) => {
                   const totalPraise = event.praises?.reduce((total, currentPraise) => total + currentPraise.praise, 0)
-                  const allImpacts = event.praises?.map(praise => praise.impact)
-                  const impacts = allImpacts ? [...allImpacts] : []
-
+                  const impacts = event.praises?.map(praise => praise.impact).filter((v, i, a) => a.indexOf(v) === i) || []
                   const canReview = (
                     event.type === "work" &&
                     event.authorAccount !== account &&
                     !event.appraisers?.includes(account)
-                  )
+                  ) || true
 
                   return (
                     <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
@@ -159,9 +151,9 @@ const Feed = ({ feed, kpis, roomId }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
                         {totalPraise}
                         <div className="flex gap-2">
-                          {impacts.map((id) => {
-                            const ImpactIcon = metrics[id]?.icon
-                            return ImpactIcon && <ImpactIcon className="h-4 w-4" />
+                          {impacts.map((impactId) => {
+                            const ImpactIcon = metrics[impactId]?.icon
+                            return ImpactIcon && <ImpactIcon key={`${event.eventId}-${impactId}`} className="h-4 w-4" />
                           })}
                         </div>
                       </td>
