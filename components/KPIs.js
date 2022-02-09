@@ -9,6 +9,8 @@ import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useWallet } from 'use-wallet';
+import useMembership from '../lib/useMembership';
 import { classNames } from "../lib/utils";
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 
@@ -31,7 +33,7 @@ export const mergeKPIsAndDefaults = (kpis) => (
 )
 
 const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
-  const { register, handleSubmit } = useForm({defaultValues})
+  const { register, handleSubmit } = useForm({ defaultValues })
 
   const updateMetric = (data) => {
     onSave(data)
@@ -65,7 +67,7 @@ const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
   )
 }
 
-const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave }) => {
+const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave, isEditable }) => {
   const [showModal, setShowModal] = useState(false)
 
   const handleCloseMetricModal = () => {
@@ -83,10 +85,13 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave 
 
   return (
     <div
-      className="relative bg-white pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden dark:bg-daonative-dark-100 hover:cursor-pointer"
-      onClick={handleOpenMetricModal}
+      className={classNames(
+        "relative bg-white pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden dark:bg-daonative-dark-100",
+        isEditable && "hover:cursor-pointer"
+      )}
+      onClick={() => { isEditable && handleOpenMetricModal() }}
     >
-      <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{name, indicator}} />
+      <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
       <dt>
         <div className="absolute bg-blue-100 rounded-full p-3">
           <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
@@ -107,7 +112,6 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave 
             ) : (
               <ArrowSmDownIcon className="self-center flex-shrink-0 h-5 w-5 text-red-500" aria-hidden="true" />
             )}
-
             <span className="sr-only">{changeType === 'increase' ? 'Increased' : 'Decreased'} by</span>
             {change}
           </p>
@@ -119,6 +123,8 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave 
 
 const KPIs = ({ kpis: initialKPIs, roomId }) => {
   const [kpis, setKPIs] = useState(initialKPIs)
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
 
   // merge the KPI values with the default KPI values
   const metrics = mergeKPIsAndDefaults(kpis)
@@ -141,6 +147,7 @@ const KPIs = ({ kpis: initialKPIs, roomId }) => {
             <Metric
               key={metricId}
               {...(metrics[metricId] || {})}
+              isEditable={!!membership}
               onSave={(data) => handleUpdateMetric(metricId, data)}
             />
           )
