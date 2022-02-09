@@ -20,17 +20,20 @@ const kpiDefaults = {
   2: { icon: BeakerIcon }
 }
 
-export const mergeKPIsAndDefaults = (kpis) => (
-  Object.keys(kpiDefaults).sort().reduce(
-    (obj, idx) => {
-      return {
-        [idx]: { ...kpiDefaults[idx], ...kpis[idx] },
-        ...obj
-      }
-    },
-    {}
+export const mergeKPIsAndDefaults = (kpis) => {
+  const myKPIs = kpis || {}
+  return (
+    Object.keys(kpiDefaults).sort().reduce(
+      (obj, idx) => {
+        return {
+          [idx]: { ...kpiDefaults[idx], ...myKPIs[idx] },
+          ...obj
+        }
+      },
+      {}
+    )
   )
-)
+}
 
 const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
   const { register, handleSubmit } = useForm({ defaultValues })
