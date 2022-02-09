@@ -79,18 +79,24 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                      item.current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+                      'group flex justify-between px-2 py-2 text-sm font-medium rounded-md',
+                      item.comingSoon && 'opacity-50'
                     )}
                   >
-                    <item.icon
-                      className={classNames(
-                        item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                        'mr-4 flex-shrink-0 h-6 w-6'
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
+                    <div className="flex items-center">
+                      <item.icon
+                        className={classNames(
+                          item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                          'mr-3 flex-shrink-0 h-6 w-6'
+                        )}
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </div>
+                    <div>
+                      {item.comingSoon && <ComingSoonBadge />}
+                    </div>
                   </a>
                 ))}
               </nav>
@@ -119,7 +125,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
                 href={item.href}
                 className={classNames(
                   item.current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-                  'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
+                  'group flex justify-between px-2 py-2 text-sm font-medium rounded-md',
+                  item.comingSoon && 'opacity-50'
                 )}
               >
                 <div className="flex items-center">
