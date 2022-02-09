@@ -97,7 +97,7 @@ const Mission = ({ roomId, mission }) => {
   )
 }
 
-export default function Dashboard({ members, feed: initialFeed, dao: initialDAO }) {
+export default function Dashboard({ members: initialMembers, feed: initialFeed, dao: initialDAO }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
@@ -106,6 +106,11 @@ export default function Dashboard({ members, feed: initialFeed, dao: initialDAO 
   const [feedSnapshot] = useCollection(
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
+  const [membersSnapshot] = useCollection(
+    query(collection(db, 'memberships'), where('roomId', '==', roomId))
+  )
+
+  const members = membersSnapshot?.docs.map((doc) => ({ membershipId: doc.id, ...doc.data() })) || initialMembers
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
