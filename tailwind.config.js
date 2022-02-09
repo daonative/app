@@ -17,14 +17,14 @@ module.exports = {
         "daonative-gray-300": "#B9B9B9",
         "daonative-gray-400": "#70708A",
         "daonative-gray-900": "#40405F"
-      }
+      },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      },
     },
-    fontFamily: {
-      sans: ['Inter', ...defaultTheme.fontFamily.sans],
-    },
-    animation: {
-      'spin-slow': 'spin 3s linear infinite',
-    }
   },
   plugins: [
     require('@tailwindcss/forms')
