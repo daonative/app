@@ -110,8 +110,6 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
     query(collection(db, 'memberships'), where('roomId', '==', roomId))
   )
 
-  const members = membersSnapshot?.docs.map((doc) => ({ membershipId: doc.id, ...doc.data() })) || initialMembers
-
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
     roomId: daoSnapshot.id
@@ -125,6 +123,20 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
       eventId: doc.id
     }
   }) || initialFeed
+
+  const members = membersSnapshot?.docs.map((doc) => {
+    const membership = doc.data()
+    const totalPraise = feed
+      .filter(event => event.authorAccount === membership.account)
+      .filter(event => event.praises?.length > 0)
+      .map(event => event.praises.reduce((totalPraiseAmount, currentPraise) => totalPraiseAmount + currentPraise.praise, 0))
+      .reduce((totalPraiseAmount, currentPraiseAmount) => totalPraiseAmount + currentPraiseAmount, 0)
+    return {
+      membershipId: doc.id,
+      totalPraise,
+      ...membership
+    }
+  }) || initialMembers
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
