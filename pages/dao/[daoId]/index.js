@@ -121,8 +121,6 @@ export default function Dashboard({ members, feed: initialFeed, dao: initialDAO 
     }
   }) || initialFeed
 
-  const kpis = dao.kpis || {}
-
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
 
@@ -146,10 +144,10 @@ export default function Dashboard({ members, feed: initialFeed, dao: initialDAO 
               <Mission roomId={roomId} mission={dao.mission} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <KPIs roomId={roomId} kpis={kpis} />
+              <KPIs roomId={roomId} kpis={dao.kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed feed={feed} kpis={kpis} />
+              <Feed feed={feed} kpis={dao.kpis} />
             </div>
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Tasks />

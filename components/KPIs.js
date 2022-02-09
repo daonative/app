@@ -121,8 +121,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
   )
 }
 
-const KPIs = ({ kpis: initialKPIs, roomId }) => {
-  const [kpis, setKPIs] = useState(initialKPIs)
+const KPIs = ({ kpis, roomId }) => {
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
 
@@ -132,7 +131,6 @@ const KPIs = ({ kpis: initialKPIs, roomId }) => {
   const handleUpdateMetric = async (metricId, data) => {
     const newMetric = { [metricId]: { ...kpis[metricId], ...data } }
     const newMetrics = { ...kpis, ...newMetric }
-    setKPIs(newMetrics)
 
     const db = getFirestore()
     const roomRef = doc(db, 'rooms', roomId)
