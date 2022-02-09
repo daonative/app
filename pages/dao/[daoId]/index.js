@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useCollection, useCollectionData, useDocument } from 'react-firebase-hooks/firestore';
+import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import { useForm } from 'react-hook-form';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 import { isFirestoreDate } from '../../../lib/utils';
@@ -14,7 +15,8 @@ import Tasks from '../../../components/Tasks'
 import Members from '../../../components/Members'
 import Treasury from '../../../components/Treasury'
 import UpcomingEvents from '../../../components/UpcomingEvents'
-import { useForm } from 'react-hook-form';
+import useMembership from '../../../lib/useMembership';
+import { useWallet } from 'use-wallet';
 
 const db = getFirestore()
 
@@ -68,6 +70,9 @@ const Mission = ({ roomId, mission }) => {
   const [showForm, setShowForm] = useState(false)
   const [currentMission, setCurrentMission] = useState(mission)
   const { register, handleSubmit } = useForm({ defaultValues: { mission } })
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
+  const isMember = !!membership
 
   const setMission = async (data) => {
     const { mission } = data
@@ -90,9 +95,13 @@ const Mission = ({ roomId, mission }) => {
 
   return (
     <p className="py-2 text-sm">
-      <span onClick={handleEditClick} className="hover:cursor-pointer">
-        {currentMission || "Write your mission here..."}
-      </span>
+      {isMember ? (
+        <span onClick={handleEditClick} className="hover:cursor-pointer">
+          {currentMission || "Write your mission here..."}
+        </span>
+      ) : (
+        <>{currentMission}</>
+      )}
     </p >
   )
 }
@@ -175,7 +184,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
               <UpcomingEvents />
             </div>
             <div className="py-4 px-4">
-              <Treasury address={dao.treasury}/>
+              <Treasury address={dao.treasury} />
             </div>
             <div className="py-4 px-4">
               <Members members={members} />
