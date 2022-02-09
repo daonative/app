@@ -1,17 +1,36 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, doc, getDoc } from "firebase/firestore"
+import { getFirestore, doc, getDoc, serverTimestamp, addDoc, collection, where, orderBy, query, getDocs } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useDocument } from 'react-firebase-hooks/firestore';
+import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
 
 import SidebarNavigation from '../../../components/SidebarNavigation'
 import HeaderNavigation from '../../../components/HeaderNavigation'
-import PFP from '../../../components/PFP';
-import ShortAddress from '../../../components/ShortAddress';
-import Moment from 'react-moment';
+import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
+import Spinner from '../../../components/Spinner';
+import { useForm } from 'react-hook-form';
+import useMembership from '../../../lib/useMembership';
+import { useWallet } from 'use-wallet';
+import { isFirestoreDate } from '../../../lib/utils';
+import TasksTable from '../../../components/TasksTable';
 
 const db = getFirestore()
+
+const getTasks = async (roomId) => {
+  const tasksRef = collection(db, 'tasks')
+  const tasksQuery = query(tasksRef, where('roomId', '==', roomId), orderBy('deadline', 'desc'))
+  const snapshot = await getDocs(tasksQuery)
+  return snapshot.docs.map((doc) => {
+    const item = doc.data()
+    return {
+      ...item,
+      created: isFirestoreDate(item?.created) ? item.created.toMillis() : '',
+      deadline: isFirestoreDate(item?.deadline) ? item.deadline.toMillis() : '',
+      taskId: doc.id
+    }
+  })
+}
 
 const getRoom = async (roomId) => {
   const roomRef = doc(db, 'rooms', roomId)
@@ -30,91 +49,105 @@ const getRoom = async (roomId) => {
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
   const room = await getRoom(roomId)
+  const tasks = await getTasks(roomId)
 
   return {
-    props: { dao: room }
+    props: { dao: room, tasks}
   }
 }
 
-const TasksTable = ({ showAssignee = false }) => {
-  const tasks = [
-    { description: 'Prepare metapod pitch', assigneeName: 'lrnt', assigneeAccount: '0x12345', deadline: new Date(2022, 1, 11, 0, 0, 0) }
-  ]
+const AddTaskModal = ({ show, onClose, roomId }) => {
+  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
+
+  const createTask = async (data) => {
+    const task = {
+      roomId,
+      ...data,
+      assigneeAccount: account,
+      assigneeName: membership.name,
+      created: serverTimestamp(),
+      deadline: new Date(data.deadline),
+    }
+    await addDoc(collection(db, 'tasks'), task)
+  }
+
+  const handleCreateTask = async (data) => {
+    await createTask(data)
+    onClose()
+  }
+
   return (
-    <div className="flex flex-col">
-      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900 rounded-lg">
-            <table className="table-fixed min-w-full divide-y divide-gray-200 dark:divide-daonative-gray-900">
-              <thead className="bg-gray-50 dark:bg-daonative-dark-100 text-gray-500 dark:text-daonative-gray-200">
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                  >
-                    Tasks
-                  </th>
-                  {showAssignee && (
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                    >
-                      Assignee
-                    </th>
-                  )}
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                  >
-                    Deadline
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task) => {
-                  return (
-                    <tr key={task.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{task.description}</td>
-                      {showAssignee && (
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <div className="flex items-center gap-4">
-                            <PFP address={task.assigneeAccount} size={40} />
-                            {/* <img className="h-10 w-10 rounded-full" src="https://ipfs.io/ipfs/QmbvBgaAqGVAs3KiEgsuDY2u4BUnuA9ueG96NFSPK4z6b6" alt="" />*/}
-                            {task.assigneeName ? (
-                              <>{task.assigneeName}</>
-                            ) : (
-                              <ShortAddress>{task.assigneeAccount}</ShortAddress>
-                            )}
-                          </div>
-                        </td>
-                      )}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {console.log(task.deadline)}
-                        <Moment date={task.deadline} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+    <Modal show={show} onClose={onClose}>
+      <form onSubmit={handleSubmit(handleCreateTask)}>
+        <ModalTitle>Add a task</ModalTitle>
+        <ModalBody>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Description
+              </label>
+              <input type="text" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              {errors.praise && (
+                <span className="text-xs text-red-400">You need to set a description</span>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Deadline
+              </label>
+              <input type="datetime-local" step={60} {...register("deadline", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              {errors.praise && (
+                <span className="text-xs text-red-400">You need to set a description</span>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
+        </ModalBody>
+        <ModalActionFooter>
+          <button
+            type="submit"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="w-4 h-4 mx-auto"><Spinner /></span>
+            ) : (
+              <>Add your task</>
+            )}
+          </button>
+        </ModalActionFooter>
+      </form>
+    </Modal>
+  )
 }
 
-export default function Dashboard({ dao: initialDAO }) {
+export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false)
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
+  const [tasksSnapshot] = useCollection(
+    query(collection(db, 'tasks'), where('roomId', '==', roomId))
+  )
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
     roomId: daoSnapshot.id
   } : initialDAO
+
+  const tasks = tasksSnapshot?.docs.map((doc) => {
+    const task = doc.data()
+    console.log(task)
+    return {
+      ...task,
+      created: isFirestoreDate(task?.created) ? task.created.toMillis() : '',
+      deadline: isFirestoreDate(task?.deadline) ? task.deadline.toMillis() : '',
+      taskId: doc.id
+    }
+  }) || initialTasks
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
@@ -127,8 +160,12 @@ export default function Dashboard({ dao: initialDAO }) {
     }
   }, [darkMode])
 
+  const handleAddTask = () => setShowAddTaskModal(true)
+  const closeAddTaskModal = () => setShowAddTaskModal(false)
+
   return (
     <>
+      <AddTaskModal show={showAddTaskModal} onClose={closeAddTaskModal} roomId={roomId} />
       <div>
         <SidebarNavigation showMobile={showSidebarMobile} onClose={() => setShowSidebarMobile(false)} />
         <HeaderNavigation onShowSidebar={onShowMobileSidebar} onToggleDarkMode={onToggleDarkMode} />
@@ -143,6 +180,7 @@ export default function Dashboard({ dao: initialDAO }) {
                 <div>
                   <button
                     className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+                    onClick={handleAddTask}
                   >
                     Add a task
                   </button>
@@ -150,7 +188,7 @@ export default function Dashboard({ dao: initialDAO }) {
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
-              <TasksTable showAssignee={true} />
+              <TasksTable showAssignee={true} tasks={tasks}/>
             </div>
           </main>
         </div>
