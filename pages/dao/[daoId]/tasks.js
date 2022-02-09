@@ -13,6 +13,20 @@ import { useWallet } from 'use-wallet';
 
 const db = getFirestore()
 
+const getRoom = async (roomId) => {
+  const roomRef = doc(db, 'rooms', roomId)
+  const roomSnap = await getDoc(roomRef)
+
+  if (!roomSnap.exists()) {
+    return null
+  }
+
+  return {
+    ...roomSnap.data(),
+    roomId: roomSnap.id
+  }
+}
+
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
   const room = await getRoom(roomId)
