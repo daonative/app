@@ -130,7 +130,11 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
                     */}
                     <PFP address={account} size={32} />
                     <div className="px-2">
-                      <ShortAddress>{account}</ShortAddress>
+                      {membership ? (
+                        <>{membership.name}</>
+                      ) : (
+                        <ShortAddress>{account}</ShortAddress>
+                      )}
                     </div>
                   </Menu.Button>
                 </div>
