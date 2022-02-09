@@ -13,7 +13,7 @@ const UpcomingEvents = () => (
   <div className="">
     <h3 className="dark:text-daonative-gray-300">
       Upcoming Events
-      <ComingSoonBadge />
+      <span className="mx-3"><ComingSoonBadge /></span>
     </h3>
     <ul role="list" className="w-full py-4 text-sm dark:text-daonative-gray-100">
       {events.map((event, eventIdx) => (

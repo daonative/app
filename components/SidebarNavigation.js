@@ -10,13 +10,14 @@ import {
 } from '@heroicons/react/solid'
 
 import ConnectWalletButton from '../components/ConnectWalletButton'
+import ComingSoonBadge from './ComingSoonBadge'
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Bounties', href: '#', icon: CollectionIcon, current: false },
-  { name: 'Tasks', href: '#', icon: ClipboardCheckIcon, current: false },
-  { name: 'Events', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Members', href: '#', icon: UsersIcon, current: false },
+  { name: 'Bounties', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
+  { name: 'Tasks', comingSoon: true, href: '#', icon: ClipboardCheckIcon, current: false },
+  { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
+  { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
 ]
 
 function classNames(...classes) {
@@ -106,8 +107,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
     </Transition.Root>
     <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
       {/* Sidebar component, swap this element with another sidebar if you like */}
-      <div className="flex-1 flex flex-col min-h-0 bg-gray-800 dark:bg-daonative-dark-200">
-        <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
+      <div className="flex-1 flex flex-col min-h-0 bg-daonative-dark-200">
+        <div className="flex items-center h-16 flex-shrink-0 px-4">
           <img src="/DAOnativeLogo.png" width="48" height="48" className="mx-auto" />
         </div>
         <div className="flex-1 flex flex-col overflow-y-auto">
@@ -117,18 +118,23 @@ const SidebarNavigation = ({ showMobile, onClose }) => (
                 key={item.name}
                 href={item.href}
                 className={classNames(
-                  item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                  item.current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+                  'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
                 )}
               >
-                <item.icon
-                  className={classNames(
-                    item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                    'mr-3 flex-shrink-0 h-6 w-6'
-                  )}
-                  aria-hidden="true"
-                />
-                {item.name}
+                <div className="flex items-center">
+                  <item.icon
+                    className={classNames(
+                      item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                      'mr-3 flex-shrink-0 h-6 w-6'
+                    )}
+                    aria-hidden="true"
+                  />
+                  {item.name}
+                </div>
+                <div>
+                  {item.comingSoon && <ComingSoonBadge />}
+                </div>
               </a>
             ))}
           </nav>
