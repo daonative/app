@@ -12,7 +12,7 @@ import KPIs from '../../../components/KPIs'
 import Feed from '../../../components/Feed'
 import Tasks from '../../../components/Tasks'
 import Members from '../../../components/Members'
-import TreasuryChart from '../../../components/TreasuryChart'
+import Treasury from '../../../components/Treasury'
 import UpcomingEvents from '../../../components/UpcomingEvents'
 import { useForm } from 'react-hook-form';
 
@@ -175,7 +175,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
               <UpcomingEvents />
             </div>
             <div className="py-4 px-4">
-              <TreasuryChart />
+              <Treasury address={dao.treasury}/>
             </div>
             <div className="py-4 px-4">
               <Members members={members} />
