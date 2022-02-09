@@ -2,7 +2,7 @@ import Moment from 'react-moment';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
-const TasksTable = ({ showAssignee = false, tasks = [] }) => {
+const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [] }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -15,7 +15,7 @@ const TasksTable = ({ showAssignee = false, tasks = [] }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
-                    Tasks
+                    {title}
                   </th>
                   {showAssignee && (
                     <th

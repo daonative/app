@@ -11,7 +11,7 @@ import SidebarNavigation from '../../../components/SidebarNavigation'
 import HeaderNavigation from '../../../components/HeaderNavigation'
 import KPIs from '../../../components/KPIs'
 import Feed from '../../../components/Feed'
-import Tasks from '../../../components/TasksTable'
+import TasksTable from '../../../components/TasksTable'
 import Members from '../../../components/Members'
 import Treasury from '../../../components/Treasury'
 import UpcomingEvents from '../../../components/UpcomingEvents'
@@ -109,6 +109,7 @@ const Mission = ({ roomId, mission }) => {
 export default function Dashboard({ members: initialMembers, feed: initialFeed, dao: initialDAO }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
+  const { account } = useWallet()
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
@@ -118,6 +119,11 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
   const [membersSnapshot] = useCollection(
     query(collection(db, 'memberships'), where('roomId', '==', roomId))
   )
+  const [tasksSnapshot] = useCollection(
+    query(collection(db, 'tasks'), where('roomId', '==', roomId), where('assigneeAccount', '==', account), orderBy('deadline', 'desc'))
+  )
+  const membership = useMembership(account, roomId)
+  const isMember = !!membership
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
@@ -132,6 +138,16 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
       eventId: doc.id
     }
   }) || initialFeed
+
+  const tasks = tasksSnapshot?.docs.map((doc) => {
+    const task = doc.data()
+    return {
+      ...task,
+      created: isFirestoreDate(task?.created) ? task.created.toMillis() : '',
+      deadline: isFirestoreDate(task?.deadline) ? task.deadline.toMillis() : '',
+      taskId: doc.id
+    }
+  }) || []
 
   const members = membersSnapshot?.docs.map((doc) => {
     const membership = doc.data()
@@ -175,9 +191,11 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <Feed roomId={roomId} feed={feed} kpis={dao.kpis} />
             </div>
-            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Tasks />
-            </div>
+            {isMember && (
+              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
+                <TasksTable title="My Tasks" tasks={tasks} />
+              </div>
+            )}
           </main>
           <aside className="w-full md:max-w-xs md:py-6">
             <div className="px-4">

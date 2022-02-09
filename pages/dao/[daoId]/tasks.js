@@ -130,7 +130,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const [showAddTaskModal, setShowAddTaskModal] = useState(false)
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
   const [tasksSnapshot] = useCollection(
-    query(collection(db, 'tasks'), where('roomId', '==', roomId))
+    query(collection(db, 'tasks'), where('roomId', '==', roomId), orderBy('deadline', 'desc'))
   )
 
   const dao = daoSnapshot ? {
@@ -140,7 +140,6 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
 
   const tasks = tasksSnapshot?.docs.map((doc) => {
     const task = doc.data()
-    console.log(task)
     return {
       ...task,
       created: isFirestoreDate(task?.created) ? task.created.toMillis() : '',
