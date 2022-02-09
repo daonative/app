@@ -14,8 +14,8 @@ import ComingSoonBadge from './ComingSoonBadge'
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
+  { name: 'Tasks', href: '#', icon: ClipboardCheckIcon, current: false },
   { name: 'Bounties', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
-  { name: 'Tasks', comingSoon: true, href: '#', icon: ClipboardCheckIcon, current: false },
   { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
   { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
 ]
