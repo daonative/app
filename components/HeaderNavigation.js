@@ -66,7 +66,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
         <div className="flex-1 px-4 flex justify-between">
           <div className="flex-1 flex items-center">
             {isMember && (
-              <form className="invisible md:visible flex" onSubmit={handleSubmit(logWork)}>
+              <form className="hidden md:block flex" onSubmit={handleSubmit(logWork)}>
                 <input
                   {...register("work")}
                   type="text"
@@ -119,9 +119,9 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
             )}
 
             {isConnected && (
-              <Menu as="div" className="ml-2 relative">
+              <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  dark:bg-daonative-dark-100 dark:text-daonative-gray-100 rounded-full">
+                  <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 rounded-full">
                     <span className="sr-only">Open user menu</span>
                     {/*<img
                       className="h-8 w-8 rounded-full"
