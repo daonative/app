@@ -66,7 +66,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
         <div className="flex-1 px-4 flex justify-between">
           <div className="flex-1 flex items-center">
             {isMember && (
-              <form className="hidden md:block flex" onSubmit={handleSubmit(logWork)}>
+              <form className="hidden md:flex" onSubmit={handleSubmit(logWork)}>
                 <input
                   {...register("work")}
                   type="text"
