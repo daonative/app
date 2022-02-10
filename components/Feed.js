@@ -149,12 +149,12 @@ const Feed = ({ feed, kpis, roomId }) => {
                     <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{event.description}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
-                        {totalPraise}
                         <div className="flex gap-2">
                           {impacts.map((impactId) => {
                             const ImpactIcon = metrics[impactId]?.icon
                             return ImpactIcon && <ImpactIcon key={`${event.eventId}-${impactId}`} className="h-4 w-4" />
                           })}
+                          { totalPraise && `+${totalPraise}`}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
