@@ -188,14 +188,14 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <KPIs roomId={roomId} kpis={dao.kpis} />
             </div>
-            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed roomId={roomId} feed={feed} kpis={dao.kpis} />
-            </div>
             {isMember && (
               <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
                 <TasksTable title="My Tasks" tasks={tasks} />
               </div>
             )}
+            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
+              <Feed roomId={roomId} feed={feed} kpis={dao.kpis} />
+            </div>
           </main>
           <aside className="w-full md:max-w-xs md:py-6">
             <div className="px-4">

@@ -7,7 +7,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [] }) => {
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900 rounded-lg">
+          <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900">
             <table className="table-fixed min-w-full divide-y divide-gray-200 dark:divide-daonative-gray-900">
               <thead className="bg-gray-50 dark:bg-daonative-dark-100 text-gray-500 dark:text-daonative-gray-200">
                 <tr>
