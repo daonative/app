@@ -132,7 +132,8 @@ const KPIs = ({ kpis, roomId }) => {
   const metrics = mergeKPIsAndDefaults(kpis)
 
   const handleUpdateMetric = async (metricId, data) => {
-    const newMetric = { [metricId]: { ...kpis[metricId], ...data } }
+    const oldMetric = kpis && kpis[metricId]
+    const newMetric = { [metricId]: { ...oldMetric, ...data } }
     const newMetrics = { ...kpis, ...newMetric }
 
     const db = getFirestore()
