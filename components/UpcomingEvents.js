@@ -4,12 +4,12 @@ import ComingSoonBadge from "./ComingSoonBadge";
 const events = [
   {
     name: 'ETHDenver',
-    date: new Date("2022-02-11T00:00:00+00:00"),
+    date: new Date("2022-02-11T09:00:00-0700"),
     link: 'https://ethdenver.com'
   },
   {
     name: 'MΞTAPOD pitch',
-    date: new Date("2022-02-16T00:00:00+00:00"),
+    date: new Date("2022-02-16T16:00:00-0700"),
     link: 'https://metapod.gg'
   },
 ];
