@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <ConnectWalletModalProvider>
-          <Toaster />
+          <Toaster position="bottom-center" />
           <Component {...pageProps} />
         </ConnectWalletModalProvider>
       </UseWalletProvider>
