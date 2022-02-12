@@ -120,7 +120,14 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
     query(collection(db, 'memberships'), where('roomId', '==', roomId))
   )
   const [tasksSnapshot] = useCollection(
-    query(collection(db, 'tasks'), where('roomId', '==', roomId), where('assigneeAccount', '==', account), orderBy('deadline', 'desc'))
+    query(
+      collection(db, 'tasks'),
+      where('roomId', '==', roomId),
+      where('assigneeAccount', '==', account),
+      where('status', '!=', 'done'),
+      orderBy('status', 'desc'),
+      orderBy('deadline', 'desc')
+    )
   )
   const membership = useMembership(account, roomId)
   const isMember = !!membership

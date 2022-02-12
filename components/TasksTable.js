@@ -2,7 +2,7 @@ import Moment from 'react-moment';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
-const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [] }) => {
+const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskStatusChange }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -31,6 +31,14 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [] }) => {
                   >
                     Deadline
                   </th>
+                  {onTaskStatusChange && (
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Done
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -54,6 +62,17 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [] }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <Moment date={task.deadline} fromNowDuring={24 * 60 * 60 * 1000} format="yyyy-MM-DD" />
                       </td>
+                      {onTaskStatusChange && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <input
+                            name="done"
+                            type="checkbox"
+                            className="dark:bg-daonative-dark-300 dark:border-gray-700 focus:ring-indigo-500 h-6 w-6 text-indigo-600 border-gray-300 rounded"
+                            checked={task.status === "done"}
+                            onChange={(event) => onTaskStatusChange(task.taskId, event.target.checked ? "done" : "todo")}
+                          />
+                        </td>
+                      )}
                     </tr>
                   )
                 })}

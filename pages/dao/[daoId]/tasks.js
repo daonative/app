@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, doc, getDoc, serverTimestamp, addDoc, collection, where, orderBy, query, getDocs } from "firebase/firestore"
+import { getFirestore, doc, getDoc, serverTimestamp, addDoc, collection, where, orderBy, query, getDocs, updateDoc } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 
@@ -52,7 +52,7 @@ export const getServerSideProps = async ({ params }) => {
   const tasks = await getTasks(roomId)
 
   return {
-    props: { dao: room, tasks}
+    props: { dao: room, tasks }
   }
 }
 
@@ -162,6 +162,11 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const handleAddTask = () => setShowAddTaskModal(true)
   const closeAddTaskModal = () => setShowAddTaskModal(false)
 
+  const handleTaskStatusChange = (taskId, status) => {
+    const taskRef = doc(db, 'tasks', taskId)
+    updateDoc(taskRef, { status })
+  }
+
   return (
     <>
       <AddTaskModal show={showAddTaskModal} onClose={closeAddTaskModal} roomId={roomId} />
@@ -187,7 +192,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
-              <TasksTable showAssignee={true} tasks={tasks}/>
+              <TasksTable showAssignee={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} />
             </div>
           </main>
         </div>
