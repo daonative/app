@@ -4,25 +4,26 @@ import { useEffect, useState } from 'react';
 import useInterval from '../lib/useInterval';
 import { providers } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
+import ComingSoonBadge from './ComingSoonBadge';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, CategoryScale);
 
 const data = {
-    labels: [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-    ],
+  labels: [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ],
   datasets: [
     {
       label: '',
@@ -86,7 +87,7 @@ const options = {
   },
 };
 
-const Treasury = ({ chartEnabled = false, address}) => {
+const Treasury = ({ chartEnabled = false, address, enabled }) => {
   const [balanceTotal, setBalanceTotal] = useState()
 
   useInterval(async () => {
@@ -101,19 +102,23 @@ const Treasury = ({ chartEnabled = false, address}) => {
   }, 3000)
 
   return (
-  <div className="rounded-lg shadow overflow-hidden w-full md:flex">
-    <div className="w-full bg-indigo-500 text-white items-center">
-      <div className="flex justify-between p-6">
-        <p>Treasury</p>
-        <p className="text-lg font-bold">
-          {balanceTotal ? `${formatEther(balanceTotal || '0')} MATIC`: "Loading..."}
-        </p>
+    <div className="rounded-lg shadow overflow-hidden w-full md:flex relative">
+      <div className="w-full bg-indigo-500 text-white items-center">
+        <div className="flex justify-between p-6">
+          <div>
+            <p>Treasury</p>
+          </div>
+          {enabled ? (
+            <p className="text-lg font-bold">
+              {balanceTotal ? `${formatEther(balanceTotal || '0')} MATIC` : "Loading..."}
+            </p>
+          ) : <ComingSoonBadge />}
+        </div>
+        {chartEnabled && (
+          <Line type="line" data={data} options={options} />
+        )}
       </div>
-      { chartEnabled && (
-        <Line type="line" data={data} options={options} />
-      )}
     </div>
-  </div>
   )
 }
 

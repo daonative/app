@@ -209,7 +209,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
               <UpcomingEvents />
             </div>
             <div className="py-4 px-4">
-              <Treasury address={dao.treasury} />
+              <Treasury address={dao.treasury} enabled={false} />
             </div>
             <div className="py-4 px-4">
               <Members members={members} />
