@@ -14,6 +14,7 @@ import useMembership from '../../../lib/useMembership';
 import { useWallet } from 'use-wallet';
 import { isFirestoreDate } from '../../../lib/utils';
 import TasksTable from '../../../components/TasksTable';
+import { toUtf8CodePoints } from 'ethers/lib/utils';
 
 const db = getFirestore()
 
@@ -65,6 +66,7 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
     const task = {
       roomId,
       ...data,
+      status: 'todo',
       assigneeAccount: account,
       assigneeName: membership.name,
       created: serverTimestamp(),
