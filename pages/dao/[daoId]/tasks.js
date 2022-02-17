@@ -59,15 +59,17 @@ export const getServerSideProps = async ({ params }) => {
 }
 
 const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
-  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm({defaultValues})
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
   const members = useMembers()
 
   useEffect(() => {
-    reset(defaultValues)
+    // fix timezone offset
+    const deadline = defaultValues.deadline && (new Date(defaultValues.deadline - new Date().getTimezoneOffset() * 60000).toISOString()).slice(0, -1)
+    reset({...defaultValues, deadline})
   }, [reset, defaultValues])
 
   const createTask = async (data) => {
-    const assignee = members.find(member => member.membershipId === data.assignee)
+    const assignee = members.find(member => member.membershipId === data.assigneeMembershipId)
     const task = {
       roomId,
       description: data.description,
@@ -85,10 +87,10 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
     const assignee = members.find(member => member.membershipId === data.assigneeMembershipId)
     const task = {
       description: data.description,
+      deadline: data.deadline,
       assigneeMembershipId: assignee?.membershipId || null,
       assigneeAccount: assignee?.account || null,
       assigneeName: assignee?.name || null,
-      deadline: new Date(data.deadline),
     }
     await updateDoc(doc(db, 'tasks', taskId), task)
   }
@@ -121,7 +123,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
               <label className="block text-sm font-medium pb-2">
                 Deadline
               </label>
-              <input type="datetime-local" step={60} {...register("deadline", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="datetime-local" step={60} {...register("deadline", { required: true, valueAsDate: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
               {errors.deadline && (
                 <span className="text-xs text-red-400">You need to set a deadline</span>
               )}
@@ -133,7 +135,6 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
               <select
                 {...register("assigneeMembershipId")}
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
-                defaultValue=""
               >
                 <option value="">---</option>
                 {members.map(member => <option key={member.membershipId} value={member.membershipId}>{member.name}</option>)}
@@ -184,7 +185,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
       deadline: isFirestoreDate(task?.deadline) ? task.deadline.toMillis() : '',
       taskId: doc.id
     }
-  }) || initialTasks
+  }) || []
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
