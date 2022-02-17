@@ -92,6 +92,7 @@ const Treasury = ({ chartEnabled = false, address, enabled }) => {
 
   useInterval(async () => {
     if (!address) return
+    if (!enabled) return
 
     const provider = new providers.JsonRpcProvider(
       process.env.NEXT_PUBLIC_RPC_POLYGON
@@ -112,7 +113,11 @@ const Treasury = ({ chartEnabled = false, address, enabled }) => {
             <p className="text-lg font-bold">
               {balanceTotal ? `${formatEther(balanceTotal || '0')} MATIC` : "Loading..."}
             </p>
-          ) : <ComingSoonBadge />}
+          ) : (
+            <span className="text-daonative-gray-100 inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium">
+              coming soon
+            </span>
+          )}
         </div>
         {chartEnabled && (
           <Line type="line" data={data} options={options} />
