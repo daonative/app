@@ -15,6 +15,7 @@ import { useWallet } from 'use-wallet';
 import { isFirestoreDate } from '../../../lib/utils';
 import TasksTable from '../../../components/TasksTable';
 import { toUtf8CodePoints } from 'ethers/lib/utils';
+import useMembers from '../../../lib/useMembers';
 
 const db = getFirestore()
 
@@ -61,14 +62,16 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
+  const members = useMembers()
 
   const createTask = async (data) => {
+    const assignee = members.find(member => member.membershipId === data.assignee)
     const task = {
       roomId,
-      ...data,
+      description: data.description,
       status: 'todo',
-      assigneeAccount: account,
-      assigneeName: membership.name,
+      assigneeAccount: assignee?.account || null,
+      assigneeName: assignee?.name || null,
       created: serverTimestamp(),
       deadline: new Date(data.deadline),
     }
@@ -103,6 +106,19 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
               {errors.deadline && (
                 <span className="text-xs text-red-400">You need to set a deadline</span>
               )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Assignee
+              </label>
+              <select
+                {...register("assignee")}
+                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
+                defaultValue="Canada"
+              >
+                <option value="">---</option>
+                {members.map(member => <option key={member.membershipId} value={member.membershipId}>{member.name}</option>)}
+              </select>
             </div>
           </div>
         </ModalBody>
