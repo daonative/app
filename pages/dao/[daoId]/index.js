@@ -129,6 +129,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
       orderBy('deadline', 'desc')
     )
   )
+
   const [openTasksSnapshot] = useCollection(
     query(
       collection(db, 'tasks'),
@@ -157,7 +158,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
     }
   }) || initialFeed
 
-  const tasks = tasksSnapshot?.docs.map((doc) => {
+  const myTasks = tasksSnapshot?.docs.map((doc) => {
     const task = doc.data()
     return {
       ...task,
@@ -216,12 +217,14 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
               <KPIs roomId={roomId} kpis={dao.kpis} />
             </div>
-            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <TasksTable title="Open Tasks" tasks={openTasks} />
-            </div>
-            {isMember && (
+            {openTasks?.length > 0 && (
               <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-                <TasksTable title="My Tasks" tasks={tasks} />
+                <TasksTable title="Open Tasks" tasks={openTasks} />
+              </div>
+            )}
+            {isMember && myTasks?.length > 0 && (
+              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
+                <TasksTable title="My Tasks" tasks={myTasks} />
               </div>
             )}
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
