@@ -58,11 +58,13 @@ export const getServerSideProps = async ({ params }) => {
   }
 }
 
-const AddTaskModal = ({ show, onClose, roomId }) => {
-  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
-  const { account } = useWallet()
-  const membership = useMembership(account, roomId)
+const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm({defaultValues})
   const members = useMembers()
+
+  useEffect(() => {
+    reset(defaultValues)
+  }, [reset, defaultValues])
 
   const createTask = async (data) => {
     const assignee = members.find(member => member.membershipId === data.assignee)
@@ -79,15 +81,31 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
     await addDoc(collection(db, 'tasks'), task)
   }
 
-  const handleCreateTask = async (data) => {
-    await createTask(data)
+  const updateTask = async (data) => {
+    const assignee = members.find(member => member.membershipId === data.assigneeMembershipId)
+    const task = {
+      description: data.description,
+      assigneeMembershipId: assignee?.membershipId || null,
+      assigneeAccount: assignee?.account || null,
+      assigneeName: assignee?.name || null,
+      deadline: new Date(data.deadline),
+    }
+    await updateDoc(doc(db, 'tasks', taskId), task)
+  }
+
+  const handleSaveTask = async (data) => {
+    if (taskId) {
+      await updateTask(data)
+    } else {
+      await createTask(data)
+    }
     onClose()
   }
 
   return (
     <Modal show={show} onClose={onClose}>
-      <form onSubmit={handleSubmit(handleCreateTask)}>
-        <ModalTitle>Add a task</ModalTitle>
+      <form onSubmit={handleSubmit(handleSaveTask)}>
+        <ModalTitle>{taskId ? "Edit task" : "Add a task"}</ModalTitle>
         <ModalBody>
           <div className="flex flex-col gap-4">
             <div>
@@ -113,9 +131,9 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
                 Assignee
               </label>
               <select
-                {...register("assignee")}
+                {...register("assigneeMembershipId")}
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
-                defaultValue="Canada"
+                defaultValue=""
               >
                 <option value="">---</option>
                 {members.map(member => <option key={member.membershipId} value={member.membershipId}>{member.name}</option>)}
@@ -132,7 +150,7 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
             {isSubmitting ? (
               <span className="w-4 h-4 mx-auto"><Spinner /></span>
             ) : (
-              <>Add your task</>
+              <>{taskId ? "Save task" : "Add task"}</>
             )}
           </button>
         </ModalActionFooter>
@@ -146,7 +164,8 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
   const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
-  const [showAddTaskModal, setShowAddTaskModal] = useState(false)
+  const [showTaskModal, setShowTaskModal] = useState(false)
+  const [selectedTask, setSelectedTask] = useState({})
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
   const [tasksSnapshot] = useCollection(
     query(collection(db, 'tasks'), where('roomId', '==', roomId), orderBy('deadline', 'desc'))
@@ -178,8 +197,20 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
     }
   }, [darkMode])
 
-  const handleAddTask = () => setShowAddTaskModal(true)
-  const closeAddTaskModal = () => setShowAddTaskModal(false)
+  const handleAddTask = () => {
+    setSelectedTask({})
+    setShowTaskModal(true)
+  }
+
+  const handleEditTask = (taskId) => {
+    const task = tasks.find(task => task.taskId === taskId)
+    setSelectedTask(task)
+    setShowTaskModal(true)
+  }
+
+  const closeTaskModal = () => {
+    setShowTaskModal(false)
+  }
 
   const handleTaskStatusChange = (taskId, status) => {
     const taskRef = doc(db, 'tasks', taskId)
@@ -188,7 +219,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
 
   return (
     <>
-      <AddTaskModal show={showAddTaskModal} onClose={closeAddTaskModal} roomId={roomId} />
+      <TaskModal show={showTaskModal} onClose={closeTaskModal} roomId={roomId} taskId={selectedTask.taskId} defaultValues={selectedTask} />
       <div>
         <SidebarNavigation showMobile={showSidebarMobile} onClose={() => setShowSidebarMobile(false)} />
         <HeaderNavigation onShowSidebar={onShowMobileSidebar} onToggleDarkMode={onToggleDarkMode} />
@@ -211,7 +242,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
-              <TasksTable showAssignee={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} />
+              <TasksTable showAssignee={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={handleEditTask} />
             </div>
           </main>
         </div>

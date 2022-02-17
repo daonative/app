@@ -1,8 +1,9 @@
 import Moment from 'react-moment';
+import { classNames } from '../lib/utils';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
-const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskStatusChange }) => {
+const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskStatusChange, onTaskClick }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -45,7 +46,15 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskS
                 {tasks.map((task) => {
                   return (
                     <tr key={task.taskId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{task.description}</td>
+                      <td
+                        className={classNames(
+                          "px-6 py-4 whitespace-nowrap text-sm font-medium",
+                          onTaskClick && "hover:cursor-pointer"
+                        )}
+                        onClick={() => onTaskClick && onTaskClick(task.taskId)}
+                      >
+                        {task.description}
+                      </td>
                       {showAssignee && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <div className="flex items-center gap-4">
