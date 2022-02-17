@@ -91,7 +91,7 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
                 Description
               </label>
               <input type="text" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
-              {errors.praise && (
+              {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
             </div>
@@ -100,8 +100,8 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
                 Deadline
               </label>
               <input type="datetime-local" step={60} {...register("deadline", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
-              {errors.praise && (
-                <span className="text-xs text-red-400">You need to set a description</span>
+              {errors.deadline && (
+                <span className="text-xs text-red-400">You need to set a deadline</span>
               )}
             </div>
           </div>
