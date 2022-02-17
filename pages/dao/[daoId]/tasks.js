@@ -70,6 +70,7 @@ const AddTaskModal = ({ show, onClose, roomId }) => {
       roomId,
       description: data.description,
       status: 'todo',
+      assigneeMembershipId: assignee?.membershipId || null,
       assigneeAccount: assignee?.account || null,
       assigneeName: assignee?.name || null,
       created: serverTimestamp(),
