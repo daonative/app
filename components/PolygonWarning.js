@@ -2,7 +2,7 @@ import { useWallet } from "use-wallet"
 import PolygonLogo from "../public/PolygonLogo.svg"
 
 const PolygonWarning = () => {
-  const { chainId, ethereum } = useWallet()
+  const { chainId, account, ethereum } = useWallet()
 
   const handleSwitchToPolygon = async () => {
     const params = [{
@@ -19,6 +19,7 @@ const PolygonWarning = () => {
     await ethereum.request({ method: 'wallet_addEthereumChain', params })
   }
 
+  if (!account) return <></>
   if (chainId === 137) return <></>
 
   return (

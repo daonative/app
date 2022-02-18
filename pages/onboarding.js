@@ -18,6 +18,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
 import { CheckIcon } from '@heroicons/react/solid'
+import PolygonWarning from '../components/PolygonWarning'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -88,7 +89,7 @@ const StepDescription = ({ children }) => (
   <span className="ml-4 text-sm font-medium text-gray-900 dark:text-daonative-gray-300">{children}</span>
 )
 
-const Create = ({onDaoCreating, onDaoCreated}) => {
+const Create = ({ onDaoCreating, onDaoCreated }) => {
   const { account } = useWallet()
   const provider = useProvider()
   const { register, handleSubmit } = useForm()
@@ -103,7 +104,7 @@ const Create = ({onDaoCreating, onDaoCreated}) => {
 
   const createRoom = async (name, address) => {
     const db = getFirestore()
-    const room = {name, treasury: address}
+    const room = { name, treasury: address }
     const roomsCollection = collection(db, 'rooms')
     const roomRef = await addDoc(roomsCollection, { name, treasury: address })
     return {
@@ -309,7 +310,7 @@ const Onboarding = () => {
   const handleDaoCreated = (dao) => {
     setIsLoading(false)
 
-    if(!dao) return
+    if (!dao) return
 
     setDAO(dao)
     setCurrentStep(2)
@@ -318,7 +319,7 @@ const Onboarding = () => {
   const handleMemberJoined = (member) => {
     setIsLoading(false)
 
-    if(!member) return
+    if (!member) return
 
     router.push(`/dao/${dao.roomId}`)
   }
@@ -342,7 +343,7 @@ const Onboarding = () => {
           </div>
           {!isConnected && (
             <>
-              <p className="p-6 text-gray-200 font-bold">You need to connect your wallet before you can create your DAO</p>
+              <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create your DAO</p>
               <div className="w-36 h-16">
                 <ConnectWalletButton />
               </div>
@@ -350,6 +351,9 @@ const Onboarding = () => {
           )}
           {isConnected && !isLoading && currentStep === 1 && <Create onDaoCreating={handleLoading} onDaoCreated={handleDaoCreated} />}
           {isConnected && !isLoading && currentStep === 2 && <Join onMemberJoining={handleLoading} onMemberJoined={handleMemberJoined} dao={dao} />}
+        </div>
+        <div className="absolute bottom-10">
+          <PolygonWarning />
         </div>
       </main>
     </div >
