@@ -10,6 +10,7 @@ import { useWallet } from 'use-wallet'
 import toast from 'react-hot-toast'
 import useProvider from '../../../lib/useProvider'
 import { useRouter } from 'next/router'
+import PolygonWarning from '../../../components/PolygonWarning'
 
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -32,7 +33,7 @@ const getRoom = async (roomId) => {
 
 export const getServerSideProps = async ({ res, params }) => {
   const { daoId } = params
-  const room = {roomId: daoId, ...await getRoom(daoId)}
+  const room = { roomId: daoId, ...await getRoom(daoId) }
 
   if (!room) {
     res.statusCode = 404
@@ -126,7 +127,7 @@ const Join = ({ dao }) => {
   return (
     <div className="overflow-hidden w-full h-screen">
       <main className="flex justify-center items-center h-screen">
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           <img src="/DAOnativeLogo.svg" className={classNames("w-32 h-32 m-6", isLoading && "animate-spin-slow")} />
           {isConnected && !isLoading && (
             <>
@@ -147,6 +148,9 @@ const Join = ({ dao }) => {
                   </button>
                 </div>
               </form>
+              <div className="absolute top-10">
+                <PolygonWarning />
+              </div>
             </>
           )}
           {!isConnected && (

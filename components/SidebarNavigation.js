@@ -14,6 +14,7 @@ import ConnectWalletButton from '../components/ConnectWalletButton'
 import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import PolygonWarning from './PolygonWarning'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -166,8 +167,11 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                 )
               })}
             </nav>
-            <div className="py-5 px-4 h-24">
-              <ConnectWalletButton />
+            <div className="py-5 px-4 flex flex-col gap-2">
+              <PolygonWarning />
+              <div className="h-14">
+                <ConnectWalletButton />
+              </div>
             </div>
           </div>
         </div>
