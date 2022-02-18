@@ -115,8 +115,11 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                     )
                   })}
                 </nav>
-                <div className="py-5 px-4 h-24">
-                  <ConnectWalletButton onClick={onClose} />
+                <div className="py-5 px-4 flex flex-col gap-2">
+                  <PolygonWarning />
+                  <div className="h-14">
+                    <ConnectWalletButton />
+                  </div>
                 </div>
               </div>
             </div>
