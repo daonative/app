@@ -15,7 +15,7 @@ import PolygonWarning from '../../../components/PolygonWarning'
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
 
-const MINT_NFT_MEMBERSHIP = true
+const MINT_NFT_MEMBERSHIP = false
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')

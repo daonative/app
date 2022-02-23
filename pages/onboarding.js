@@ -27,7 +27,7 @@ const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA91
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 
 const DEPLOY_TREASURY = false
-const MINT_NFT_MEMBERSHIP = true
+const MINT_NFT_MEMBERSHIP = false
 
 const Steps = ({ children }) => (
   <nav aria-label="Progress" className="p-4 md:p-10">
