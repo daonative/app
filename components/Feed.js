@@ -9,12 +9,21 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 import Spinner from './Spinner';
+import { EyeOffIcon } from '@heroicons/react/solid';
 
 const ReviewModal = ({ show, onClose, event, KPIs }) => {
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm()
   const { account } = useWallet()
 
   const metrics = mergeKPIsAndDefaults(KPIs)
+  const naMetric = {
+    icon: EyeOffIcon,
+    id: 'na',
+    name: 'N/A'
+  }
+  const metricList = Object.entries(metrics)
+    .filter(([_, metric]) => !!metric.name)
+    .map(([id, metric]) => ({ ...metric, id }))
 
   const addReview = async (data) => {
     const praise = parseInt(data.praise)
@@ -35,20 +44,17 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
           <div className="flex flex-col gap-y-6">
             <div>
               <ul className="flex flex-row gap-x-4 justify-center w-full">
-                {Object.entries(metrics)
-                  .filter(([_, metric]) => !!metric.name)
-                  .map(([id, metric]) => (
-                    <li key={id} className="w-1/3 h-full grow" htmlFor={`kpi-${id}`}>
-                      <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
-                        <input className="sr-only peer" type="radio" value={id} {...register('impact', { required: true })} id={`kpi-${id}`} />
-                        {metric.name}
-                        <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
-                          <metric.icon className="h-8 w-8 text-blue-500" />
-                        </div>
-                      </label>
-                    </li>
-                  )
-                  )}
+                {(metricList.length > 0 ? metricList : [naMetric]).map((metric) => (
+                  <li key={metric.id} className="w-1/3 h-full grow">
+                    <label className="flex flex-col justify-between items-center text-center gap-y-4 text-sm hover:cursor-pointer hover:bg-daonative-dark-200 p-4">
+                      <input className="sr-only peer" type="radio" value={metric.id} {...register('impact', { required: true })} id={`kpi-${metric.id}`} />
+                      {metric.name}
+                      <div className="peer-checked:bg-blue-100 bg-daonative-dark-100 rounded-full p-3">
+                        <metric.icon className="h-8 w-8 text-blue-500" />
+                      </div>
+                    </label>
+                  </li>
+                ))}
               </ul>
               {errors.metric && (
                 <span className="text-xs text-red-400">You need to select a goal.</span>
@@ -154,7 +160,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                             const ImpactIcon = metrics[impactId]?.icon
                             return ImpactIcon && <ImpactIcon key={`${event.eventId}-${impactId}`} className="h-4 w-4" />
                           })}
-                          { totalPraise && `+${totalPraise}`}
+                          {totalPraise && `+${totalPraise}`}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -180,7 +186,6 @@ const Feed = ({ feed, kpis, roomId }) => {
                             </>
                           )}
                         </td>
-
                       )}
                     </tr>
                   )
