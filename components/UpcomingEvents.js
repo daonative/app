@@ -2,15 +2,25 @@ import Link from "next/link";
 import ComingSoonBadge from "./ComingSoonBadge";
 
 const events = [
+//  {
+//    name: 'ETHDenver',
+//    date: new Date("2022-02-11T09:00:00-0700"),
+//    link: 'https://ethdenver.com'
+//  },
+//  {
+//    name: 'MΞTAPOD pitch',
+//    date: new Date("2022-02-16T16:00:00-0700"),
+//    link: 'https://metapod.gg'
+//  },
   {
-    name: 'ETHDenver',
-    date: new Date("2022-02-11T09:00:00-0700"),
-    link: 'https://ethdenver.com'
+    name: 'LI.FI meeting',
+    date: new Date("2022-02-23T14:00:00+0100"),
+    link: 'https://li.finance'
   },
   {
-    name: 'MΞTAPOD pitch',
-    date: new Date("2022-02-16T16:00:00-0700"),
-    link: 'https://metapod.gg'
+    name: 'Hyperscale meeting',
+    date: new Date("2022-02-23T14:00:00+0100"),
+    link: 'https://www.hyperscalefund.com/'
   },
 ];
 
