@@ -10,11 +10,8 @@ import HeaderNavigation from '../../../components/HeaderNavigation'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
 import Spinner from '../../../components/Spinner';
 import { useForm } from 'react-hook-form';
-import useMembership from '../../../lib/useMembership';
-import { useWallet } from 'use-wallet';
 import { isFirestoreDate } from '../../../lib/utils';
 import TasksTable from '../../../components/TasksTable';
-import { toUtf8CodePoints } from 'ethers/lib/utils';
 import useMembers from '../../../lib/useMembers';
 
 const db = getFirestore()

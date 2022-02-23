@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from "firebase/firestore"
+import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
@@ -17,6 +17,8 @@ import Treasury from '../../../components/Treasury'
 import UpcomingEvents from '../../../components/UpcomingEvents'
 import useMembership from '../../../lib/useMembership';
 import { useWallet } from 'use-wallet';
+import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
+import Spinner from '../../../components/Spinner';
 
 const db = getFirestore()
 
@@ -103,6 +105,105 @@ const Mission = ({ roomId, mission }) => {
         <>{currentMission}</>
       )}
     </p >
+  )
+}
+
+const LogWorkModal = ({ show, onClose, task }) => {
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm({mode: 'onTouched'})
+  const { account } = useWallet()
+  const membership = useMembership(account, task?.roomId)
+  
+  useEffect(() => {
+    reset()
+  }, [reset, task])
+
+  const logWork = async (data) => {
+    const feedRef = collection(db, 'feed')
+    await addDoc(feedRef, {
+      roomId: task.roomId,
+      taskId: task.taskId,
+      workProof: data.proof,
+      description: task.description,
+      authorAccount: account,
+      authorName: membership?.name || null,
+      created: serverTimestamp(),
+      type: "work"
+    })
+  }
+
+  const handleLogWork = async (data) => {
+    await logWork(data)
+    onClose()
+  }
+
+  const handleCancel = () => {
+    reset()
+    onClose()
+  }
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <form onSubmit={handleSubmit(handleLogWork)}>
+        <ModalTitle>Log your work</ModalTitle>
+        <ModalBody>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Work Description
+              </label>
+              <textarea type="text" {...register("proof", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              {errors.proof && (
+                <span className="text-xs text-red-400">{"You need to describe the work you've done"}</span>
+              )}
+            </div>
+          </div>
+        </ModalBody>
+        <ModalActionFooter>
+          <div className="flex gap-2">
+            <button
+              type="reset"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="w-4 h-4 mx-auto"><Spinner /></span>
+              ) : "Log Work"}
+            </button>
+
+          </div>
+        </ModalActionFooter>
+      </form>
+    </Modal>
+  )
+}
+
+
+const OpenTasks = ({ openTasks }) => {
+  const [taskToLog, setTaskToLog] = useState(null)
+  const [showLogWorkModal, setShowLogWorkModal] = useState(false)
+
+  const handleLogWork = (taskId) => {
+    const task = openTasks.find(task => task.taskId === taskId)
+    setTaskToLog(task)
+    setShowLogWorkModal(true)
+  }
+
+  const handleCloseLogWorkModal = () => {
+    setShowLogWorkModal(false)
+  }
+
+  return (
+    <>
+      <LogWorkModal show={showLogWorkModal} onClose={handleCloseLogWorkModal} task={taskToLog} />
+      <TasksTable title="Open Tasks" tasks={openTasks} onTaskClick={(taskId) => handleLogWork(taskId)} />
+    </>
   )
 }
 
@@ -219,11 +320,11 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
             </div>
             {openTasks?.length > 0 && (
               <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-                <TasksTable title="Open Tasks" tasks={openTasks} />
+                <OpenTasks openTasks={openTasks} />
               </div>
             )}
             {isMember && myTasks?.length > 0 && (
-              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
+              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">\
                 <TasksTable title="My Tasks" tasks={myTasks} />
               </div>
             )}
