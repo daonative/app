@@ -15,6 +15,8 @@ import PolygonWarning from '../../../components/PolygonWarning'
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
 
+const MINT_NFT_MEMBERSHIP = true
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -62,10 +64,18 @@ const Join = ({ dao }) => {
 
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
-    const membershipRef = doc(db, 'memberships', membershipId)
-    await setDoc(membershipRef, { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS })
-    return membershipId
+    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS }
+
+    if (tokenId) {
+      const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
+      const membershipRef = doc(db, 'memberships', membershipId)
+      await setDoc(membershipRef, membership)
+    } else {
+      const membershipRef = collection(db, 'memberships')
+      await addDoc(membershipRef, membership)
+    }
+
+    return membership
   }
 
   const createMembershipFeedEntry = async (roomId, name) => {
@@ -104,17 +114,28 @@ const Join = ({ dao }) => {
   const handleJoinDAO = async (data) => {
     if (!account) return
 
-    const toastId = toast.loading('Loading')
+    let toastId = null
+    let tokenId = null
+
     setIsLoading(true)
 
+    if (MINT_NFT_MEMBERSHIP) {
+      toastId = toast.loading('Loading')
+    }
+
     try {
-      const tx = await createMembershipToken(dao.roomId)
-      const receipt = await tx.wait()
-      const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
+      if (MINT_NFT_MEMBERSHIP) {
+        const tx = await createMembershipToken(dao.roomId)
+        const receipt = await tx.wait()
+        tokenId = getMembershipTokenIdFromTxReceipt(receipt)
+      }
       await createMembership(dao.roomId, tokenId, data.memberName)
       await createMembershipFeedEntry(dao.roomId, data.memberName)
       await router.push(`/dao/${dao.roomId}`)
-      toast.success('Confirmed', { id: toastId })
+
+      if (MINT_NFT_MEMBERSHIP) {
+        toast.success('Confirmed', { id: toastId })
+      }
     } catch (e) {
       console.error(e)
       const errorMessage = e?.message || 'Error'

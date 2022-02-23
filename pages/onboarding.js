@@ -26,6 +26,9 @@ const membershipInterface = new ethers.utils.Interface(membershipAbi)
 const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA913'
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 
+const DEPLOY_TREASURY = false
+const MINT_NFT_MEMBERSHIP = true
+
 const Steps = ({ children }) => (
   <nav aria-label="Progress" className="p-4 md:p-10">
     <ol role="list" className="md:flex justify-center">
@@ -147,19 +150,18 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   const handleCreateRoom = async (data) => {
     if (!account) return
 
-    const deployTreasury = false
     let address = null
     let toastId = null
 
     onDaoCreating()
 
-    if (deployTreasury) {
+    if (DEPLOY_TREASURY) {
       toastId = toast.loading('Loading')
     }
 
     try {
 
-      if (deployTreasury) {
+      if (DEPLOY_TREASURY) {
         const tx = await deployRoomContract(data.daoName)
         const receipt = await tx.wait()
         address = getRoomAddressFromCreationTxReceipt(receipt)
@@ -168,7 +170,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
       const room = await createRoom(data.daoName, address)
       await createRoomFeedEntry(room.roomId, data.daoName)
 
-      if (deployTreasury) {
+      if (DEPLOY_TREASURY) {
         toast.success('Confirmed', { id: toastId })
       }
 
@@ -218,13 +220,17 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
     const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS }
-    const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
-    const membershipRef = doc(db, 'memberships', membershipId)
-    await setDoc(membershipRef, membership)
-    return {
-      membershipId,
-      ...membership
+
+    if (tokenId) {
+      const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
+      const membershipRef = doc(db, 'memberships', membershipId)
+      await setDoc(membershipRef, membership)
+    } else {
+      const membershipRef = collection(db, 'memberships')
+      await addDoc(membershipRef, membership)
     }
+
+    return membership
   }
 
   const createMembershipFeedEntry = async (roomId, name) => {
@@ -263,16 +269,30 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
   const handleJoinDAO = async (data) => {
     if (!account) return
 
+    let toastId = null
+
     onMemberJoining()
-    const toastId = toast.loading('Loading')
+
+    if (MINT_NFT_MEMBERSHIP) {
+      toastId = toast.loading('Loading')
+    }
 
     try {
-      const tx = await createMembershipToken(dao.roomId)
-      const receipt = await tx.wait()
-      const tokenId = getMembershipTokenIdFromTxReceipt(receipt)
+      let tokenId = null
+
+      if (MINT_NFT_MEMBERSHIP) {
+        const tx = await createMembershipToken(dao.roomId)
+        const receipt = await tx.wait()
+        tokenId = getMembershipTokenIdFromTxReceipt(receipt)
+      }
+
       const member = await createMembership(dao.roomId, tokenId, data.memberName)
       await createMembershipFeedEntry(dao.roomId, data.memberName)
-      toast.success('Confirmed', { id: toastId })
+
+      if (MINT_NFT_MEMBERSHIP) {
+        toast.success('Confirmed', { id: toastId })
+      }
+
       onMemberJoined(member)
     } catch (e) {
       console.error(e)
@@ -331,12 +351,14 @@ const Onboarding = () => {
     setCurrentStep(2)
   }
 
-  const handleMemberJoined = (member) => {
+  const handleMemberJoined = async (member) => {
+    if (!member) {
+      setIsLoading(false)
+      return
+    }
+
+    await router.push(`/dao/${dao.roomId}`)
     setIsLoading(false)
-
-    if (!member) return
-
-    router.push(`/dao/${dao.roomId}`)
   }
 
   return (
