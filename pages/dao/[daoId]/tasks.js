@@ -248,7 +248,13 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
+              { tasks?.length > 0 ? (
               <TasksTable showAssignee={true} showWeight={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={handleEditTask} />
+              ) : (
+                <div className="flex justify-center">
+                  {"Looks like you don't have any tasks."}
+                </div>
+              )}
             </div>
           </main>
         </div>
