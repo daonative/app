@@ -366,11 +366,11 @@ const Onboarding = () => {
       <Steps>
         <Step id={1} status={stepStatus(1)}>
           <StepTitle>Create</StepTitle>
-          <StepDescription>Create your DAO treasury</StepDescription>
+          <StepDescription></StepDescription>
         </Step>
         <Step id={2} status={stepStatus(2)}>
           <StepTitle>Join</StepTitle>
-          <StepDescription>Mint your NFT to become a member</StepDescription>
+          <StepDescription></StepDescription>
         </Step>
       </Steps>
       <main className="flex justify-center items-center">
