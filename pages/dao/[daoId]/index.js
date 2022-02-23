@@ -123,6 +123,7 @@ const LogWorkModal = ({ show, onClose, task }) => {
       roomId: task.roomId,
       taskId: task.taskId,
       workProof: data.proof,
+      workWeight: task.weight,
       description: task.description,
       authorAccount: account,
       authorName: membership?.name || null,
@@ -202,7 +203,7 @@ const OpenTasks = ({ openTasks }) => {
   return (
     <>
       <LogWorkModal show={showLogWorkModal} onClose={handleCloseLogWorkModal} task={taskToLog} />
-      <TasksTable title="Open Tasks" tasks={openTasks} onTaskClick={(taskId) => handleLogWork(taskId)} />
+      <TasksTable title="Open Tasks" showWeight={true} tasks={openTasks} onTaskClick={(taskId) => handleLogWork(taskId)} />
     </>
   )
 }
@@ -325,7 +326,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
             )}
             {isMember && myTasks?.length > 0 && (
               <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">\
-                <TasksTable title="My Tasks" tasks={myTasks} />
+                <TasksTable title="My Tasks" tasks={myTasks} showWeight={true} />
               </div>
             )}
             <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">

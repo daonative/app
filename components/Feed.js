@@ -90,11 +90,17 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
   )
 }
 
-const WorkProofModal = ({ show, onClose, workProof }) => {
+const WorkProofModal = ({ show, onClose, workEvent }) => {
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Work Proof</ModalTitle>
-      <ModalBody>{workProof}</ModalBody>
+      <ModalTitle>
+        Work Proof
+        {" "}
+        {workEvent?.workWeight && `(weight: ${workEvent.workWeight})`}
+      </ModalTitle>
+      <ModalBody>
+        {workEvent?.workProof}
+      </ModalBody>
       <ModalActionFooter>
         <div className="flex gap-2">
           <button
@@ -111,7 +117,7 @@ const WorkProofModal = ({ show, onClose, workProof }) => {
 
 const Feed = ({ feed, kpis, roomId }) => {
   const [reviewId, setReviewId] = useState()
-  const [workProof, setWorkProof] = useState(null)
+  const [workEvent, setWorkEvent] = useState(null)
   const metrics = mergeKPIsAndDefaults(kpis)
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
@@ -122,13 +128,13 @@ const Feed = ({ feed, kpis, roomId }) => {
 
   const handleShowWorkProof = (id) => {
     const event = feed.find(event => event.eventId === id)
-    setWorkProof(event?.workProof)
+    setWorkEvent(event)
   }
-  const handleCloseWorkProof = () => setWorkProof(null)
+  const handleCloseWorkProof = () => setWorkEvent(null)
 
   return (
     <>
-      <WorkProofModal show={!!workProof} onClose={handleCloseWorkProof} workProof={workProof} />
+      <WorkProofModal show={!!workEvent} onClose={handleCloseWorkProof} workEvent={workEvent} />
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

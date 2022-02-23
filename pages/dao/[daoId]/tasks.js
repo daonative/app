@@ -76,6 +76,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
       assigneeName: assignee?.name || null,
       created: serverTimestamp(),
       deadline: new Date(data.deadline),
+      weight: data.weight || null
     }
     await addDoc(collection(db, 'tasks'), task)
   }
@@ -85,6 +86,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
     const task = {
       description: data.description,
       deadline: data.deadline,
+      weight: data.weight || null,
       assigneeMembershipId: assignee?.membershipId || null,
       assigneeAccount: assignee?.account || null,
       assigneeName: assignee?.name || null,
@@ -127,13 +129,19 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
+                Weight
+              </label>
+              <input type="number" {...register("weight")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
                 Assignee
               </label>
               <select
                 {...register("assigneeMembershipId")}
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
               >
-                <option value="">---</option>
+                <option value="">Nobody (open task)</option>
                 {members.map(member => <option key={member.membershipId} value={member.membershipId}>{member.name}</option>)}
               </select>
             </div>
@@ -240,7 +248,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
-              <TasksTable showAssignee={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={handleEditTask} />
+              <TasksTable showAssignee={true} showWeight={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={handleEditTask} />
             </div>
           </main>
         </div>

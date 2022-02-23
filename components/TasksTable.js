@@ -3,7 +3,7 @@ import { classNames } from '../lib/utils';
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 
-const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskStatusChange, onTaskClick }) => {
+const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false, tasks = [], onTaskStatusChange, onTaskClick }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -18,6 +18,14 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskS
                   >
                     {title}
                   </th>
+                  {showWeight && (
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Weight
+                    </th>
+                  )}
                   {showAssignee && (
                     <th
                       scope="col"
@@ -55,6 +63,11 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, tasks = [], onTaskS
                       >
                         {task.description}
                       </td>
+                      {showWeight && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {task.weight}
+                        </td>
+                      )}
                       {showAssignee && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <div className="flex items-center gap-4">
