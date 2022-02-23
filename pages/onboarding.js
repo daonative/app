@@ -147,16 +147,31 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   const handleCreateRoom = async (data) => {
     if (!account) return
 
+    const deployTreasury = false
+    let address = null
+    let toastId = null
+
     onDaoCreating()
-    const toastId = toast.loading('Loading')
+
+    if (deployTreasury) {
+      toastId = toast.loading('Loading')
+    }
 
     try {
-      const tx = await deployRoomContract(data.daoName)
-      const receipt = await tx.wait()
-      const address = getRoomAddressFromCreationTxReceipt(receipt)
+
+      if (deployTreasury) {
+        const tx = await deployRoomContract(data.daoName)
+        const receipt = await tx.wait()
+        address = getRoomAddressFromCreationTxReceipt(receipt)
+      }
+
       const room = await createRoom(data.daoName, address)
       await createRoomFeedEntry(room.roomId, data.daoName)
-      toast.success('Confirmed', { id: toastId })
+
+      if (deployTreasury) {
+        toast.success('Confirmed', { id: toastId })
+      }
+
       onDaoCreated(room)
     } catch (e) {
       console.error(e)
