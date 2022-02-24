@@ -262,6 +262,9 @@ const Feed = ({ feed, kpis, roomId }) => {
                               return ImpactIcon && <ImpactIcon key={`${event.eventId}-${impactId}`} className="h-4 w-4" />
                             })}
                             {totalPraise && `+${totalPraise}`}
+                            {event?.workWeight && event?.appraisers.length > 0 && (
+                              <>{' '}(validated by {event.appraisers.length})</>
+                            )}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
