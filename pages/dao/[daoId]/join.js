@@ -56,6 +56,8 @@ const Join = ({ dao }) => {
 
   useDarkMode()
 
+  const mintNFTMembership = MINT_NFT_MEMBERSHIP || router?.query?.mint === "true"
+
   const createMembershipToken = async (roomId) => {
     const signer = provider.getSigner(account)
     const contract = new ethers.Contract(MEMBERSHIP_CONTRACT_ADDRESS, membershipInterface, signer)
@@ -119,12 +121,12 @@ const Join = ({ dao }) => {
 
     setIsLoading(true)
 
-    if (MINT_NFT_MEMBERSHIP) {
+    if (mintNFTMembership) {
       toastId = toast.loading('Loading')
     }
 
     try {
-      if (MINT_NFT_MEMBERSHIP) {
+      if (mintNFTMembership) {
         const tx = await createMembershipToken(dao.roomId)
         const receipt = await tx.wait()
         tokenId = getMembershipTokenIdFromTxReceipt(receipt)
@@ -133,7 +135,7 @@ const Join = ({ dao }) => {
       await createMembershipFeedEntry(dao.roomId, data.memberName)
       await router.push(`/dao/${dao.roomId}`)
 
-      if (MINT_NFT_MEMBERSHIP) {
+      if (mintNFTMembership) {
         toast.success('Confirmed', { id: toastId })
       }
     } catch (e) {
