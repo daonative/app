@@ -66,7 +66,7 @@ const Members = ({ members }) => {
   const { query } = useRouter()
   const { account } = useWallet()
   const membership = useMembership(account, query.daoId)
-  const isMember = !!membership
+  const isAdmin = membership?.role === 'admin'
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -93,7 +93,7 @@ const Members = ({ members }) => {
             </li>
           ))}
         </ul>
-        {isMember && (
+        {isAdmin && (
           <button
             className="place-self-center inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             onClick={openModal}
