@@ -6,6 +6,7 @@ import { useWallet } from 'use-wallet';
 import useMembership from '../lib/useMembership';
 import { mergeKPIsAndDefaults } from './KPIs';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
+import Button from './Button'
 import PFP from './PFP';
 import ShortAddress from './ShortAddress';
 import Spinner from './Spinner';
@@ -90,6 +91,58 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
   )
 }
 
+const ValidateModal = ({ show, onClose, workEvent }) => {
+  const { account } = useWallet()
+
+  const addPraiseAndValidate = async () => {
+    const praise = parseInt(workEvent.workWeight)
+    const db = getFirestore()
+    const eventRef = doc(db, 'feed', workEvent.eventId)
+
+    await updateDoc(eventRef, {
+      praises: arrayUnion({ praise, impact: 'na' }),
+      appraisers: arrayUnion(account)
+    })
+  }
+
+  const handleValidateWork = async () => {
+    await addPraiseAndValidate()
+    onClose()
+  }
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <ModalTitle>
+        Validate work
+      </ModalTitle>
+      <ModalBody>
+        <div className="flex flex-col gap-6">
+          <div>
+            <h4 className="font-bold">Task</h4>
+            {workEvent?.description} (weight: {workEvent?.workWeight})
+          </div>
+
+          <div>
+            <h4 className="font-bold">Work Description</h4>
+            {workEvent?.workProof}
+          </div>
+
+        </div>
+      </ModalBody>
+      <ModalActionFooter>
+        <div className="flex gap-2">
+          <Button onClick={onClose}>
+            Close
+          </Button>
+          <Button onClick={handleValidateWork}>
+            Validate
+          </Button>
+        </div>
+      </ModalActionFooter>
+    </Modal>
+  )
+}
+
 const WorkProofModal = ({ show, onClose, workEvent }) => {
   return (
     <Modal show={show} onClose={onClose}>
@@ -117,6 +170,7 @@ const WorkProofModal = ({ show, onClose, workEvent }) => {
 
 const Feed = ({ feed, kpis, roomId }) => {
   const [reviewId, setReviewId] = useState()
+  const [validateId, setValidateId] = useState()
   const [workEvent, setWorkEvent] = useState(null)
   const metrics = mergeKPIsAndDefaults(kpis)
   const { account } = useWallet()
@@ -131,6 +185,10 @@ const Feed = ({ feed, kpis, roomId }) => {
     setWorkEvent(event)
   }
   const handleCloseWorkProof = () => setWorkEvent(null)
+
+
+  const handleValidateWork = (id) => setValidateId(id)
+  const handleCloseValidateModal = () => setValidateId(undefined)
 
   return (
     <>
@@ -180,7 +238,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                   {feed.map((event) => {
                     const totalPraise = event.praises?.reduce((total, currentPraise) => total + currentPraise.praise, 0)
                     const impacts = event.praises?.map(praise => praise.impact).filter((v, i, a) => a.indexOf(v) === i) || []
-                    const canReview = (
+                    const canReviewOrValidate = (
                       event.type === "work" &&
                       event.authorAccount !== account &&
                       !event.appraisers?.includes(account)
@@ -222,10 +280,19 @@ const Feed = ({ feed, kpis, roomId }) => {
                         </td>
                         {isMember && (
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
-                            {canReview && (
+                            {canReviewOrValidate && (
                               <>
-                                <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
-                                <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} event={event} KPIs={kpis} />
+                                {event?.workWeight ? (
+                                  <>
+                                    <span className="hover:cursor-pointer underline" onClick={() => handleValidateWork(event.eventId)}>Validate</span>
+                                    <ValidateModal show={validateId === event.eventId} onClose={handleCloseValidateModal} workEvent={event} />
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="hover:cursor-pointer underline" onClick={() => handleReviewWork(event.eventId)}>Review</span>
+                                    <ReviewModal show={reviewId === event.eventId} onClose={handleCloseReviewModal} event={event} KPIs={kpis} />
+                                  </>
+                                )}
                               </>
                             )}
                           </td>
