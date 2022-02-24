@@ -19,6 +19,7 @@ const PolygonWarning = () => {
     await ethereum.request({ method: 'wallet_addEthereumChain', params })
   }
 
+  if (true) return <></>
   if (!account) return <></>
   if (chainId === 137) return <></>
 

@@ -328,7 +328,7 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
               </div>
             )}
             {isMember && myTasks?.length > 0 && (
-              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">\
+              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
                 <TasksTable title="My Tasks" tasks={myTasks} showWeight={true} />
               </div>
             )}

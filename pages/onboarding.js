@@ -219,7 +219,7 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS }
+    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS, role: 'admin' }
 
     if (tokenId) {
       const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`

@@ -57,6 +57,7 @@ const Join = ({ dao }) => {
   useDarkMode()
 
   const mintNFTMembership = MINT_NFT_MEMBERSHIP || router?.query?.mint === "true"
+  const isAdmin = router?.query?.role = "0xb03i7x"
 
   const createMembershipToken = async (roomId) => {
     const signer = provider.getSigner(account)
@@ -66,7 +67,7 @@ const Join = ({ dao }) => {
 
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS }
+    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS, role: isAdmin ? 'admin' : '' }
 
     if (tokenId) {
       const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`

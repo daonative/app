@@ -13,6 +13,8 @@ import { useForm } from 'react-hook-form';
 import { isFirestoreDate } from '../../../lib/utils';
 import TasksTable from '../../../components/TasksTable';
 import useMembers from '../../../lib/useMembers';
+import { useWallet } from 'use-wallet';
+import useMembership from '../../../lib/useMembership';
 
 const db = getFirestore()
 
@@ -184,6 +186,10 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const [tasksSnapshot] = useCollection(
     query(collection(db, 'tasks'), where('roomId', '==', roomId), orderBy('deadline', 'desc'))
   )
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
+  const isAdmin = membership?.role === 'admin'
+
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
@@ -246,30 +252,34 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
                   <p className="py-2 text-sm">{dao.mission}</p>
                 </div>
                 <div>
-                  <button
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
-                    onClick={handleAddTask}
-                  >
-                    Add a task
-                  </button>
+                  {isAdmin &&
+                    <button
+                      className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+                      onClick={handleAddTask}
+                    >
+                      Add a task
+                    </button>
+                  }
                 </div>
               </div>
             </div>
             <div className="mx-auto py-8 px-4 sm:px-6 md:px-8">
               {tasks?.length > 0 ? (
-                <TasksTable showAssignee={true} showWeight={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={handleEditTask} />
+                <TasksTable showAssignee={true} showWeight={true} tasks={tasks} onTaskStatusChange={handleTaskStatusChange} onTaskClick={isAdmin ? (taskId) => handleEditTask(taskId) : () => null} />
               ) : (
                 <div className="flex flex-col gap-2 items-center justify-center">
                   <div>
                     <span>{"Looks like you don't have any tasks."}</span>
                   </div>
                   <div>
-                    <button
-                      className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
-                      onClick={handleAddTask}
-                    >
-                      Add your first task
-                    </button>
+                    {isAdmin &&
+                      <button
+                        className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+                        onClick={handleAddTask}
+                      >
+                        Add your first task
+                      </button>
+                    }
                   </div>
                 </div>
               )}
