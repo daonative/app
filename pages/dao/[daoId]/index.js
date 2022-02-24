@@ -109,10 +109,10 @@ const Mission = ({ roomId, mission }) => {
 }
 
 const LogWorkModal = ({ show, onClose, task }) => {
-  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm({mode: 'onTouched'})
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm({ mode: 'onTouched' })
   const { account } = useWallet()
   const membership = useMembership(account, task?.roomId)
-  
+
   useEffect(() => {
     reset()
   }, [reset, task])
@@ -144,13 +144,16 @@ const LogWorkModal = ({ show, onClose, task }) => {
 
   return (
     <Modal show={show} onClose={onClose}>
+      <ModalTitle>{task?.description}</ModalTitle>
       <form onSubmit={handleSubmit(handleLogWork)}>
-        <ModalTitle>Log your work</ModalTitle>
         <ModalBody>
           <div className="flex flex-col gap-4">
+            {task?.details &&
+              <div className="border border-indigo-200 border-opacity-25 rounded-md p-2 whitespace-pre-wrap overflow-auto">{task?.details}</div>
+            }
             <div>
               <label className="block text-sm font-medium pb-2">
-                Work Description
+                Proof of work
               </label>
               <textarea type="text" {...register("proof", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
               {errors.proof && (

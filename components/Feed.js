@@ -210,7 +210,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     >
-                      Praise
+                      Rewards
                     </th>
                     <th
                       scope="col"

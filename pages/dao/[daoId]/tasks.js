@@ -70,6 +70,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
     const task = {
       roomId,
       description: data.description,
+      details: data.details,
       status: 'todo',
       assigneeMembershipId: assignee?.membershipId || null,
       assigneeAccount: assignee?.account || null,
@@ -85,6 +86,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
     const assignee = members.find(member => member.membershipId === data.assigneeMembershipId)
     const task = {
       description: data.description,
+      details: data.details,
       deadline: data.deadline,
       weight: data.weight || null,
       assigneeMembershipId: assignee?.membershipId || null,
@@ -111,12 +113,18 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium pb-2">
-                Description
+                Title
               </label>
               <input type="text" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Description (optional)
+              </label>
+              <textarea rows="8" {...register("details", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
@@ -129,7 +137,7 @@ const TaskModal = ({ show, onClose, roomId, taskId, defaultValues = {} }) => {
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
-                Weight
+                Weight (rewards for task completion)
               </label>
               <input type="number" {...register("weight")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
             </div>
