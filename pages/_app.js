@@ -2,8 +2,7 @@ import '../styles/globals.css'
 
 import { UseWalletProvider } from 'use-wallet'
 import { Toaster } from 'react-hot-toast'
-import { initializeApp, getApps } from 'firebase/app'
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp} from 'firebase/app'
 import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 
@@ -11,8 +10,6 @@ const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  appId: "1:208459706334:web:1138476679353f3ba5b74f",
-  measurementId: "G-BJ2Y4Y62SY"
 }
 
 initializeApp(firebaseConfig)
