@@ -22,6 +22,7 @@ import Spinner from './Spinner'
 import { useWallet } from 'use-wallet'
 import useMembers from '../lib/useMembers'
 import useMembership from '../lib/useMembership'
+import toast from 'react-hot-toast'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -37,6 +38,7 @@ const FeedbackModal = ({ show, onClose }) => {
 
   const submitFeedback = async (data) => {
     await axios.post('/api/feedback', { content: data.content, user: membership.name })
+    toast.success('Feedback Submitted')
   }
   const handleSubmitFeedback = async (data) => {
     await submitFeedback(data)
