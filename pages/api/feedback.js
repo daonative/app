@@ -1,4 +1,5 @@
-import axios from 'axios'
+import fetch from 'node-fetch';
+
 
 
 const webhookURL = process.env.DAONATIVE_DISCORD_WEBHOOK
@@ -15,8 +16,12 @@ export default function handler(req, res) {
             "content": content,
         }
         console.log(webhookURL, webhookBody)
-        axios.post(webhookURL, webhookBody)
-        res.status(200).send({ content: content })
+        fetch(webhookURL, {
+            method: 'POST',
+            body: JSON.stringify(webhookBody),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(res => res.json())
+            .then(json => res.status(200).send(json));
     } else {
         return {}
         // Handle any other HTTP method
