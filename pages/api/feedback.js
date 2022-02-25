@@ -20,8 +20,7 @@ export default function handler(req, res) {
             method: 'POST',
             body: JSON.stringify(webhookBody),
             headers: { 'Content-Type': 'application/json' }
-        }).then(res => res.json())
-            .then(json => res.status(200).send('ok'));
+        }).then(() => res.status(200).send('ok'))
     } else {
         return {}
         // Handle any other HTTP method
