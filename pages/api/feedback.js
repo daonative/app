@@ -14,6 +14,7 @@ export default function handler(req, res) {
             "avatar_url": "https://www.daonative.xyz/frame-logo.png",
             "content": content,
         }
+        console.log(webhookURL, webhookBody)
         axios.post(webhookURL, webhookBody)
         res.status(200).send({ content: content })
     } else {
