@@ -17,7 +17,7 @@ import { ethers, providers } from 'ethers';
 import { roomCreatorInterface, ROOM_CREATOR_CONTRACT_ADDRESS } from '../../onboarding';
 import { formatEther, parseEther } from 'ethers/lib/utils';
 import { Withdraw } from '../../../components/Withdraw';
-import { roomAbi } from '../../../lib/abi';
+import { roomAbi, roomCreatorAbi } from '../../../lib/abi';
 
 export function useInterval(callback, delay) {
   const savedCallback = useRef(callback)
@@ -44,13 +44,11 @@ export const TreasuryStats = ({ address }) => {
   const { account, chainId } = useWallet()
   const library = useProvider()
   const [deposit, setDeposit] = useState('0')
-  const isPolygon = chainId === 137
   const [etherBalance, setBalance] = useState()
 
   const loading = !etherBalance
   const getDeposit = async (address) => {
     if (!account) return
-    if (!isPolygon) return
     const room = new ethers.Contract(address, roomAbi, library.getSigner(account))
     const myDeposit = await room.getDeposit()
     setDeposit(myDeposit)
@@ -61,6 +59,7 @@ export const TreasuryStats = ({ address }) => {
       process.env.NEXT_PUBLIC_RPC_POLYGON
     )
     const balance = await provider.getBalance(address)
+    console.log(balance)
     setBalance(balance)
   }
 
@@ -86,7 +85,7 @@ export const TreasuryStats = ({ address }) => {
           <dt className="order-3 mt-2 leading-6 font-medium text-gray-500">Your Balance</dt>
           <dd className="order-2 font-extrabold text-indigo-600 flex justify-center items-center gap-3">
             {loading ? 'Loading' : <div>{formatEther(deposit)} MATIC</div>}
-            {isPolygon && <Withdraw treasuryAddress={address} amount={deposit} />}
+            <Withdraw treasuryAddress={address} amount={deposit} />
           </dd>
         </div>
       </dl>
@@ -227,14 +226,18 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
   const { account } = useWallet()
   const provider = useProvider()
+  const library = provider
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.role === 'admin'
+  const [loading, setLoading] = useState(false)
+  const roomTreasuryAddress = daoSnapshot?.data()?.treasury
+
+
 
   const setRoomTreasury = async (treasuryAddress) => {
     const roomRef = doc(db, 'rooms', roomId)
     await updateDoc(roomRef, { treasury: treasuryAddress })
   }
-  const roomTreasuryAddress = daoSnapshot?.data()?.treasury
 
   const deployRoomContract = async (name) => {
     const signer = provider.getSigner(account)
@@ -282,6 +285,34 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
     }
   }, [darkMode])
 
+  const createRoom = async (name) => {
+    const signer = library.getSigner(account)
+    const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorAbi, signer)
+    console.log('before event')
+    contract.on('RoomCreated', (event) => {
+      const db = getFirestore()
+      console.log(event)
+      const roomRef = doc(db, 'rooms', name)
+      updateDoc(roomRef, { treasury: event })
+      setLoading(false)
+    })
+    return await contract.createRoom(name)
+  }
+  const handleCreateRoom = async () => {
+    if (!account) return
+    const toastId = toast.loading('Loading')
+    setLoading(true)
+    try {
+      const tx = await createRoom(roomId)
+      await tx.wait()
+      toast.success('Confirmed', { id: toastId })
+    } catch (e) {
+      console.error(e)
+      const errorMessage = e?.message || 'Error'
+      toast.error(errorMessage, { id: toastId })
+    }
+  }
+
 
   return (
     <>
@@ -316,7 +347,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
                 <Fund address={roomTreasuryAddress} />
               </> :
                 <button
-                  onClick={handleCreateTreasury}
+                  onClick={handleCreateRoom}
                   className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Get Started
