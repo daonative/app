@@ -71,7 +71,7 @@ const Members = ({ members }) => {
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
-  const inviteLink = `https://app.daonative.xyz/dao/${query.daoId}/join`
+  const inviteLink = `${window?.origin}/dao/${query.daoId}/join`
 
   return (
     <>
