@@ -199,7 +199,7 @@ export const getServerSideProps = async ({ params }) => {
 
 
 
-export default function Tasks({ dao: initialDAO, }) {
+export default function Treasury({ dao: initialDAO, }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
