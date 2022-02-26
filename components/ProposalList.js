@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Contract, providers } from 'ethers'
 import { formatEther } from '@ethersproject/units'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { useWallet } from 'use-wallet'
 import { roomAbi } from '../lib/abi'
 import useProvider from '../lib/useProvider'
@@ -46,27 +45,27 @@ const ProposalSummary = ({ proposalId, treasuryAddress }) => {
         >
             {loading}
             {proposal.currency}
-            <div class="px-4 py-4 sm:px-6">
-                <div class="flex items-center justify-between">
-                    <div class="text-xl font-semibold text-gray-900 dark:text-daonative-gray-200">
+            <div className="px-4 py-4 sm:px-6">
+                <div className="flex items-center justify-between">
+                    <div className="text-xl font-semibold text-gray-900 dark:text-daonative-gray-200">
                         {proposal.title}
                     </div>
-                    <div class="ml-2 flex-shrink-0 flex">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <div className="ml-2 flex-shrink-0 flex">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                             {states[proposal.state]}
                         </span>
                     </div>
                 </div>
-                <div class="mt-2 flex justify-between">
-                    <div class="sm:flex">
-                        <div class="flex items-center text-sm text-gray-500 gap-1">
+                <div className="mt-2 flex justify-between">
+                    <div className="sm:flex">
+                        <div className="flex items-center text-sm text-gray-500 gap-1">
                             <div m>
                                 MATIC
                             </div>
                             {formatEther(proposal?.amount || '0')}
                         </div>
                     </div>
-                    <div class="ml-2 flex items-center text-sm text-gray-500">
+                    <div className="ml-2 flex items-center text-sm text-gray-500">
                         <ApproveButton treasuryAddress={treasuryAddress} proposalId={proposalId} amount={proposal?.amount?.toString()} state={proposal.state} />
                     </div>
                 </div>
@@ -100,7 +99,7 @@ export const ProposalList = ({ treasuryAddress }) => {
         <ul className="flex flex-col gap-3 py-4 p-8">
             {loading && 'Loading'}
             {proposals
-                .map((proposalId) => <ProposalSummary proposalId={proposalId} treasuryAddress={treasuryAddress} />)
+                .map((proposalId) => <ProposalSummary key={proposalId} proposalId={proposalId} treasuryAddress={treasuryAddress} />)
                 .reverse()}
         </ul>
     )
