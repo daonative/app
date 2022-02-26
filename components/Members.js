@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { Dialog, Transition } from '@headlessui/react'
 import { useRouter } from "next/router"
 import useMembership from "../lib/useMembership"
@@ -67,11 +67,14 @@ const Members = ({ members }) => {
   const { account } = useWallet()
   const membership = useMembership(account, query.daoId)
   const isAdmin = membership?.role === 'admin'
+  const [inviteLink, setInviteLink] = useState('')
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
-  const inviteLink = `${window?.origin}/dao/${query.daoId}/join`
+  useEffect(() => {
+    setInviteLink(`${window?.origin} / dao / ${query.daoId} / join`)
+  }, [])
 
   return (
     <>
