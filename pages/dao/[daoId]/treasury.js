@@ -154,20 +154,7 @@ const Fund = ({ address }) => {
 
 const db = getFirestore()
 
-const getTasks = async (roomId) => {
-  const tasksRef = collection(db, 'tasks')
-  const tasksQuery = query(tasksRef, where('roomId', '==', roomId), orderBy('deadline', 'desc'))
-  const snapshot = await getDocs(tasksQuery)
-  return snapshot.docs.map((doc) => {
-    const item = doc.data()
-    return {
-      ...item,
-      created: isFirestoreDate(item?.created) ? item.created.toMillis() : '',
-      deadline: isFirestoreDate(item?.deadline) ? item.deadline.toMillis() : '',
-      taskId: doc.id
-    }
-  })
-}
+
 export const getRoomAddressFromCreationTxReceipt = (txReceipt) => (
   txReceipt.logs
     // Parse log events
@@ -205,20 +192,14 @@ const getRoom = async (roomId) => {
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
   const room = await getRoom(roomId)
-  const tasks = await getTasks(roomId)
-
   return {
-    props: { dao: room, tasks }
+    props: { dao: room, }
   }
 }
 
-const SetupTreasury = () => {
-
-  return <div>hello my friend</div>
-}
 
 
-export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
+export default function Tasks({ dao: initialDAO, }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [showSidebarMobile, setShowSidebarMobile] = useState(false)
@@ -230,7 +211,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.role === 'admin'
   const [loading, setLoading] = useState(false)
-  const roomTreasuryAddress = daoSnapshot?.data()?.treasury
+  const roomTreasuryAddress = initialDAO?.treasury || daoSnapshot?.data()?.treasury
 
 
 
@@ -239,40 +220,8 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
     await updateDoc(roomRef, { treasury: treasuryAddress })
   }
 
-  const deployRoomContract = async (name) => {
-    const signer = provider.getSigner(account)
-    const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorInterface, signer)
-    // const res = await axios.get('https://gasstation-mainnet.matic.network/v2')
-    // add last argument options
-    // var options = {gasPrice: 1000000000}; // in wei
-    contract.on('RoomCreated', (event) => {
-      setRoomTreasury(event)
-    })
-
-    return await contract.createRoom(name)
-  }
 
 
-  const handleCreateTreasury = async (data) => {
-    if (!account) return
-
-    let toastId = null
-
-    toastId = toast.loading('Creating your treasury')
-
-    try {
-
-      const tx = await deployRoomContract(roomId)
-      await tx.wait()
-      toast.success('Treasury created', { id: toastId })
-
-    } catch (e) {
-      console.log('bla')
-      console.error(e)
-      const errorMessage = e?.message || 'Error'
-      toast.error(errorMessage, { id: toastId })
-    }
-  }
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
@@ -296,12 +245,14 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
       updateDoc(roomRef, { treasury: event })
       setLoading(false)
     })
+    // const res = await axios.get('https://gasstation-mainnet.matic.network/v2')
+    // add last argument options
+    // var options = {gasPrice: 1000000000}; // in wei
     return await contract.createRoom(name)
   }
   const handleCreateRoom = async () => {
     if (!account) return
-    const toastId = toast.loading('Loading')
-    setLoading(true)
+    const toastId = toast.loading('Creating Treasury')
     try {
       const tx = await createRoom(roomId)
       await tx.wait()

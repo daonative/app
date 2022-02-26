@@ -1,6 +1,7 @@
 import { Fragment, } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
+  MailIcon,
   CalendarIcon,
   CashIcon,
   CollectionIcon,
@@ -30,6 +31,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true },
     { name: 'Tasks', href: `/dao/${roomId}/tasks`, icon: ClipboardCheckIcon, current: false },
     { name: 'Treasury', href: `/dao/${roomId}/treasury`, icon: CashIcon, current: false },
+    { name: 'Proposals', href: `/dao/${roomId}/proposals`, icon: MailIcon, current: false },
     { name: 'Bounties', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
