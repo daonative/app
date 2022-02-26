@@ -1,12 +1,12 @@
 import { Contract } from 'ethers'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
-import { parseEther } from '@usedapp/core/node_modules/@ethersproject/units'
 import { useEffect } from 'react'
 import { useWallet as useEthers } from 'use-wallet'
 import { useInterval } from '../pages/dao/[daoId]/treasury'
 import { roomAbi } from '../lib/abi'
 import useProvider from '../lib/useProvider'
+import { parseEther } from 'ethers/lib/utils'
 
 
 export const MarkAsDeliveredButton = ({ treasuryAddress, proposalId, state }) => {
@@ -108,7 +108,6 @@ export const ApproveButton = ({ treasuryAddress, proposalId, amount, state }) =>
 
     const [deposit, setDeposit] = useState(undefined)
     const [loading, setLoading] = useState(false)
-    const [isAllowed, setIsAllowed] = useState(false)
 
     const approveProposal = async () => {
         const signer = library.getSigner(account)
@@ -127,10 +126,6 @@ export const ApproveButton = ({ treasuryAddress, proposalId, amount, state }) =>
         if (!treasuryAddress) return
         getDeposit(treasuryAddress)
     }, 3000)
-
-    useEffect(() => {
-        setIsAllowed(!!deposit?.gt(parseEther(amount)))
-    }, [deposit, amount])
 
     const handleApprove = async () => {
         if (!account) return
@@ -154,7 +149,6 @@ export const ApproveButton = ({ treasuryAddress, proposalId, amount, state }) =>
     return (
         <button
             onClick={handleApprove}
-            disabled={!isAllowed}
             className="text-sm font-medium text-indigo-600 truncate">
             {loading ? 'Loading' : 'Approve & Fund'}
         </button>

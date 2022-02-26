@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useWallet } from 'use-wallet'
 import { roomAbi } from '../lib/abi'
 import useProvider from '../lib/useProvider'
+import { ApproveButton } from './ProposalButtons'
 
 const ProposalSummary = ({ proposalId, treasuryAddress }) => {
     const { account, } = useWallet()
@@ -66,11 +67,7 @@ const ProposalSummary = ({ proposalId, treasuryAddress }) => {
                         </div>
                     </div>
                     <div class="ml-2 flex items-center text-sm text-gray-500">
-                        <button
-                            className="text-sm font-medium text-indigo-600 truncate"
-                        >
-                            Approve
-                        </button>
+                        <ApproveButton treasuryAddress={treasuryAddress} proposalId={proposalId} amount={proposal?.amount?.toString()} state={proposal.state} />
                     </div>
                 </div>
             </div>
