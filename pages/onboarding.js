@@ -20,10 +20,10 @@ import { useRouter } from 'next/router'
 import { CheckIcon } from '@heroicons/react/solid'
 import PolygonWarning from '../components/PolygonWarning'
 
-const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
+export const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
 
-const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA913'
+export const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA913'
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 
 const DEPLOY_TREASURY = false
