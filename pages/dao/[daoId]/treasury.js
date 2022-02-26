@@ -27,7 +27,7 @@ export function useInterval(callback, delay) {
     savedCallback.current = callback
   }, [callback])
 
-  // Set up the interval.
+  // Set up the interval
   useEffect(() => {
     // Don't schedule if no delay is specified.
     if (delay === null) {
@@ -248,7 +248,7 @@ export default function Treasury({ dao: initialDAO, }) {
     // const res = await axios.get('https://gasstation-mainnet.matic.network/v2')
     // add last argument options
     // var options = {gasPrice: 1000000000}; // in wei
-    return await contract.createRoom(name)
+    return await contract.createRoom(name, { gasPrice: 40000000000 })
   }
   const handleCreateRoom = async () => {
     if (!account) return

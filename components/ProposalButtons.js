@@ -112,7 +112,7 @@ export const ApproveButton = ({ treasuryAddress, proposalId, amount, state }) =>
     const approveProposal = async () => {
         const signer = library.getSigner(account)
         const contract = new Contract(treasuryAddress, roomAbi, signer)
-        return await contract.approveProposal(proposalId)
+        return await contract.approveProposal(proposalId, { gasPrice: 40000000000 })
     }
 
     const getDeposit = async (address) => {

@@ -12,7 +12,7 @@ export const Withdraw = ({ treasuryAddress, amount }) => {
     const withdraw = async () => {
         const signer = library.getSigner(account)
         const contract = new Contract(treasuryAddress, roomAbi, signer)
-        return await contract.withdraw(amount)
+        return await contract.withdraw(amount, { gasPrice: 40000000000 })
     }
     const handleWithdraw = async () => {
         if (!account) return
