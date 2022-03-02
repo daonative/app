@@ -7,6 +7,7 @@ import {
   HomeIcon,
   UsersIcon,
   XIcon,
+  LightningBoltIcon,
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
@@ -114,6 +115,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const navigation = [
     { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true },
     { name: 'Tasks', href: `/dao/${roomId}/tasks`, icon: ClipboardCheckIcon, current: false },
+    { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
     { name: 'Bounties', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
