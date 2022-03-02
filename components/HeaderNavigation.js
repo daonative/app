@@ -18,7 +18,7 @@ import PFP from './PFP';
 
 const auth = getAuth()
 
-const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
+const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, reset: disconnect } = useWallet()
   const isConnected = useIsConnected()
@@ -65,7 +65,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode }) => {
         </button>
         <div className="flex-1 px-4 flex justify-between">
           <div className="flex-1 flex items-center">
-            {isMember && (
+            {showLogWork && isMember && (
               <form className="hidden md:flex" onSubmit={handleSubmit(logWork)}>
                 <input
                   {...register("work")}
