@@ -16,7 +16,8 @@ module.exports = {
         "daonative-gray-200": "#D6D7E3",
         "daonative-gray-300": "#B9B9B9",
         "daonative-gray-400": "#70708A",
-        "daonative-gray-900": "#40405F"
+        "daonative-gray-900": "#40405F",
+        "daonative-primary-blue": "#214ADC"
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
