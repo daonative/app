@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { Dialog, Transition } from '@headlessui/react'
 import { useRouter } from "next/router"
 import useMembership from "../lib/useMembership"
@@ -63,6 +63,7 @@ const InviteMemberModal = ({ open, onClose, inviteLink }) => (
 
 const Members = ({ members }) => {
   const [open, setOpen] = useState(false)
+  const [inviteLink, setInviteLink] = useState('')
   const { query } = useRouter()
   const { account } = useWallet()
   const membership = useMembership(account, query.daoId)
@@ -71,7 +72,9 @@ const Members = ({ members }) => {
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 
-  const inviteLink = `https://app.daonative.xyz/dao/${query.daoId}/join`
+  useEffect(() => {
+    setInviteLink(`${window?.origin}/dao/${query.daoId}/join`)
+  }, [])
 
   return (
     <>
