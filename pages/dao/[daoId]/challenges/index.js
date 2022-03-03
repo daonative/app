@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import { CheckIcon, LightningBoltIcon } from '@heroicons/react/solid'
+import Link from 'next/link'
 
 const db = getFirestore()
 
@@ -52,8 +53,8 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
                 Title
               </label>
               <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
-              {errors.description && (
-                <span className="text-xs text-red-400">You need to set a description</span>
+              {errors.title && (
+                <span className="text-xs text-red-400">You need to set a title</span>
               )}
             </div>
             <div>
@@ -123,26 +124,28 @@ const Challenges = ({ }) => {
           {challenges?.length > 0 ? (
             <ul role="list" className="flex flex-col gap-3">
               {challenges?.map((challenge) => (
-                <li key={challenge.challengeId}>
-                  <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {challenge.weight} XP
-                      </span>
-                    </div>
-                    <div className="mt-2 sm:flex sm:justify-between">
-                      <div className="sm:flex">
+                <Link href={`/dao/${roomId}/challenges/${challenge.challengeId}`}>
+                  <li key={challenge.challengeId}>
+                    <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded hover:cursor-pointer hover:bg-daonative-dark-200">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          {challenge.weight} XP
+                        </span>
                       </div>
-                      <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-                        <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                        <p>
-                          20 Completions
-                        </p>
+                      <div className="mt-2 sm:flex sm:justify-between">
+                        <div className="sm:flex">
+                        </div>
+                        <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+                          <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                          <p>
+                            20 Completions
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                </Link>
               ))}
             </ul>
           ) : (
