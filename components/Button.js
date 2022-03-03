@@ -14,7 +14,7 @@ export const Button = ({ children, onClick, type = "button", className = "" }) =
 )
 
 export const PrimaryButton = ({ children, onClick, type = "button", className = ""}) => (
-  <Button onClick={onClick} type={type} className={classNames("bg-daonative-primary-blue", className)}>{children}</Button>
+  <Button onClick={onClick} type={type} className={classNames("bg-daonative-primary-blue ", className)}>{children}</Button>
 )
 
 export default Button

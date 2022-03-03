@@ -16,7 +16,7 @@ const ConnectWalletButton = () => {
 
   return (
     <button
-      className="rounded-lg text-gray-100 bg-daonative-dark-100 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4"
+      className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4"
       onClick={() => { !isConnected && openConnectWalletModal() }}
     >
       {isConnected ? (

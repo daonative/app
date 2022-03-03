@@ -53,7 +53,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
   }
 
   return (
-    <div className="md:pl-64 flex flex-col">
+    <div className="md:pl-64 flex flex-col ">
       <div className="sticky top-0 z-10 flex-shrink-0 flex h-16  shadow bg-daonative-dark-200">
         <button
           type="button"
@@ -99,19 +99,9 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
               <BellIcon className="h-6 w-6" aria-hidden="true" />
             </button>
 
-            <button
-              type="button"
-              className="mx-2 bg-daonative-dark-100  p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={onToggleDarkMode}
-            >
-              <span className="sr-only">Toggle dark or light mode</span>
-              <MoonIcon className="h-6 w-6 hidden block" aria-hidden="true" />
-              <SunIcon className="h-6 w-6 hidden" aria-hidden="true" />
-            </button>
-
             {!isConnected && (
               <button
-                className="flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-dark-100 text-daonative-gray-100 rounded-full"
+                className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-dark-100 text-daonative-gray-100 rounded-full"
                 onClick={openConnectWalletModal}
               >
                 Connect
@@ -121,7 +111,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
             {isConnected && (
               <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
+                  <Menu.Button className="font-sans flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
                     <span className="sr-only">Open user menu</span>
                     {/*<img
                       className="h-8 w-8 rounded-full"
@@ -147,10 +137,14 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1  ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items
+                    style={{
+                      boxShadow: '0px 0px 15px rgb(160 163 189 / 10%)',
+                    }}
+                    className=" origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1  ring-1 ring-black ring-opacity-5 focus:outline-none bg-daonative-dark-300 border-[1px] border-daonative-border">
                     <Menu.Item>
                       <button
-                        className="block px-4 py-2 text-sm text-gray-700 w-full h-full"
+                        className="font-sans block px-4 py-2 text-sm text-daonative-gray-100 w-full h-full"
                         onClick={disconnect}
                       >
                         Disconnect

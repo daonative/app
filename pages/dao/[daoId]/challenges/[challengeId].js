@@ -70,7 +70,7 @@ const SubmissionsList = ({ submissions }) => (
                     <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
                     <p className="text-sm">0 verifications</p>
                   </div>
-                  <PrimaryButton className="h-7 text-xs px-2">Verify &amp; Earn XPs</PrimaryButton>
+                  <PrimaryButton className="text-xs px-2 w-max">Verify &amp; Earn XPs</PrimaryButton>
                 </div>
               </div>
             </div>
@@ -114,9 +114,9 @@ const ChallengeDetails = () => {
                 <h2 className="text-xl">Submissions</h2>
               </div>
               <div>
-                <PrimaryButton className="rounded-full h-12 w-12 p-0" onClick={handleOpenProofModal}>
+                <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
                   <PlusIcon className="w-4 h-4" />
-                </PrimaryButton>
+                </button>
               </div>
             </div>
             <SubmissionsList submissions={submissions} />
