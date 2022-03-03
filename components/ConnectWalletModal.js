@@ -7,7 +7,7 @@ import { Modal, ModalBody } from './Modal';
 const MetaMaskButton = ({ onClick }) => (
   <button
     type="button"
-    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center dark:bg-daonative-dark-200 dark:text-daonative-gray-200 dark:hover:bg-daonative-dark-100 w-full h-16"
+    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center bg-daonative-dark-200 text-daonative-gray-200 hover:bg-daonative-dark-100 w-full h-16"
     onClick={onClick}
   >
     <img src="/metamask.svg" className="h-8 mr-4" />
@@ -18,7 +18,7 @@ const MetaMaskButton = ({ onClick }) => (
 const WalletConnectButton = ({ onClick }) => (
   <button
     type="button"
-    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center dark:bg-daonative-dark-200 dark:text-daonative-gray-200 dark:hover:bg-daonative-dark-100 w-full h-16"
+    className="text-gray-900 bg-white hover:bg-gray-100 font-medium rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center bg-daonative-dark-200 text-daonative-gray-200 hover:bg-daonative-dark-100 w-full h-16"
     onClick={onClick}
   >
     <img src="/walletconnect.svg" className="h-8 mr-4" />

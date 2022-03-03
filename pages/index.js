@@ -49,7 +49,7 @@ const Home = ({ rooms }) => {
         {rooms
           .filter(room => user?.rooms?.includes(room.roomId))
           .map(room => (
-            <li key={room.roomId} className="m-2 py-2 px-6 rounded-md dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200">
+            <li key={room.roomId} className="m-2 py-2 px-6 rounded-md bg-daonative-dark-100 hover:bg-daonative-dark-200">
               <Link href={`/dao/${room.roomId}/`}>{room.name}</Link>
             </li>
           ))

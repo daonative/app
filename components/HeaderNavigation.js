@@ -54,10 +54,10 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
 
   return (
     <div className="md:pl-64 flex flex-col">
-      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow dark:bg-daonative-dark-200">
+      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow bg-daonative-dark-200">
         <button
           type="button"
-          className="px-4 border-r border-gray-200 dark:border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+          className="px-4 border-r border-gray-200 border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
           onClick={onShowSidebar}
         >
           <span className="sr-only">Open sidebar</span>
@@ -70,19 +70,19 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                 <input
                   {...register("work")}
                   type="text"
-                  className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
+                  className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300"
                   placeholder="What did you do today?"
                 />
                 {isSubmitting ? (
                   <div
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 w-24"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
                   >
                     <span className="w-4 h-4 mx-auto"><Spinner /></span>
                   </div>
                 ) : (
                   <button
                     type="submit"
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 w-24"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
                   >
                     Log work
                   </button>
@@ -93,7 +93,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
           <div className="ml-4 flex items-center md:ml-6">
             <button
               type="button"
-              className="mx-2 dark:bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="mx-2 bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -101,17 +101,17 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
 
             <button
               type="button"
-              className="mx-2 dark:bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="mx-2 bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               onClick={onToggleDarkMode}
             >
               <span className="sr-only">Toggle dark or light mode</span>
-              <MoonIcon className="h-6 w-6 hidden dark:block" aria-hidden="true" />
-              <SunIcon className="h-6 w-6 dark:hidden" aria-hidden="true" />
+              <MoonIcon className="h-6 w-6 hidden block" aria-hidden="true" />
+              <SunIcon className="h-6 w-6 hidden" aria-hidden="true" />
             </button>
 
             {!isConnected && (
               <button
-                className="flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  dark:bg-daonative-dark-100 dark:text-daonative-gray-100 rounded-full"
+                className="flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-dark-100 text-daonative-gray-100 rounded-full"
                 onClick={openConnectWalletModal}
               >
                 Connect
@@ -121,7 +121,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
             {isConnected && (
               <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100 rounded-full">
+                  <Menu.Button className="flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
                     <span className="sr-only">Open user menu</span>
                     {/*<img
                       className="h-8 w-8 rounded-full"

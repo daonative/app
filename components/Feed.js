@@ -66,7 +66,7 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
               <label className="block text-sm font-medium pb-2">
                 How much praise do you want to give?
               </label>
-              <input type="number" {...register("praise", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="number" {...register("praise", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
               {errors.praise && (
                 <span className="text-xs text-red-400">You need to chose a praise amount.</span>
               )}
@@ -76,7 +76,7 @@ const ReviewModal = ({ show, onClose, event, KPIs }) => {
         <ModalActionFooter>
           <button
             type="submit"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -157,7 +157,7 @@ const WorkProofModal = ({ show, onClose, workEvent }) => {
       <ModalActionFooter>
         <div className="flex gap-2">
           <button
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-daonative-dark-100 dark:text-daonative-gray-100"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100"
             onClick={onClose}
           >
             Close
@@ -196,9 +196,9 @@ const Feed = ({ feed, kpis, roomId }) => {
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900">
-              <table className="table-fixed min-w-full divide-y divide-gray-200 dark:divide-daonative-gray-900">
-                <thead className="bg-gray-50 dark:bg-daonative-dark-100 text-gray-500 dark:text-daonative-gray-200">
+            <div className="shadow overflow-hidden border-b border-gray-200 border-daonative-gray-900">
+              <table className="table-fixed min-w-full divide-y divide-gray-200 divide-daonative-gray-900">
+                <thead className="bg-gray-50 bg-daonative-dark-100 text-gray-500 text-daonative-gray-200">
                   <tr>
                     <th
                       scope="col"
@@ -245,7 +245,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                     )
 
                     return (
-                      <tr key={event.eventId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
+                      <tr key={event.eventId} className="bg-white bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
                         <td
                           onClick={() => handleShowWorkProof(event.eventId)}
                           className={classNames(

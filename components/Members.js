@@ -33,7 +33,7 @@ const InviteMemberModal = ({ open, onClose, inviteLink }) => (
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <div className="inline-block align-bottom bg-white dark:bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+          <div className="inline-block align-bottom bg-white bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
             <div>
               <h3 className="text-xl p-4">Invite</h3>
             </div>
@@ -42,7 +42,7 @@ const InviteMemberModal = ({ open, onClose, inviteLink }) => (
               <input
                 type="text"
                 value={inviteLink}
-                className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
+                className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300"
                 disabled
               />
             </div>
@@ -76,18 +76,18 @@ const Members = ({ members }) => {
   return (
     <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
-      <div className="bg-white dark:bg-daonative-dark-100 p-4 shadow rounded-lg">
-        <h3 className="dark:text-daonative-gray-200">Members</h3>
-        <p className="text-sm font-medium text-gray-500 dark:text-daonative-gray-400">{members.length}</p>
+      <div className="bg-white bg-daonative-dark-100 p-4 shadow rounded-lg">
+        <h3 className="text-daonative-gray-200">Members</h3>
+        <p className="text-sm font-medium text-gray-500 text-daonative-gray-400">{members.length}</p>
         <ul role="list" className="divide-y divide-gray-200 w-full">
           {members.map((member, memberIdx) => (
             <li key={memberIdx} className="py-4 flex justify-between">
               <div className="">
-                <p className="text-sm font-medium text-gray-900 dark:text-daonative-gray-200">{member.name}</p>
-                {member.praiseThisWeek && <p className="text-xs text-gray-500 dark:text-daonative-gray-400">Praise received this week</p>}
+                <p className="text-sm font-medium text-gray-900 text-daonative-gray-200">{member.name}</p>
+                {member.praiseThisWeek && <p className="text-xs text-gray-500 text-daonative-gray-400">Praise received this week</p>}
               </div>
               <div className="place-self-end">
-                <p className="text-sm text-gray-500 dark:text-daonative-gray-400">{member.totalPraise}</p>
+                <p className="text-sm text-gray-500 text-daonative-gray-400">{member.totalPraise}</p>
                 <p className="text-xs font-medium text-green-500">{member.praiseThisWeek}</p>
               </div>
             </li>

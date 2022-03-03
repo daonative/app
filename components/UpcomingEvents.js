@@ -26,10 +26,10 @@ const events = [
 
 const UpcomingEvents = () => (
   <div className="">
-    <h3 className="dark:text-daonative-gray-300">
+    <h3 className="text-daonative-gray-300">
       Upcoming Events
     </h3>
-    <ul role="list" className="w-full py-4 text-sm dark:text-daonative-gray-100">
+    <ul role="list" className="w-full py-4 text-sm text-daonative-gray-100">
       {events.map((event, eventIdx) => (
         <li key={eventIdx} className="py-2">
           <Link href={event.link}>

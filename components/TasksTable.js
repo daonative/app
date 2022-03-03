@@ -8,9 +8,9 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="shadow overflow-hidden border-b border-gray-200 dark:border-daonative-gray-900">
-            <table className="table-fixed min-w-full divide-y divide-gray-200 dark:divide-daonative-gray-900">
-              <thead className="bg-gray-50 dark:bg-daonative-dark-100 text-gray-500 dark:text-daonative-gray-200">
+          <div className="shadow overflow-hidden border-b border-gray-200 border-daonative-gray-900">
+            <table className="table-fixed min-w-full divide-y divide-gray-200 divide-daonative-gray-900">
+              <thead className="bg-gray-50 bg-daonative-dark-100 text-gray-500 text-daonative-gray-200">
                 <tr>
                   <th
                     scope="col"
@@ -53,7 +53,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
               <tbody>
                 {tasks.map((task) => {
                   return (
-                    <tr key={task.taskId} className="bg-white dark:bg-daonative-dark-100 text-gray-900 dark:text-daonative-gray-200">
+                    <tr key={task.taskId} className="bg-white bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
                       <td
                         className={classNames(
                           "px-6 py-4 whitespace-nowrap text-sm font-medium",
@@ -89,7 +89,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
                           <input
                             name="done"
                             type="checkbox"
-                            className="dark:bg-daonative-dark-300 dark:border-gray-700 focus:ring-indigo-500 h-6 w-6 text-indigo-600 border-gray-300 rounded"
+                            className="bg-daonative-dark-300 border-gray-700 focus:ring-indigo-500 h-6 w-6 text-indigo-600 border-gray-300 rounded"
                             checked={task.status === "done"}
                             onChange={(event) => onTaskStatusChange(task.taskId, event.target.checked ? "done" : "todo")}
                           />

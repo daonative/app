@@ -20,7 +20,7 @@ class MyDocument extends Document {
           />
           <script defer data-domain="app.daonative.xyz" src="https://plausible.io/js/plausible.js"></script>
         </Head>
-        <body className="antialiased h-full bg-gray-100 dark:bg-daonative-dark-300 dark:text-daonative-gray-100">
+        <body className="antialiased h-full bg-gray-100 bg-daonative-dark-300 text-daonative-gray-100">
           <Main />
           <NextScript />
         </body>

@@ -51,7 +51,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
               <label className="block text-sm font-medium pb-2">
                 Title
               </label>
-              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
@@ -60,13 +60,13 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
               <label className="block text-sm font-medium pb-2">
                 Description (optional)
               </label>
-              <textarea rows="8" {...register("description", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <textarea rows="8" {...register("description", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
                 Weight (rewards for task completion)
               </label>
-              <input type="number" {...register("weight")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="number" {...register("weight")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
             </div>
           </div>
         </ModalBody>

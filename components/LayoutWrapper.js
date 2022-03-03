@@ -17,7 +17,7 @@ export const LayoutWrapper = ({ children }) => {
     <div>
       <SidebarNavigation showMobile={showSidebarMobile} onClose={handleCloseMobileSidebar} />
       <HeaderNavigation onShowSidebar={handleShowMobileSidebar} onToggleDarkMode={() => { }} showLogWork={false} />
-      <div className="md:pl-64 flex-row md:flex overflow-hidden dark:bg-daonative-dark-300 dark:text-daonative-gray-100">
+      <div className="md:pl-64 flex-row md:flex overflow-hidden bg-daonative-dark-300 text-daonative-gray-100">
         <main className="w-full py-6">
           {children}
         </main>

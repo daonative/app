@@ -86,11 +86,11 @@ const Step = ({ status, children, id }) => (
 )
 
 const StepTitle = ({ children }) => (
-  <span className="ml-4 text-sm font-medium text-gray-900 dark:text-daonative-gray-300 font-medium uppercase tracking-wider font-bold">{children}</span>
+  <span className="ml-4 text-sm font-medium text-gray-900 text-daonative-gray-300 font-medium uppercase tracking-wider font-bold">{children}</span>
 )
 
 const StepDescription = ({ children }) => (
-  <span className="ml-4 text-sm font-medium text-gray-900 dark:text-daonative-gray-300">{children}</span>
+  <span className="ml-4 text-sm font-medium text-gray-900 text-daonative-gray-300">{children}</span>
 )
 
 const Create = ({ onDaoCreating, onDaoCreated }) => {
@@ -232,7 +232,7 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
     const membershipRef = doc(db, 'rooms', roomId, 'members', account)
     await setDoc(membershipRef, membership)
     const userRef = doc(db, 'users', account)
-    await setDoc(userRef, {name, rooms: arrayUnion(roomId)}, {merge: true})
+    await setDoc(userRef, { name, rooms: arrayUnion(roomId) }, { merge: true })
     return membership
   }
 
