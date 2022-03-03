@@ -10,8 +10,9 @@ import useRoomId from '../../../../lib/useRoomId'
 import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import { CheckIcon, LightningBoltIcon } from '@heroicons/react/solid'
+import { CheckIcon, LightningBoltIcon, PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
+import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
 
 const db = getFirestore()
 
@@ -59,15 +60,28 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
-                Description (optional)
+                Description
               </label>
-              <textarea rows="8" {...register("description", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
-                Weight (rewards for task completion)
+                Weight
               </label>
-              <input type="number" {...register("weight")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+              <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
+                <input
+                  type="text"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
+                  placeholder="100"
+                  aria-describedby="xp-amount"
+                  {...register('weight', { required: true })}
+                />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm" id="price-currency">
+                    XPs
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </ModalBody>
@@ -88,16 +102,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
   )
 }
 
-const ChallengesEmptyState = ({ children }) => (
-  <div className="text-center">
-    <LightningBoltIcon className="mx-auto h-12 w-12 text-gray-400" />
-    <h3 className="mt-2 text-sm font-medium text-gray-200">No projects</h3>
-    <p className="mt-1 text-sm text-gray-100">Get started by creating a new project.</p>
-    <div className="mt-6">
-      {children}
-    </div>
-  </div>
-)
+
 
 const Challenges = ({ }) => {
   const roomId = useRoomId()
@@ -117,7 +122,7 @@ const Challenges = ({ }) => {
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
-            <h2 className="text-2xl">Active challenges</h2>
+            <h2 className="text-2xl">Challenges</h2>
             {challenges?.length > 0 && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
           </div>
 
@@ -151,20 +156,20 @@ const Challenges = ({ }) => {
           ) : (
             <>
               {!loading && (
-                <div className="my-16 text-center">
-                  <LightningBoltIcon className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-200">No projects</h3>
-                  <p className="mt-1 text-sm text-gray-100">Get started by creating a new project.</p>
-                  <div className="mt-6">
-                    <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>
-                  </div>
+                <div className="mt-6">
+                  <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
+                    <PrimaryButton onClick={handleShowChallengeModal}>
+                      <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                      Add Challenge
+                    </PrimaryButton>
+                  </EmptyStateNoChallenges>
                 </div>
               )}
             </>
           )}
         </div>
       </div>
-    </LayoutWrapper>
+    </LayoutWrapper >
   )
 }
 

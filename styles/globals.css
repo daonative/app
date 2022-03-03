@@ -5,3 +5,6 @@
 button {
   font-family: "Space Grotesk";
 }
+input, textarea {
+  border: transparent;
+}
