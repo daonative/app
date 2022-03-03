@@ -45,19 +45,21 @@ const ProofModal = ({ show, onClose }) => {
 }
 
 const submissions = [
-  {author: 'lrnt'},
-  {author: 'ben'},
-  {author: 'rose8'},
+  { author: 'lrnt' },
+  { author: 'ben' },
+  { author: 'rose8' },
 ]
 
 const SubmissionsList = ({ submissions }) => (
   <ul>
     {submissions.map((submission, idx) => (
-      <li className="py-2">
+      <li key={idx} className="py-2">
         <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
           <div className="flex items-center justify-between">
             <div className="flex w-full">
-              <PFP size={46} address="0x111" />
+              <div>
+                <PFP size={46} address="0x111" />
+              </div>
               <div className="pl-4 w-full flex flex-col gap-1">
                 <div className="flex justify-between w-full">
                   <p className="text-sm">{submission.author}</p>
@@ -99,14 +101,14 @@ const ChallengeDetails = () => {
         <div className="flex justify-center w-full">
           <h1 className="text-2xl">{challenge?.title}</h1>
         </div>
-        <div className="flex flex-col sm:flex-row w-full pt-16 gap-4">
-          <div className="sm:w-3/5">
+        <div className="flex flex-col md:flex-row w-full pt-16 gap-4">
+          <div className="w-full">
             <h2 className="text-xl py-4">Description</h2>
             <div className="whitespace-pre-wrap">
               {challenge?.description}
             </div>
           </div>
-          <div className="w-full sm:w-2/5">
+          <div className="w-full">
             <div className="flex justify-between py-4">
               <div>
                 <h2 className="text-xl">Submissions</h2>

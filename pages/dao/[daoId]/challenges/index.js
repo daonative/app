@@ -129,8 +129,8 @@ const Challenges = ({ }) => {
           {challenges?.length > 0 ? (
             <ul role="list" className="flex flex-col gap-3">
               {challenges?.map((challenge) => (
-                <Link href={`/dao/${roomId}/challenges/${challenge.challengeId}`}>
-                  <li key={challenge.challengeId}>
+                <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`}>
+                  <li>
                     <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded hover:cursor-pointer hover:bg-daonative-dark-200">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
