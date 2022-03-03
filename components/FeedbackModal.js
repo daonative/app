@@ -7,6 +7,7 @@ import Spinner from './Spinner';
 import { useWallet } from 'use-wallet';
 import useMembership from '../lib/useMembership';
 import toast from 'react-hot-toast';
+import { PrimaryButton } from './Button';
 
 const FeedbackModal = ({ show, onClose }) => {
   const { query: params } = useRouter();
@@ -29,7 +30,7 @@ const FeedbackModal = ({ show, onClose }) => {
 
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Feedback</ModalTitle>
+      <ModalTitle>Share feedback</ModalTitle>
       <form onSubmit={handleSubmit(handleSubmitFeedback)}>
         <ModalBody>
           <textarea rows="8" {...register("content", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
@@ -76,13 +77,11 @@ export const Feedback = () => {
   return (
     <>
       <FeedbackModal show={showModal} onClose={handleClose} />
-      <button
+      <PrimaryButton
         onClick={handleShowModal}
-        type="button"
-        className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        Give Feedback on DAOnative
-      </button>
+        Feedback
+      </PrimaryButton>
     </>
   );
 };

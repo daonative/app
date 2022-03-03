@@ -5,6 +5,14 @@
 button {
   font-family: "Space Grotesk";
 }
-input, textarea {
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+input,
+textarea {
   border: transparent;
 }

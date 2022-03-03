@@ -28,9 +28,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
 
   const navigation = [
     { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true },
-    { name: 'Tasks', href: `/dao/${roomId}/tasks`, icon: ClipboardCheckIcon, current: false },
     { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
-    { name: 'Bounties', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
+    { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
   ]
@@ -119,7 +118,6 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                   })}
                 </nav>
                 <div className="py-5 px-4 flex flex-col gap-2">
-                  <Feedback />
                   <PolygonWarning />
                   <div className="h-14">
                     <ConnectWalletButton />
@@ -175,7 +173,6 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               })}
             </nav>
             <div className="py-5 px-4 flex flex-col gap-2">
-              <Feedback />
               <PolygonWarning />
               <div className="h-14">
                 <ConnectWalletButton />

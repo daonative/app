@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Feedback } from './FeedbackModal';
 import HeaderNavigation from './HeaderNavigation';
 import SidebarNavigation from './SidebarNavigation';
 
@@ -8,23 +9,25 @@ export const LayoutWrapper = ({ children }) => {
   const handleShowMobileSidebar = () => setShowSidebarMobile(true);
   const handleCloseMobileSidebar = () => setShowSidebarMobile(false);
 
-  // Temp until everyting is dark
-  useEffect(() => {
-    document.documentElement.classList.add('dark');
-  });
+
 
   return (
-    <div>
+    <div className='h-full'>
       <SidebarNavigation showMobile={showSidebarMobile} onClose={handleCloseMobileSidebar} />
       <HeaderNavigation onShowSidebar={handleShowMobileSidebar} onToggleDarkMode={() => { }} showLogWork={false} />
-      <div className="md:pl-64 flex-row md:flex overflow-hidden bg-daonative-dark-300 text-daonative-gray-100">
+      <div
+        style={{ height: 'calc(100% - 64px)' }}
+        className="md:pl-64 flex-col md:flex overflow-hidden bg-daonative-dark-300 text-daonative-gray-100 justify-between">
         <main className="w-full py-6">
           {children}
         </main>
+        <div className="text-[#70708A] px-2 bottom-0 py-2 text-xs border-top border-daonative-border border-t-2 w-full flex justify-between items-center">
+          <div>
+            Made w/ ❤️ by regens
+          </div>
+          <Feedback />
+        </div>
       </div>
-      {/* <div>
-        Made w/ ❤️ by regens
-      </div> */}
-    </div>
+    </div >
   );
 };
