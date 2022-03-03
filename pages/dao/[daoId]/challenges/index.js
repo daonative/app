@@ -10,7 +10,7 @@ import useRoomId from '../../../../lib/useRoomId'
 import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import { CheckIcon } from '@heroicons/react/solid'
+import { CheckIcon, LightningBoltIcon } from '@heroicons/react/solid'
 
 const db = getFirestore()
 
@@ -87,15 +87,28 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
   )
 }
 
+const ChallengesEmptyState = ({ children }) => (
+  <div className="text-center">
+    <LightningBoltIcon className="mx-auto h-12 w-12 text-gray-400" />
+    <h3 className="mt-2 text-sm font-medium text-gray-200">No projects</h3>
+    <p className="mt-1 text-sm text-gray-100">Get started by creating a new project.</p>
+    <div className="mt-6">
+      {children}
+    </div>
+  </div>
+)
+
 const Challenges = ({ }) => {
   const roomId = useRoomId()
   const [showChallengeModal, setShowChallengeModal] = useState(false)
-  const [challengesSnapshot] = useCollection(
+  const [challengesSnapshot, loading] = useCollection(
     query(collection(db, 'challenges'), where('roomId', '==', roomId || '')))
   const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() }))
 
   const handleShowChallengeModal = () => setShowChallengeModal(true)
   const handleCloseChallengeModal = () => setShowChallengeModal(false)
+
+  console.log(loading)
 
   return (
     <LayoutWrapper>
@@ -104,33 +117,48 @@ const Challenges = ({ }) => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Active challenges</h2>
-            <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>
+            {challenges?.length > 0 && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
           </div>
 
-          <ul role="list" className="flex flex-col gap-3">
-            {challenges?.map((challenge) => (
-              <li key={challenge.challengeId}>
-                <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      {challenge.weight} XP
-                    </span>
+          {challenges?.length > 0 ? (
+            <ul role="list" className="flex flex-col gap-3">
+              {challenges?.map((challenge) => (
+                <li key={challenge.challengeId}>
+                  <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {challenge.weight} XP
+                      </span>
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                      </div>
+                      <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+                        <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                        <p>
+                          20 Completions
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-2 sm:flex sm:justify-between">
-                    <div className="sm:flex">
-                    </div>
-                    <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-                      <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                      <p>
-                        20 Completions
-                      </p>
-                    </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <>
+              {!loading && (
+                <div className="my-16 text-center">
+                  <LightningBoltIcon className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-2 text-sm font-medium text-gray-200">No projects</h3>
+                  <p className="mt-1 text-sm text-gray-100">Get started by creating a new project.</p>
+                  <div className="mt-6">
+                    <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>
                   </div>
                 </div>
-              </li>
-            ))}
-          </ul>
+              )}
+            </>
+          )}
         </div>
       </div>
     </LayoutWrapper>

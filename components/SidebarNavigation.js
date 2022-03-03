@@ -16,7 +16,6 @@ import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import PolygonWarning from './PolygonWarning'
-import useMembers from '../lib/useMembers'
 import { Feedback } from './FeedbackModal'
 
 function classNames(...classes) {
