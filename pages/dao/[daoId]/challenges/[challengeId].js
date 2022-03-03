@@ -1,22 +1,70 @@
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
-import { doc, getFirestore } from 'firebase/firestore'
+import { addDoc, collection, doc, getFirestore, query, serverTimestamp, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useDocumentData } from 'react-firebase-hooks/firestore'
+import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
+import { useWallet } from 'use-wallet'
 import { PrimaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import PFP from '../../../../components/PFP'
+import Spinner from '../../../../components/Spinner'
+import { useRequireAuthentication } from '../../../../lib/authenticate'
 
 const db = getFirestore()
 
-const ProofModal = ({ show, onClose }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm()
+const VerifyModal = ({ show, onClose, workproof }) => {
+  const requireAuthentication = useRequireAuthentication()
+  const { account } = useWallet()
 
-  const handleSubmitProof = (data) => {
-    console.log(data)
+  console.log(workproof)
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <ModalTitle>Verify Submission</ModalTitle>
+      <ModalBody>
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="block text-sm font-medium pb-2">
+              Description
+            </p>
+            <div className="whitespace-pre-wrap text-sm font-medium">
+              {workproof?.description}
+            </div>
+          </div>
+        </div>
+      </ModalBody>
+      <ModalActionFooter>
+        <PrimaryButton>
+          Verify &amp; sign
+        </PrimaryButton>
+      </ModalActionFooter>
+    </Modal>
+  )
+}
+
+const ProofModal = ({ show, onClose, challenge }) => {
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const requireAuthentication = useRequireAuthentication()
+  const { account } = useWallet()
+
+  const submitProof = async (description) => {
+    const proof = {
+      description,
+      author: account,
+      roomId: challenge.roomId,
+      challengeId: challenge.challengeId,
+      created: serverTimestamp(),
+    }
+    await addDoc(collection(db, 'workproofs'), proof)
+  }
+
+  const handleSubmitProof = async (data) => {
+    await requireAuthentication()
+    await submitProof(data.description)
     onClose()
+    reset()
   }
 
   return (
@@ -37,24 +85,24 @@ const ProofModal = ({ show, onClose }) => {
           </div>
         </ModalBody>
         <ModalActionFooter>
-          <PrimaryButton type="submit">Submit</PrimaryButton>
+          <PrimaryButton type="submit">
+            {isSubmitting ? (
+              <span className="w-4 h-4 mx-auto"><Spinner /></span>
+            ) : (
+              <>Submit Challenge</>
+            )}
+          </PrimaryButton>
         </ModalActionFooter>
       </form>
     </Modal>
   )
 }
 
-const submissions = [
-  { author: 'lrnt' },
-  { author: 'ben' },
-  { author: 'rose8' },
-]
-
-const SubmissionsList = ({ submissions }) => (
+const SubmissionsList = ({ submissions, onVerifyClick }) => (
   <ul>
-    {submissions.map((submission, idx) => (
+    {submissions?.map((submission, idx) => (
       <li key={idx} className="py-2">
-        <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
+        <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded" onClick={() => onVerifyClick(submission)}>
           <div className="flex items-center justify-between">
             <div className="flex w-full">
               <div>
@@ -77,26 +125,33 @@ const SubmissionsList = ({ submissions }) => (
           </div>
         </div>
       </li>
-
     ))}
   </ul>
-
 )
 
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
+  const [proofToVerify, setProofToVerify] = useState(null)
   const { query: params } = useRouter()
+  const challengeId = params.challengeId || ''
   const [challenge] = useDocumentData(
-    doc(db, 'challenges', params.challengeId || 'null')
+    doc(db, 'challenges', challengeId || 'null')
   )
+  const [submissionsSnapshot] = useCollection(
+    query(collection(db, 'workproofs'), where('challengeId', '==', challengeId))
+  )
+  const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), woorkproofId: doc.id }))
 
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
 
+  const handleVerifyProof = (workproof) => setProofToVerify(workproof)
+  const handleCloseVerifyProof = () => setProofToVerify(null)
+
   return (
     <LayoutWrapper>
-      <ProofModal show={showProofModal} onClose={handleCloseProofModal} />
-
+      <ProofModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
+      <VerifyModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex justify-center w-full">
           <h1 className="text-2xl">{challenge?.title}</h1>
@@ -119,7 +174,7 @@ const ChallengeDetails = () => {
                 </button>
               </div>
             </div>
-            <SubmissionsList submissions={submissions} />
+            <SubmissionsList submissions={submissions} onVerifyClick={(workproof) => handleVerifyProof(workproof)} />
           </div>
         </div>
       </div>
