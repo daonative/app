@@ -14,7 +14,7 @@ export const ModalBody = ({ children }) => (
 
 export const ModalActionFooter = ({ children }) => (
   <div className="flex justify-end p-4">
-    <div>{children}</div>
+    {children}
   </div>
 )
 

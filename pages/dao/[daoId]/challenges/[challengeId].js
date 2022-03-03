@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
 import { useWallet } from 'use-wallet'
-import { PrimaryButton } from '../../../../components/Button'
+import Button, { PrimaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import PFP from '../../../../components/PFP'
@@ -34,11 +34,19 @@ const VerifyModal = ({ show, onClose, workproof }) => {
             </div>
           </div>
         </div>
+        <div className="pt-8 text-sm">
+          💡 You can also earn XPs by reporting false submissions
+        </div>
       </ModalBody>
       <ModalActionFooter>
-        <PrimaryButton>
-          Verify &amp; sign
-        </PrimaryButton>
+        <div className="w-full flex justify-between">
+          <Button>
+            Report
+          </Button>
+          <PrimaryButton>
+            Verify &amp; sign
+          </PrimaryButton>
+        </div>
       </ModalActionFooter>
     </Modal>
   )
@@ -102,7 +110,7 @@ const SubmissionsList = ({ submissions, onVerifyClick }) => (
   <ul>
     {submissions?.map((submission, idx) => (
       <li key={idx} className="py-2">
-        <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded" onClick={() => onVerifyClick(submission)}>
+        <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
           <div className="flex items-center justify-between">
             <div className="flex w-full">
               <div>
@@ -118,7 +126,12 @@ const SubmissionsList = ({ submissions, onVerifyClick }) => (
                     <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
                     <p className="text-sm">0 verifications</p>
                   </div>
-                  <PrimaryButton className="text-xs px-2 w-max">Verify &amp; Earn XPs</PrimaryButton>
+                  <PrimaryButton
+                    className="text-xs px-2 w-max"
+                    onClick={() => onVerifyClick(submission)}
+                  >
+                    Verify &amp; Earn XPs
+                  </PrimaryButton>
                 </div>
               </div>
             </div>
