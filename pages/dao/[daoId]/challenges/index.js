@@ -1,14 +1,14 @@
 import { useForm } from 'react-hook-form'
 import { addDoc, collection, getFirestore, query, serverTimestamp, where } from 'firebase/firestore'
 
-import { LayoutWrapper } from '../../../components/LayoutWrapper'
-import { PrimaryButton } from '../../../components/Button'
-import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal'
-import Spinner from '../../../components/Spinner'
+import { LayoutWrapper } from '../../../../components/LayoutWrapper'
+import { PrimaryButton } from '../../../../components/Button'
+import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
+import Spinner from '../../../../components/Spinner'
 
-import useRoomId from '../../../lib/useRoomId'
+import useRoomId from '../../../../lib/useRoomId'
 import { useState } from 'react'
-import { useRequireAuthentication } from '../../../lib/authenticate'
+import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import { CheckIcon } from '@heroicons/react/solid'
 
