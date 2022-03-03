@@ -5,6 +5,7 @@ import useDarkMode from "../lib/useDarkMode"
 import useIsConnected from "../lib/useIsConnected"
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Link from "next/link"
+import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"
 
 const db = getFirestore()
 
@@ -42,7 +43,6 @@ const Home = ({ rooms }) => {
   if (loading) {
     return <>Loading</>
   }
-
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
       <ul className="text-center text-xl">
