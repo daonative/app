@@ -2,7 +2,7 @@ import { useWallet } from 'use-wallet'
 import { createContext, Fragment, useEffect, useState, useContext } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from './Spinner';
-import { Modal, ModalBody } from './Modal';
+import { Modal, ModalBody, ModalTitle } from './Modal';
 
 const MetaMaskButton = ({ onClick }) => (
   <button
@@ -53,7 +53,14 @@ const ConnectWalletModal = ({ open, onClose }) => {
 
   return (
     <Modal show={open} onClose={onClose}>
+      <ModalTitle>Select a wallet</ModalTitle>
       <ModalBody>
+        <div className="my-4">
+          <MetaMaskButton onClick={() => handleMetaMask()} />
+        </div>
+        <div className="my-4">
+          <WalletConnectButton onClick={() => handleWalletConnect()} />
+        </div>
         <div className="mt-5 h-6 sm:mt-6 flex text-daonative-gray-100">
           {showConnecting && (
             <>
@@ -66,12 +73,7 @@ const ConnectWalletModal = ({ open, onClose }) => {
             </>
           )}
         </div>
-        <div className="my-4">
-          <MetaMaskButton onClick={() => handleMetaMask()} />
-        </div>
-        <div className="my-4">
-          <WalletConnectButton onClick={() => handleWalletConnect()} />
-        </div>
+
       </ModalBody>
     </Modal>
   )
