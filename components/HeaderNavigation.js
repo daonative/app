@@ -54,7 +54,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
 
   return (
     <div className="md:pl-64 flex flex-col">
-      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow bg-daonative-dark-200">
+      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16  shadow bg-daonative-dark-200">
         <button
           type="button"
           className="px-4 border-r border-gray-200 border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -82,7 +82,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                 ) : (
                   <button
                     type="submit"
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
                   >
                     Log work
                   </button>
@@ -93,7 +93,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
           <div className="ml-4 flex items-center md:ml-6">
             <button
               type="button"
-              className="mx-2 bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="mx-2 bg-daonative-dark-100  p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -101,7 +101,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
 
             <button
               type="button"
-              className="mx-2 bg-daonative-dark-100 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="mx-2 bg-daonative-dark-100  p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               onClick={onToggleDarkMode}
             >
               <span className="sr-only">Toggle dark or light mode</span>
@@ -147,7 +147,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1  ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Menu.Item>
                       <button
                         className="block px-4 py-2 text-sm text-gray-700 w-full h-full"

@@ -89,7 +89,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
   return (
     <div
       className={classNames(
-        "relative bg-white pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden bg-daonative-dark-100 shadow-lg shadow-daonative-gray-400/10",
+        "relative  pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden bg-daonative-dark-100 shadow-lg shadow-daonative-gray-400/10",
         isEditable && "hover:cursor-pointer"
       )}
       onClick={() => { isEditable && handleOpenMetricModal() }}

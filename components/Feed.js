@@ -198,7 +198,7 @@ const Feed = ({ feed, kpis, roomId }) => {
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 border-daonative-gray-900">
               <table className="table-fixed min-w-full divide-y divide-gray-200 divide-daonative-gray-900">
-                <thead className="bg-gray-50 bg-daonative-dark-100 text-gray-500 text-daonative-gray-200">
+                <thead className="bg-daonative-dark-100 text-gray-500 text-daonative-gray-200">
                   <tr>
                     <th
                       scope="col"
@@ -245,7 +245,7 @@ const Feed = ({ feed, kpis, roomId }) => {
                     )
 
                     return (
-                      <tr key={event.eventId} className="bg-white bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
+                      <tr key={event.eventId} className=" bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
                         <td
                           onClick={() => handleShowWorkProof(event.eventId)}
                           className={classNames(

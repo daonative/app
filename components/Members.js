@@ -33,7 +33,7 @@ const InviteMemberModal = ({ open, onClose, inviteLink }) => (
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <div className="inline-block align-bottom bg-white bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+          <div className="inline-block align-bottom  bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
             <div>
               <h3 className="text-xl p-4">Invite</h3>
             </div>
@@ -76,7 +76,7 @@ const Members = ({ members }) => {
   return (
     <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
-      <div className="bg-white bg-daonative-dark-100 p-4 shadow rounded-lg">
+      <div className="bg-daonative-dark-100 p-4 shadow rounded-lg">
         <h3 className="text-daonative-gray-200">Members</h3>
         <p className="text-sm font-medium text-gray-500 text-daonative-gray-400">{members.length}</p>
         <ul role="list" className="divide-y divide-gray-200 w-full">

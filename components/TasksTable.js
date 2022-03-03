@@ -10,7 +10,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 border-daonative-gray-900">
             <table className="table-fixed min-w-full divide-y divide-gray-200 divide-daonative-gray-900">
-              <thead className="bg-gray-50 bg-daonative-dark-100 text-gray-500 text-daonative-gray-200">
+              <thead className="text-gray-500 bg-daonative-gray-900">
                 <tr>
                   <th
                     scope="col"
@@ -53,7 +53,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
               <tbody>
                 {tasks.map((task) => {
                   return (
-                    <tr key={task.taskId} className="bg-white bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
+                    <tr key={task.taskId} className=" bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
                       <td
                         className={classNames(
                           "px-6 py-4 whitespace-nowrap text-sm font-medium",
