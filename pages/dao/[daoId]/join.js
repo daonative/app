@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 import useProvider from '../../../lib/useProvider'
 import { useRouter } from 'next/router'
 import PolygonWarning from '../../../components/PolygonWarning'
+import { useRequireAuthentication } from '../../../lib/authenticate'
 
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -53,6 +54,7 @@ const Join = ({ dao }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit } = useForm()
   const router = useRouter()
+  const requireAuthentication = useRequireAuthentication()
 
   useDarkMode()
 
@@ -67,17 +69,16 @@ const Join = ({ dao }) => {
 
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS, role: isAdmin ? 'admin' : '' }
-
-    if (tokenId) {
-      const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
-      const membershipRef = doc(db, 'memberships', membershipId)
-      await setDoc(membershipRef, membership)
-    } else {
-      const membershipRef = collection(db, 'memberships')
-      await addDoc(membershipRef, membership)
+    const membership = {
+      account,
+      nftContractAddress: tokenId ? MEMBERSHIP_CONTRACT_ADDRESS : null,
+      nftId: tokenId,
+      roles: isAdmin ? ['admin'] : []
     }
-
+    const membershipRef = doc(db, 'rooms', roomId, 'members', account)
+    await setDoc(membershipRef, membership)
+    const userRef = doc(db, 'users', account)
+    await setDoc(userRef, {name, rooms: arrayUnion(roomId)}, {merge: true})
     return membership
   }
 
@@ -127,6 +128,8 @@ const Join = ({ dao }) => {
     }
 
     try {
+      await requireAuthentication()
+
       if (mintNFTMembership) {
         const tx = await createMembershipToken(dao.roomId)
         const receipt = await tx.wait()

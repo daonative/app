@@ -188,7 +188,7 @@ export default function Tasks({ dao: initialDAO, tasks: initialTasks }) {
   )
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
-  const isAdmin = membership?.role === 'admin'
+  const isAdmin = membership?.roles.includes('admin')
 
 
   const dao = daoSnapshot ? {

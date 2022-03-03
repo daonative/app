@@ -13,12 +13,13 @@ import DAOnativeLogo from '../public/DAOnativeLogo.svg'
 
 import toast from 'react-hot-toast'
 
-import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, arrayUnion } from "firebase/firestore";
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
 import { CheckIcon } from '@heroicons/react/solid'
 import PolygonWarning from '../components/PolygonWarning'
+import { useRequireAuthentication } from '../lib/authenticate'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -96,6 +97,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   const { account } = useWallet()
   const provider = useProvider()
   const { register, handleSubmit } = useForm()
+  const requireAuthentication = useRequireAuthentication()
 
   useDarkMode()
 
@@ -160,6 +162,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
     }
 
     try {
+      await requireAuthentication()
 
       if (DEPLOY_TREASURY) {
         const tx = await deployRoomContract(data.daoName)
@@ -210,6 +213,7 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
   const { account } = useWallet()
   const provider = useProvider()
   const { register, handleSubmit } = useForm()
+  const requireAuthentication = useRequireAuthentication()
 
   const createMembershipToken = async (roomId) => {
     const signer = provider.getSigner(account)
@@ -219,17 +223,16 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
   const createMembership = async (roomId, tokenId, name) => {
     const db = getFirestore()
-    const membership = { account, name, tokenId, roomId, contractAddress: MEMBERSHIP_CONTRACT_ADDRESS, role: 'admin' }
-
-    if (tokenId) {
-      const membershipId = `${MEMBERSHIP_CONTRACT_ADDRESS}-${tokenId}`
-      const membershipRef = doc(db, 'memberships', membershipId)
-      await setDoc(membershipRef, membership)
-    } else {
-      const membershipRef = collection(db, 'memberships')
-      await addDoc(membershipRef, membership)
+    const membership = {
+      account,
+      nftContractAddress: tokenId ? MEMBERSHIP_CONTRACT_ADDRESS : null,
+      nftId: tokenId,
+      roles: ['admin']
     }
-
+    const membershipRef = doc(db, 'rooms', roomId, 'members', account)
+    await setDoc(membershipRef, membership)
+    const userRef = doc(db, 'users', account)
+    await setDoc(userRef, {name, rooms: arrayUnion(roomId)}, {merge: true})
     return membership
   }
 
@@ -279,6 +282,8 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
     try {
       let tokenId = null
+
+      await requireAuthentication()
 
       if (MINT_NFT_MEMBERSHIP) {
         const tx = await createMembershipToken(dao.roomId)

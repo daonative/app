@@ -1,9 +1,9 @@
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore"
+import { collection, getDocs, getFirestore, doc } from "firebase/firestore"
 import { useWallet } from "use-wallet"
 import ConnectWalletButton from "../components/ConnectWalletButton"
 import useDarkMode from "../lib/useDarkMode"
 import useIsConnected from "../lib/useIsConnected"
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Link from "next/link"
 
 const db = getFirestore()
@@ -22,10 +22,9 @@ export const getServerSideProps = async ({ params }) => {
 const Home = ({ rooms }) => {
   const { account } = useWallet()
   const isConnected = useIsConnected()
-  const [memberships, loading] = useCollectionDataOnce(
-    query(collection(db, 'memberships'), where('account', '==', account || ''))
+  const [user, loading] = useDocumentDataOnce(
+    doc(db, 'users', account || 'x')
   )
-  const membershipRooms = memberships?.map(membership => membership.roomId) || []
 
   useDarkMode()
 
@@ -48,7 +47,7 @@ const Home = ({ rooms }) => {
     <div className="w-full h-screen flex flex-col items-center justify-center">
       <ul className="text-center text-xl">
         {rooms
-          .filter(room => membershipRooms.includes(room.roomId))
+          .filter(room => user?.rooms?.includes(room.roomId))
           .map(room => (
             <li key={room.roomId} className="m-2 py-2 px-6 rounded-md dark:bg-daonative-dark-100 dark:hover:bg-daonative-dark-200">
               <Link href={`/dao/${room.roomId}/`}>{room.name}</Link>

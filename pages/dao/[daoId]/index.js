@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import { useCollection, useCollectionData, useDocument } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 
 import useLocalStorage from '../../../lib/useLocalStorage'
@@ -21,13 +21,6 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../compon
 import Spinner from '../../../components/Spinner';
 
 const db = getFirestore()
-
-const getMembers = async (roomId) => {
-  const membershipsRef = collection(db, 'memberships')
-  const membershipsQuery = query(membershipsRef, where('roomId', '==', roomId))
-  const snapshot = await getDocs(membershipsQuery)
-  return snapshot.docs.map((doc) => ({ membershipId: doc.id, ...doc.data() }))
-}
 
 const getFeed = async (roomId) => {
   const feedRef = collection(db, 'feed')
@@ -59,12 +52,11 @@ const getRoom = async (roomId) => {
 
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
-  const members = await getMembers(roomId)
   const feed = await getFeed(roomId)
   const room = await getRoom(roomId)
 
   return {
-    props: { members, feed, dao: room }
+    props: { feed, dao: room }
   }
 }
 
@@ -211,7 +203,7 @@ const OpenTasks = ({ openTasks }) => {
   )
 }
 
-export default function Dashboard({ members: initialMembers, feed: initialFeed, dao: initialDAO }) {
+export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const { account } = useWallet()
@@ -222,7 +214,10 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
     query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
   const [membersSnapshot] = useCollection(
-    query(collection(db, 'memberships'), where('roomId', '==', roomId))
+    query(collection(db, 'rooms', roomId, 'members'))
+  )
+  const [users] = useCollectionData(
+    query(collection(db, 'users'), where('rooms', 'array-contains', roomId))
   )
   const [tasksSnapshot] = useCollection(
     query(
@@ -290,12 +285,13 @@ export default function Dashboard({ members: initialMembers, feed: initialFeed, 
       .filter(event => event.praises?.length > 0)
       .map(event => event.praises.reduce((totalPraiseAmount, currentPraise) => totalPraiseAmount + currentPraise.praise, 0))
       .reduce((totalPraiseAmount, currentPraiseAmount) => totalPraiseAmount + currentPraiseAmount, 0)
+    const user = users?.find(user => user.rooms.includes(roomId))
     return {
-      membershipId: doc.id,
       totalPraise,
+      name: user?.name,
       ...membership
     }
-  }) || initialMembers
+  }) || []
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)

@@ -66,7 +66,7 @@ const Members = ({ members }) => {
   const { query } = useRouter()
   const { account } = useWallet()
   const membership = useMembership(account, query.daoId)
-  const isAdmin = membership?.role === 'admin'
+  const isAdmin = membership?.roles.includes('admin')
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
