@@ -18,6 +18,8 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
             rel="stylesheet"
           />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
           <script defer data-domain="app.daonative.xyz" src="https://plausible.io/js/plausible.js"></script>
         </Head>
         <body className="antialiased h-full bg-gray-100 bg-daonative-dark-300 text-daonative-gray-100">

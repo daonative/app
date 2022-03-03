@@ -57,7 +57,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
       <div className="sticky top-0 z-10 flex-shrink-0 flex h-16  shadow bg-daonative-dark-200">
         <button
           type="button"
-          className="px-4 border-r border-gray-200 border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+          className="px-4 border-r border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
           onClick={onShowSidebar}
         >
           <span className="sr-only">Open sidebar</span>
@@ -70,19 +70,19 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                 <input
                   {...register("work")}
                   type="text"
-                  className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300"
+                  className="md:w-96 border-none shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
                   placeholder="What did you do today?"
                 />
                 {isSubmitting ? (
                   <div
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
                   >
                     <span className="w-4 h-4 mx-auto"><Spinner /></span>
                   </div>
                 ) : (
                   <button
                     type="submit"
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
+                    className="mx-2 w-max font-sans items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 "
                   >
                     Log work
                   </button>

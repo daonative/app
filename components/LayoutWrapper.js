@@ -22,6 +22,9 @@ export const LayoutWrapper = ({ children }) => {
           {children}
         </main>
       </div>
+      {/* <div>
+        Made w/ ❤️ by regens
+      </div> */}
     </div>
   );
 };
