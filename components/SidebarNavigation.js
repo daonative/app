@@ -3,11 +3,11 @@ import { Dialog, Transition } from '@headlessui/react'
 import {
   CalendarIcon,
   CollectionIcon,
-  ClipboardCheckIcon,
   HomeIcon,
   UsersIcon,
   XIcon,
   LightningBoltIcon,
+  FireIcon,
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
@@ -16,7 +16,6 @@ import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import PolygonWarning from './PolygonWarning'
-import { Feedback } from './FeedbackModal'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -27,8 +26,9 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const roomId = query.daoId
 
   const navigation = [
-    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true },
+    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
     { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
+    { name: 'Leaderboard', href: `/dao/${roomId}/leaderboard`, icon: FireIcon, current: false },
     { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
@@ -87,7 +87,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
                   {navigation.map((item) => {
-                    const current = asPath === item.href
+                    const current = item.exact ? asPath === item.href : asPath.startsWith(item.href)
                     return (
                       <Link key={item.name} href={item.href}>
                         <a
@@ -142,7 +142,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => {
-                const current = asPath === item.href
+                const current = item.exact ? asPath === item.href : asPath.startsWith(item.href)
                 return (
                   <Link key={item.name} href={item.href}>
                     <a
