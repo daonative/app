@@ -1,15 +1,25 @@
 import { CheckIcon, UsersIcon } from "@heroicons/react/solid"
-import Link from "next/link"
+import { collection, getFirestore, query } from "firebase/firestore"
+import { useCollectionData } from "react-firebase-hooks/firestore"
 import { PrimaryButton } from "../../../components/Button"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
 import PFP from "../../../components/PFP"
-import useMembers from "../../../lib/useMembers"
+import useRoomId from "../../../lib/useRoomId"
+
+const db = getFirestore()
 
 const kFormatter = (num) =>
     Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
 
 const Leaderboard = () => {
-  const leaders = [
+  const roomId = useRoomId()
+  const [leaders, loading, error] = useCollectionData(
+    collection(db, 'rooms', roomId || 'x', 'leaderboard')
+  )
+
+  console.log(roomId)
+
+  const leadersOld = [
     {
       userAccount: 'odsijflsdfjsdlkfj',
       userName: 'zordan',
@@ -58,19 +68,19 @@ const Leaderboard = () => {
                 <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
                   <div className="flex items-center gap-3">
                     <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                      #{String(leader.position).padStart(3, '0')}
+                      #{String(idx + 1).padStart(3, '0')}
                     </span>
-                    <PFP address={leader.userAccount} size={38} />
-                    <p className="text-sm font-medium text-daonative-gray-100">{leader.userName}</p>
+                    <PFP address={leader?.userAccount} size={38} />
+                    <p className="text-sm font-medium text-daonative-gray-100">{leader?.userName}</p>
                   </div>
                   <div className="mt-2 sm:flex flex-col items-end gap-0.5">
                     <span className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                      {kFormatter(leader.experience)} XPs
+                      {kFormatter(leader?.totalExperience)} XPs
                     </span>
                     <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
                       <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
                       <p>
-                        {leader.submissionCount || 0} Completions
+                        {leader?.submissionCount || 0} Completions
                       </p>
                     </div>
                   </div>

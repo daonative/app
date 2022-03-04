@@ -63,6 +63,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
       author: account,
       roomId: challenge.roomId,
       challengeId: challenge.challengeId,
+      weight: Number(challenge.weight),
       created: serverTimestamp(),
     }
     await addDoc(collection(db, 'workproofs'), proof)

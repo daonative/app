@@ -11,7 +11,7 @@ import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import useDarkMode from '../../../../lib/useDarkMode'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import { CheckIcon, LightningBoltIcon, PlusIcon } from '@heroicons/react/solid'
+import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
 
@@ -26,7 +26,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
     const challenge = {
       title: data.title,
       description: data.description,
-      weight: data.weight,
+      weight: Number(data.weight),
       created: serverTimestamp(),
       roomId,
     }
