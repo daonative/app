@@ -9,19 +9,12 @@ exports.updateSubmissionCount = functions.firestore
   .onCreate(async (snap, context) => {
     const workproof = snap.data()
 
+    const workproofsQuery = db.collection('workproofs').where('challengeId', '==', workproof.challengeId)
+    const workproofsSnap = await workproofsQuery.get()
+
     const challengeRef = db.collection('challenges').doc(workproof.challengeId)
-    const challengeSnap = await challengeRef.get()
-    const challenge = challengeSnap.data()
-    const currentSubmissionMeta = challenge?.meta || {}
-    const currentSubmissionCount = currentSubmissionMeta?.submissionCount || 0
-
-    console.log('Update submission count', challengeRef.id, submissionCount)
-
     await challengeRef.update({
-      meta: {
-        ...currentSubmissionMeta,
-        submissionCount: Number(currentSubmissionCount) + 1
-      }
+      'meta.submissionCount': workproofsSnap.docs.length
     })
   });
 

@@ -1,5 +1,5 @@
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
-import { addDoc, collection, doc, getFirestore, query, serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, arrayUnion, collection, doc, getFirestore, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
@@ -11,14 +11,27 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../com
 import PFP from '../../../../components/PFP'
 import Spinner from '../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
+import useMembership from '../../../../lib/useMembership'
 
 const db = getFirestore()
 
 const VerifyModal = ({ show, onClose, workproof }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
 
-  console.log(workproof)
+  const handleVerifyWork = async () => {
+    setIsLoading(true)
+    await requireAuthentication()
+    const workproofDoc = doc(db, 'workproofs', workproof.woorkproofId)
+    await updateDoc(workproofDoc, {
+      verifiers: arrayUnion(account)
+    })
+    onClose()
+    setIsLoading(false)
+  }
+
+  const handleReportWork = () => {}
 
   return (
     <Modal show={show} onClose={onClose}>
@@ -43,8 +56,8 @@ const VerifyModal = ({ show, onClose, workproof }) => {
           <SecondaryButton>
             Report
           </SecondaryButton>
-          <PrimaryButton>
-            Verify &amp; sign
+          <PrimaryButton onClick={handleVerifyWork}>
+            {isLoading ? <span className="w-4 h-4 mx-auto"><Spinner /></span> : "Verify"}
           </PrimaryButton>
         </div>
       </ModalActionFooter>
@@ -107,41 +120,49 @@ const ProofModal = ({ show, onClose, challenge }) => {
   )
 }
 
-const SubmissionsList = ({ submissions, onVerifyClick }) => (
-  <ul>
-    {submissions?.map((submission, idx) => (
-      <li key={idx} className="py-2">
-        <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
-          <div className="flex items-center justify-between">
-            <div className="flex w-full">
-              <div>
-                <PFP size={46} address="0x111" />
-              </div>
-              <div className="pl-4 w-full flex flex-col gap-1">
-                <div className="flex justify-between w-full">
-                  <p className="text-sm">{submission.author}</p>
-                  <p className="text-sm text-gray-500 pr-1">1h</p>
-                </div>
-                <div className="flex justify-between w-full">
-                  <div className="inline-flex gap-1 items-center">
-                    <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                    <p className="text-sm">0 verifications</p>
+const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
+  const { account } = useWallet()
+  return (
+    <ul>
+      {submissions?.map((submission, idx) => {
+        const canVerify = showVerifyButton && !submission?.verifiers?.includes(account)
+        return (
+          <li key={idx} className="py-2">
+            <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
+              <div className="flex items-center justify-between">
+                <div className="flex w-full">
+                  <div>
+                    <PFP size={46} address="0x111" />
                   </div>
-                  <PrimaryButton
-                    className="text-xs px-2 w-max"
-                    onClick={() => onVerifyClick(submission)}
-                  >
-                    Verify &amp; Earn XPs
-                  </PrimaryButton>
+                  <div className="pl-4 w-full flex flex-col gap-1">
+                    <div className="flex justify-between w-full">
+                      <p className="text-sm">{submission.author}</p>
+                      <p className="text-sm text-gray-500 pr-1">1h</p>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="inline-flex gap-1 items-center">
+                        <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                        <p className="text-sm">{submission?.verifiers?.length || 0} verifications</p>
+                      </div>
+                      {canVerify && (
+                        <PrimaryButton
+                          className="text-xs px-2 w-max"
+                          onClick={() => onVerifyClick(submission)}
+                        >
+                          Verify &amp; Earn XPs
+                        </PrimaryButton>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </li>
-    ))}
-  </ul>
-)
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
 
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
@@ -155,6 +176,11 @@ const ChallengeDetails = () => {
     query(collection(db, 'workproofs'), where('challengeId', '==', challengeId))
   )
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), woorkproofId: doc.id }))
+
+  const { account } = useWallet()
+  const { query: { daoId: roomId } } = useRouter()
+  const membership = useMembership(account, roomId)
+  const isAdmin = membership?.roles.includes('admin')
 
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
@@ -188,7 +214,7 @@ const ChallengeDetails = () => {
                 </button>
               </div>
             </div>
-            <SubmissionsList submissions={submissions} onVerifyClick={(workproof) => handleVerifyProof(workproof)} />
+            <SubmissionsList submissions={submissions} onVerifyClick={(workproof) => handleVerifyProof(workproof)} showVerifyButton={isAdmin} />
           </div>
         </div>
       </div>
