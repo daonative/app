@@ -9,6 +9,7 @@ import Spinner from '../../../../components/Spinner'
 import useRoomId from '../../../../lib/useRoomId'
 import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
+import useDarkMode from '../../../../lib/useDarkMode'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import { CheckIcon, LightningBoltIcon, PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
@@ -111,6 +112,8 @@ const Challenges = ({ }) => {
     query(collection(db, 'challenges'), where('roomId', '==', roomId || '')))
   const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() }))
 
+  useDarkMode()
+
   const handleShowChallengeModal = () => setShowChallengeModal(true)
   const handleCloseChallengeModal = () => setShowChallengeModal(false)
 
@@ -144,7 +147,7 @@ const Challenges = ({ }) => {
                         <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
                           <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
                           <p>
-                            20 Completions
+                            {challenge?.meta?.submissionCount || 0} Completions
                           </p>
                         </div>
                       </div>

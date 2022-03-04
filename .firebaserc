@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "daonative-dev",
+    "prod": "daonative"
+  }
+}
