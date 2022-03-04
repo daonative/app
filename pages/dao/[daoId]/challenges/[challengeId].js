@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
 import { useWallet } from 'use-wallet'
-import Button, { PrimaryButton } from '../../../../components/Button'
+import Button, { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import PFP from '../../../../components/PFP'
@@ -40,9 +40,9 @@ const VerifyModal = ({ show, onClose, workproof }) => {
       </ModalBody>
       <ModalActionFooter>
         <div className="w-full flex justify-between">
-          <Button>
+          <SecondaryButton>
             Report
-          </Button>
+          </SecondaryButton>
           <PrimaryButton>
             Verify &amp; sign
           </PrimaryButton>
