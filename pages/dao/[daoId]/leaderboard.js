@@ -1,5 +1,5 @@
 import { CheckIcon, UsersIcon } from "@heroicons/react/solid"
-import { collection, getFirestore, query } from "firebase/firestore"
+import { collection, getFirestore, orderBy, query } from "firebase/firestore"
 import { useCollectionData } from "react-firebase-hooks/firestore"
 import { PrimaryButton } from "../../../components/Button"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
@@ -13,46 +13,9 @@ const kFormatter = (num) =>
 
 const Leaderboard = () => {
   const roomId = useRoomId()
-  const [leaders, loading, error] = useCollectionData(
-    collection(db, 'rooms', roomId || 'x', 'leaderboard')
+  const [leaders] = useCollectionData(
+    query(collection(db, 'rooms', roomId || 'x', 'leaderboard'), orderBy('verifiedExperience', 'desc'))
   )
-
-  console.log(roomId)
-
-  const leadersOld = [
-    {
-      userAccount: 'odsijflsdfjsdlkfj',
-      userName: 'zordan',
-      userPFP: 'test',
-      experience: 7900,
-      submissionCount: 204,
-      position: 1
-    },
-    {
-      userAccount: 'dlfkjsdlfkj',
-      userName: 'ben',
-      userPFP: 'test',
-      experience: 3500,
-      submissionCount: 204,
-      position: 2
-    },
-    {
-      userAccount: 'jldskfjsldfkjdslj',
-      userName: 'rose8',
-      userPFP: 'test',
-      experience: 2500,
-      submissionCount: 204,
-      position: 3
-    },
-    {
-      userAccount: 'foidjsfldskj',
-      userName: 'lrnt',
-      userPFP: 'test',
-      experience: 1000,
-      submissionCount: 204,
-      position: 4
-    },
-  ]
 
   return (
     <LayoutWrapper>
@@ -75,7 +38,7 @@ const Leaderboard = () => {
                   </div>
                   <div className="mt-2 sm:flex flex-col items-end gap-0.5">
                     <span className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                      {kFormatter(leader?.totalExperience)} XPs
+                      {kFormatter(leader?.verifiedExperience)} XPs ({kFormatter(leader?.pendingExperience)} pending)
                     </span>
                     <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
                       <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
