@@ -1,9 +1,10 @@
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
-import { addDoc, arrayUnion, collection, doc, getFirestore, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
+import { addDoc, arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
+import Moment from 'react-moment'
 import { useWallet } from 'use-wallet'
 import Button, { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
@@ -134,9 +135,8 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
   return (
     <ul>
       {submissions?.map((submission, idx) => {
-        const canVerify = showVerifyButton && !submission?.verifiers?.includes(account)
+        const canVerify = showVerifyButton && !submission?.verifiers?.includes(account) && submission?.author !== account
         const user = users?.find(user => user.account === submission.author)
-        console.log(users)
         return (
           <li key={idx} className="py-2">
             <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded">
@@ -147,8 +147,12 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
                   </div>
                   <div className="pl-4 w-full flex flex-col gap-1">
                     <div className="flex justify-between w-full">
-                      <p className="text-sm">{user?.name || submission.author}</p>
-                      <p className="text-sm text-gray-500 pr-1">1h</p>
+                      <p className="text-sm">
+                        {user?.name || submission.author}
+                      </p>
+                      <p className="text-sm text-gray-500 pr-1">
+                        <Moment date={submission?.created.toMillis()} fromNow={true} />
+                      </p>
                     </div>
                     <div className="flex justify-between w-full">
                       <div className="inline-flex gap-1 items-center">
@@ -184,7 +188,7 @@ const ChallengeDetails = () => {
     doc(db, 'challenges', challengeId || 'null')
   )
   const [submissionsSnapshot] = useCollection(
-    query(collection(db, 'workproofs'), where('challengeId', '==', challengeId))
+    query(collection(db, 'workproofs'), where('challengeId', '==', challengeId), orderBy('created', 'desc'))
   )
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), woorkproofId: doc.id }))
 
