@@ -151,7 +151,7 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
                         {user?.name || submission.author}
                       </p>
                       <p className="text-sm text-gray-500 pr-1">
-                        <Moment date={submission?.created.toMillis()} fromNow={true} />
+                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
                       </p>
                     </div>
                     <div className="flex justify-between w-full">
