@@ -10,6 +10,7 @@ import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useWallet } from 'use-wallet';
+import { useRequireAuthentication } from '../lib/authenticate';
 import useMembership from '../lib/useMembership';
 import { classNames } from "../lib/utils";
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
@@ -127,11 +128,15 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
 const KPIs = ({ kpis, roomId }) => {
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
+  const isAdmin = membership?.roles?.includes('admin')
+  const requireAuthentication = useRequireAuthentication()
 
   // merge the KPI values with the default KPI values
   const metrics = mergeKPIsAndDefaults(kpis)
 
   const handleUpdateMetric = async (metricId, data) => {
+    await requireAuthentication()
+
     const oldMetric = kpis && kpis[metricId]
     const newMetric = { [metricId]: { ...oldMetric, ...data } }
     const newMetrics = { ...kpis, ...newMetric }
@@ -149,7 +154,7 @@ const KPIs = ({ kpis, roomId }) => {
             <Metric
               key={metricId}
               {...(metrics[metricId] || {})}
-              isEditable={!!membership}
+              isEditable={isAdmin}
               onSave={(data) => handleUpdateMetric(metricId, data)}
             />
           )

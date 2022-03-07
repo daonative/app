@@ -18,6 +18,7 @@ service cloud.firestore {
     }
     match /rooms/{roomId} {
       allow create: if isAuthenticated();
+      allow update: if isAdmin(request.resource.id)
     }
     match /users/{account} {
       allow write: if isAuthenticated() && request.auth.uid == account;
