@@ -2,35 +2,35 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function isMember(roomId) {
-  		return isAuthenticated() && exists(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid));
-  	}
+      return isAuthenticated() && exists(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid));
+    }
     function isAdmin(roomId) {
-  		return isAuthenticated() && 'admin' in get(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid)).data.roles;
-  	}
-  	function isAuthenticated() {
-  		return request.auth.uid != null;
-  	}
+      return isAuthenticated() && 'admin' in get(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid)).data.roles;
+    }
+    function isAuthenticated() {
+      return request.auth.uid != null;
+    }
     function getChallenge(challengeId) {
-    	return get(/databases/$(database)/documents/challenges/$(challengeId)).data
+      return get(/databases/$(database)/documents/challenges/$(challengeId)).data
     }
     match /feed/{entryId} {
-    	allow write: if true;
+      allow write: if isAuthenticated();
     }
-  	match /rooms/{roomId} {
+    match /rooms/{roomId} {
       allow create: if isAuthenticated();
     }
     match /users/{account} {
-    	allow write: if isAuthenticated() && request.auth.uid == account;
+      allow write: if isAuthenticated() && request.auth.uid == account;
     }
     match /rooms/{roomId}/members/{account} {
-    	allow write: if isAuthenticated() && request.auth.uid == account;
+      allow write: if isAuthenticated() && request.auth.uid == account;
     }
     match /challenges/{challengeId} {
-    	allow create: if isAdmin(request.resource.data.roomId);
+      allow create: if isAdmin(request.resource.data.roomId);
     }
     match /workproofs/{workproofId} {
       allow create: if
-      	isMember(request.resource.data.roomId)
+        isMember(request.resource.data.roomId)
         && request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
         && request.resource.data.author == request.auth.uid
         && request.resource.data.weight is int;
@@ -38,9 +38,9 @@ service cloud.firestore {
         isAdmin(request.resource.data.roomId)
         && resource.data.author != request.auth.uid
         && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers'].toSet()
-  	    && (
-        	request.resource.data.verifiers == [request.auth.uid] ||
-      		request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
+        && (
+          request.resource.data.verifiers == [request.auth.uid] ||
+          request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
         )
     }
     match /{document=**} {
