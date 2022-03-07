@@ -9,7 +9,7 @@ import useRoomId from "../../../lib/useRoomId"
 const db = getFirestore()
 
 const kFormatter = (num) =>
-    Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+  Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
 
 const Leaderboard = () => {
   const roomId = useRoomId()
@@ -23,7 +23,7 @@ const Leaderboard = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Leaderboard</h2>
-            <PrimaryButton>Claim reward</PrimaryButton>
+            <PrimaryButton className="invisible">Claim reward</PrimaryButton>
           </div>
           <ul role="list" className="flex flex-col gap-3">
             {leaders?.map((leader, idx) => (

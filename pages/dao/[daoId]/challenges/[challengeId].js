@@ -54,7 +54,7 @@ const VerifyModal = ({ show, onClose, workproof }) => {
       </ModalBody>
       <ModalActionFooter>
         <div className="w-full flex justify-between">
-          <SecondaryButton>
+          <SecondaryButton className="invisible">
             Report
           </SecondaryButton>
           <PrimaryButton onClick={handleVerifyWork}>
