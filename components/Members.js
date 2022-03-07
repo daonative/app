@@ -89,10 +89,6 @@ const Members = ({ members }) => {
                 <p className="text-sm font-medium text-gray-900 text-daonative-gray-200">{member.name}</p>
                 {member.praiseThisWeek && <p className="text-xs text-gray-500 text-daonative-gray-400">Praise received this week</p>}
               </div>
-              <div className="place-self-end">
-                <p className="text-sm text-gray-500 text-daonative-gray-400">{member.totalPraise}</p>
-                <p className="text-xs font-medium text-green-500">{member.praiseThisWeek}</p>
-              </div>
             </li>
           ))}
         </ul>
