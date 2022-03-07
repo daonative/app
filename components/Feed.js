@@ -238,11 +238,12 @@ const Feed = ({ feed, kpis, roomId }) => {
                   {feed.map((event) => {
                     const totalPraise = event.praises?.reduce((total, currentPraise) => total + currentPraise.praise, 0)
                     const impacts = event.praises?.map(praise => praise.impact).filter((v, i, a) => a.indexOf(v) === i) || []
-                    const canReviewOrValidate = (
-                      event.type === "work" &&
-                      event.authorAccount !== account &&
-                      !event.appraisers?.includes(account)
-                    )
+                    //const canReviewOrValidate = (
+                    //  event.type === "work" &&
+                    //  event.authorAccount !== account &&
+                    //  !event.appraisers?.includes(account)
+                    //)
+                    const canReviewOrValidate = false
 
                     return (
                       <tr key={event.eventId} className=" bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
