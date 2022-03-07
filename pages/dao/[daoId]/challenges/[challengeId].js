@@ -6,7 +6,7 @@ import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
 import Moment from 'react-moment'
 import { useWallet } from 'use-wallet'
-import Button, { PrimaryButton, SecondaryButton } from '../../../../components/Button'
+import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import PFP from '../../../../components/PFP'
@@ -47,6 +47,18 @@ const VerifyModal = ({ show, onClose, workproof }) => {
               {workproof?.description}
             </div>
           </div>
+          {workproof?.imageUrls?.length > 0 && (
+            <div>
+              <p className="block text-sm font-medium pb-2">
+                Image
+              </p>
+              <div className="whitespace-pre-wrap text-sm font-medium">
+                <a href={workproof.imageUrls[0]}>
+                  <img src={workproof.imageUrls[0]} width={48} />
+                </a>
+              </div>
+            </div>
+          )}
         </div>
         <div className="pt-8 text-sm">
           💡 You can also earn XPs by reporting false submissions
@@ -71,13 +83,14 @@ const ProofModal = ({ show, onClose, challenge }) => {
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
 
-  const submitProof = async (description) => {
+  const submitProof = async (description, imageUrl) => {
     const proof = {
       description,
       author: account,
       roomId: challenge.roomId,
       challengeId: challenge.challengeId,
       weight: Number(challenge.weight),
+      imageUrls: imageUrl ? [imageUrl] : [],
       created: serverTimestamp(),
     }
     await addDoc(collection(db, 'workproofs'), proof)
@@ -85,7 +98,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
 
   const handleSubmitProof = async (data) => {
     await requireAuthentication()
-    await submitProof(data.description)
+    await submitProof(data.description, data.image)
     onClose()
     reset()
   }
@@ -104,6 +117,12 @@ const ProofModal = ({ show, onClose, challenge }) => {
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Image URL (optional)
+              </label>
+              <input type="text" rows="8" {...register("image", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300" />
             </div>
           </div>
         </ModalBody>
