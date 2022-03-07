@@ -19,6 +19,7 @@ import useMembership from '../../../lib/useMembership';
 import { useWallet } from 'use-wallet';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
 import Spinner from '../../../components/Spinner';
+import { useRequireAuthentication } from '../../../lib/authenticate';
 
 const db = getFirestore()
 
@@ -66,9 +67,12 @@ const Mission = ({ roomId, mission }) => {
   const { register, handleSubmit } = useForm({ defaultValues: { mission } })
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
-  const isMember = !!membership
+  const requireAuthentication = useRequireAuthentication()
+  const isAdmin = membership?.roles?.includes('admin')
 
   const setMission = async (data) => {
+    await requireAuthentication()
+
     const { mission } = data
     const roomRef = doc(db, 'rooms', roomId)
     await updateDoc(roomRef, { mission })
@@ -89,7 +93,7 @@ const Mission = ({ roomId, mission }) => {
 
   return (
     <p className="py-2 text-sm">
-      {isMember ? (
+      {isAdmin ? (
         <span onClick={handleEditClick} className="hover:cursor-pointer">
           {currentMission || "Write your mission here..."}
         </span>
