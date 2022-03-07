@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { addDoc, collection, getFirestore, query, serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, collection, getFirestore, orderBy, query, serverTimestamp, where } from 'firebase/firestore'
 
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { PrimaryButton } from '../../../../components/Button'
@@ -109,15 +109,13 @@ const Challenges = ({ }) => {
   const roomId = useRoomId()
   const [showChallengeModal, setShowChallengeModal] = useState(false)
   const [challengesSnapshot, loading] = useCollection(
-    query(collection(db, 'challenges'), where('roomId', '==', roomId || '')))
+    query(collection(db, 'challenges'), where('roomId', '==', roomId || ''), orderBy('created', 'desc')))
   const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() }))
 
   useDarkMode()
 
   const handleShowChallengeModal = () => setShowChallengeModal(true)
   const handleCloseChallengeModal = () => setShowChallengeModal(false)
-
-  console.log(loading)
 
   return (
     <LayoutWrapper>
