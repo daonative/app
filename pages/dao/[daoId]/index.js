@@ -216,7 +216,7 @@ export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
   const [membersSnapshot] = useCollection(
     query(collection(db, 'rooms', roomId, 'members'))
   )
-  const [users] = useCollectionData(
+  const [usersSnapshot] = useCollection(
     query(collection(db, 'users'), where('rooms', 'array-contains', roomId))
   )
   const [tasksSnapshot] = useCollection(
@@ -278,6 +278,8 @@ export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
     }
   }) || []
 
+  const users = usersSnapshot?.docs.map(doc => ({account: doc.id, ...doc.data()}))
+
   const members = membersSnapshot?.docs.map((doc) => {
     const membership = doc.data()
     const totalPraise = feed
@@ -285,10 +287,11 @@ export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
       .filter(event => event.praises?.length > 0)
       .map(event => event.praises.reduce((totalPraiseAmount, currentPraise) => totalPraiseAmount + currentPraise.praise, 0))
       .reduce((totalPraiseAmount, currentPraiseAmount) => totalPraiseAmount + currentPraiseAmount, 0)
-    const user = users?.find(user => user.rooms.includes(roomId))
+    const user = users?.find(user => user.account === doc.id)
     return {
       totalPraise,
       name: user?.name,
+      account: doc.id,
       ...membership
     }
   }) || []
