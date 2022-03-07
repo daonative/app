@@ -18,38 +18,70 @@ exports.updateSubmissionCount = functions.firestore
     })
   });
 
+const updateLeaderboardPosition = async (roomId, account) => {
+
+  const workproofSubmissionsQuery = db.collection('workproofs').where('roomId', '==', roomId).where('author', '==', account)
+  const workproofSubmissionsSnap = await workproofSubmissionsQuery.get()
+
+  const totalXpsFromSubmissions = workproofSubmissionsSnap.docs.reduce((xps, doc) => {
+    const proofWeight = Number(doc.data().weight) || 0
+    return xps + proofWeight
+  }, 0)
+
+  const totalXpsFromVerifiedSubmissions = workproofSubmissionsSnap.docs.reduce((xps, doc) => {
+    const workproof = doc.data()
+    const proofWeight = Number(workproof.weight) || 0
+    if (workproof?.verifiers?.length > 0)
+      return xps + proofWeight
+    return xps
+  }, 0)
+
+  const workproofVerificationsQuery = db.collection('workproofs').where('roomId', '==', roomId).where('verifiers', 'array-contains', account)
+  const workproofVerificationsSnap = await workproofVerificationsQuery.get()
+
+  const totalXpsVerificationsYield = workproofVerificationsSnap.docs.reduce((xps, doc) => {
+    const proofWeight = Number(doc.data().weight) || 0
+    const xpYield = Math.ceil(proofWeight * 0.1)
+    return xps + xpYield
+  }, 0)
+
+  const totalXps = totalXpsFromSubmissions + totalXpsVerificationsYield
+  const totalVerifiedXps = totalXpsFromVerifiedSubmissions + totalXpsVerificationsYield
+  const totalPendingXps = totalXpsFromSubmissions - totalXpsFromVerifiedSubmissions
+
+  const userRef = db.collection('users').doc(account)
+  const userSnap = await userRef.get()
+  const user = userSnap.data()
+
+  const leaderboardRef = db.collection('rooms').doc(roomId).collection('leaderboard').doc(account)
+  await leaderboardRef.set({
+    userAccount: account,
+    userName: user.name,
+    totalExperience: totalXps,
+    verifiedExperience: totalVerifiedXps,
+    pendingExperience: totalPendingXps,
+    submissionCount: workproofSubmissionsSnap.docs.length
+  })
+}
+
 exports.updateLeaderboardXP = functions.firestore
   .document('workproofs/{workproofId}')
   .onWrite(async (change, context) => {
-    const workproof = change.after.data()
+    const before = change.before.data()
+    const after = change.after.data()
+    const roomId = before?.roomId || after.roomId
+    const author = before?.author || after.author
+    const newVerifiers = after?.verifiers || []
+    const oldVerifiers = before?.verifiers || []
 
-    const workproofsQuery = db.collection('workproofs').where('author', '==', workproof.author)
-    const workproofsSnap = await workproofsQuery.get()
+    await updateLeaderboardPosition(roomId, author)
 
-    const totalXps = workproofsSnap.docs.reduce((xps, doc) => {
-      const proofWeight = Number(doc.data().weight) || 0
-      return xps + proofWeight
-    }, 0)
+    const verifiersDiff = oldVerifiers
+      .filter(x => !newVerifiers.includes(x))
+      .concat(newVerifiers.filter(x => !oldVerifiers.includes(x)));
 
-    const verifiedXps = workproofsSnap.docs.reduce((xps, doc) => {
-      const workproof = doc.data()
-      const proofWeight = Number(workproof.weight) || 0
-      if (workproof?.verifiers?.length > 0)
-        return xps + proofWeight
-      return xps
-    }, 0)
-
-    const userRef = db.collection('users').doc(workproof.author)
-    const userSnap = await userRef.get()
-    const user = userSnap.data()
-
-    const leaderboardRef = db.collection('rooms').doc(workproof.roomId).collection('leaderboard').doc(workproof.author)
-    await leaderboardRef.set({
-      userAccount: workproof.author,
-      userName: user.name,
-      totalExperience: totalXps,
-      verifiedExperience: verifiedXps,
-      pendingExperience: totalXps - verifiedXps,
-      submissionCount: workproofsSnap.docs.length
+    verifiersDiff.forEach(verifier => {
+      console.log(roomId, verifier)
+      updateLeaderboardPosition(roomId, verifier)
     })
   })
