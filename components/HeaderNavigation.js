@@ -8,7 +8,7 @@ import ShortAddress from './ShortAddress';
 import { useForm } from 'react-hook-form';
 import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import authenticate from '../lib/authenticate';
+import authenticate, { useRequireAuthentication } from '../lib/authenticate';
 import useProvider from '../lib/useProvider';
 import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/router';
@@ -27,15 +27,14 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
   const provider = useProvider()
   const { query: params } = useRouter()
   const roomId = params?.daoId
+  const requireAuthentication = useRequireAuthentication()
   const membership = useMembership(account, roomId)
   const isMember = !!membership
 
   const isAuthenticated = !!user
 
   const logWork = async (data) => {
-    if (!isAuthenticated) {
-      await authenticate(account, provider)
-    }
+    await requireAuthentication()
 
     const db = getFirestore()
     const feedRef = collection(db, 'feed')
