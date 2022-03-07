@@ -286,14 +286,8 @@ export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
 
   const members = membersSnapshot?.docs.map((doc) => {
     const membership = doc.data()
-    const totalPraise = feed
-      .filter(event => event.authorAccount === membership.account)
-      .filter(event => event.praises?.length > 0)
-      .map(event => event.praises.reduce((totalPraiseAmount, currentPraise) => totalPraiseAmount + currentPraise.praise, 0))
-      .reduce((totalPraiseAmount, currentPraiseAmount) => totalPraiseAmount + currentPraiseAmount, 0)
     const user = users?.find(user => user.account === doc.id)
     return {
-      totalPraise,
       name: user?.name,
       account: doc.id,
       ...membership
