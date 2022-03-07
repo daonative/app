@@ -20,6 +20,7 @@ import { useRouter } from 'next/router'
 import { CheckIcon } from '@heroicons/react/solid'
 import PolygonWarning from '../components/PolygonWarning'
 import { useRequireAuthentication } from '../lib/authenticate'
+import { PrimaryButton } from '../components/Button'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -190,19 +191,19 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
     <>
       <p className="p-6 text-gray-200 font-bold">What&apos;s the name of your DAO?</p>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
-        <div className="flex flex-col md:flex-row w-full">
+        <div className="flex flex-col md:flex-row w-full mt-3">
           <input
             {...register("daoName")}
             type="text"
-            className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
+            className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
             placeholder="School DAO"
           />
-          <button
+          <PrimaryButton
             type="submit"
-            className="place-self-center my-2 md:mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className='ml-3'
           >
             Create your DAO
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </>
@@ -311,19 +312,19 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
     <>
       <h1 className="text-xl text-daonative-gray-300 pb-2">{dao?.name}</h1>
       <form onSubmit={handleSubmit(handleJoinDAO)}>
-        <div className="flex flex-col md:flex-row w-full">
+        <div className="flex flex-col md:flex-row w-full mt-3">
           <input
             {...register("memberName")}
             type="text"
-            className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
+            className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
             placeholder="How should we call you?"
           />
-          <button
+          <PrimaryButton
             type="submit"
-            className="place-self-center my-2 md:mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className='ml-3'
           >
             Join the DAO
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </>
