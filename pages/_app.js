@@ -3,18 +3,30 @@ import '../styles/globals.css'
 import { UseWalletProvider } from 'use-wallet'
 import { Toaster } from 'react-hot-toast'
 import { initializeApp} from 'firebase/app'
+import { getAnalytics } from 'firebase/analytics'
 import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
+import { useEffect } from 'react'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
 initializeApp(firebaseConfig)
 
+
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    if (typeof window === "undefined")
+      return
+
+    getAnalytics()
+  }, [])
+
   return (
     <>
       <Head>
