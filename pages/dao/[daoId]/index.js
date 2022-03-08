@@ -207,7 +207,7 @@ const OpenTasks = ({ openTasks }) => {
   )
 }
 
-export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
+const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const { account } = useWallet()
@@ -349,3 +349,11 @@ export default function Dashboard({ feed: initialFeed, dao: initialDAO }) {
     </>
   )
 }
+
+const DisabledDashboard = () => {
+  const {push, query: {daoId}} = useRouter()
+  useEffect(() => push(`/dao/${daoId}/challenges`), [])
+  return <></>
+}
+
+export default DisabledDashboard
