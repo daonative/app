@@ -29,6 +29,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
 //    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
     { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
     { name: 'Leaderboard', href: `/dao/${roomId}/leaderboard`, icon: FireIcon, current: false },
+    { name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon, current: false },
     { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },
