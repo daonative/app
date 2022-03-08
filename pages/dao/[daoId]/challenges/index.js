@@ -14,6 +14,8 @@ import { useCollection } from 'react-firebase-hooks/firestore'
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
+import { useWallet } from 'use-wallet'
+import useMembership from '../../../../lib/useMembership'
 
 const db = getFirestore()
 
@@ -107,10 +109,14 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 
 const Challenges = ({ }) => {
   const roomId = useRoomId()
+  const { account } = useWallet()
   const [showChallengeModal, setShowChallengeModal] = useState(false)
   const [challengesSnapshot, loading] = useCollection(
     query(collection(db, 'challenges'), where('roomId', '==', roomId || ''), orderBy('created', 'desc')))
   const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() }))
+
+  const membership = useMembership(account, roomId)
+  const isAdmin = membership?.roles?.includes('admin')
 
   useDarkMode()
 
@@ -124,7 +130,7 @@ const Challenges = ({ }) => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Challenges</h2>
-            {challenges?.length > 0 && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
+            {challenges?.length > 0 && isAdmin && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
           </div>
 
           {challenges?.length > 0 ? (
@@ -159,10 +165,17 @@ const Challenges = ({ }) => {
               {!loading && (
                 <div className="mt-6">
                   <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
-                    <PrimaryButton onClick={handleShowChallengeModal}>
-                      <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                      Add Challenge
-                    </PrimaryButton>
+                    {isAdmin && (
+                      <>
+                        <p className="mt-1 text-sm text-gray-500">Get started by creating a new challange</p>
+                        <div className="mt-6">
+                          <PrimaryButton onClick={handleShowChallengeModal}>
+                            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                            Add Challenge
+                          </PrimaryButton>
+                        </div>
+                      </>
+                    )}
                   </EmptyStateNoChallenges>
                 </div>
               )}
