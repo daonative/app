@@ -53,7 +53,7 @@ const CollectionForm = () => {
       { headers: { "Content-Type": "multipart/form-data" } }
     )
     console.log(response)
-    const url = `http://ipfs.infura.io/ipfs/${response.data.Hash}`
+    const url = `https://ipfs.infura.io/ipfs/${response.data.Hash}`
     return url
   }
 
