@@ -19,14 +19,13 @@ const PolygonWarning = () => {
     await ethereum.request({ method: 'wallet_addEthereumChain', params })
   }
 
-  if (true) return <></>
   if (!account) return <></>
   if (chainId === 137) return <></>
 
   return (
     <div>
       <div className="text-xs w-full text-center pb-1">
-        {"You're using a unsupported network."}
+        {"You're using an unsupported network."}
       </div>
       <button className="flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 p-2 w-full hover:bg-daonative-dark-300 hover:text-daonative-gray-200 " onClick={handleSwitchToPolygon}>
         <PolygonLogo className="h-4 w-4" />

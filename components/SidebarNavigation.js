@@ -26,7 +26,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const roomId = query.daoId
 
   const navigation = [
-//    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
+    //    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
     { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
     { name: 'Leaderboard', href: `/dao/${roomId}/leaderboard`, icon: FireIcon, current: false },
     { name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon, current: false },
@@ -119,7 +119,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                   })}
                 </nav>
                 <div className="py-5 px-4 flex flex-col gap-2">
-                  <PolygonWarning />
+                  {/*<PolygonWarning />*/}
                   <div className="h-14">
                     <ConnectWalletButton />
                   </div>
@@ -174,7 +174,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               })}
             </nav>
             <div className="py-5 px-4 flex flex-col gap-2">
-              <PolygonWarning />
+              {/*<PolygonWarning />*/}
               <div className="h-14">
                 <ConnectWalletButton />
               </div>

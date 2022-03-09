@@ -396,7 +396,7 @@ const Onboarding = () => {
           {isConnected && !isLoading && currentStep === 2 && <Join onMemberJoining={handleLoading} onMemberJoined={handleMemberJoined} dao={dao} />}
         </div>
         <div className="absolute bottom-10">
-          <PolygonWarning />
+          {/*<PolygonWarning />*/}
         </div>
       </main>
     </div >

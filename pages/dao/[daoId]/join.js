@@ -176,7 +176,7 @@ const Join = ({ dao }) => {
                 </div>
               </form>
               <div className="absolute top-10">
-                <PolygonWarning />
+                {/*<PolygonWarning />*/}
               </div>
             </>
           )}
