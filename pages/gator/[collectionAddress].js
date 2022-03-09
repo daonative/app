@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { useWallet } from 'use-wallet'
 import PolygonWarning from '../../components/PolygonWarning'
 import { useConnectWalletModal } from '../../components/ConnectWalletModal'
+import Spinner from '../../components/Spinner'
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
   return (
@@ -39,7 +40,7 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
   )
 }
 
-const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig }) => {
+const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig, onSuccessfulMint = () => { } }) => {
   const { account, chainId } = useWallet()
   const injectedProvider = useProvider()
   const isPolygon = chainId === 137
@@ -54,7 +55,7 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig }) 
     const toastId = toast.loading("Minting your NFT...")
     try {
       await mintNFT(collectionAddress, inviteCode, inviteSig)
-      onClose()
+      onSuccessfulMint()
       toast.success("Successfully minted your NFT", { id: toastId })
     } catch (e) {
       console.log(e)
@@ -67,10 +68,10 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig }) 
       <ModalTitle>Invitation to mint</ModalTitle>
       <ModalBody>
         <div className="flex flex-col gap-4 items-center p-8">
-          { account && isPolygon && (
+          {account && isPolygon && (
             <SecondaryButton onClick={handleMintNFT}>Mint your NFT</SecondaryButton>
           )}
-          { account && !isPolygon && (
+          {account && !isPolygon && (
             <PolygonWarning />
           )}
         </div>
@@ -99,6 +100,7 @@ const TokenList = ({ tokens }) => {
 }
 
 const GatorCollection = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
@@ -128,16 +130,19 @@ const GatorCollection = () => {
   const listenForNewCollectionTokens = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     contract.on('Transfer', (from, to, tokenId) => {
-      setCollectionTokens(tokens => [...tokens, {tokenId: tokenId.toNumber(), owner: to}])
+      setCollectionTokens(tokens => [...tokens, { tokenId: tokenId.toNumber(), owner: to }])
+      setIsLoading(false)
     })
   }
 
   const retrieveCollectionTokens = async (address) => {
+    setIsLoading(true)
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const mintFilter = contract.filters.Transfer(null)
     const mintEvents = await contract.queryFilter(mintFilter)
-    const tokens = mintEvents.map(event => ({tokenId: event.args?.tokenId.toNumber(), owner: event.args?.to}))
+    const tokens = mintEvents.map(event => ({ tokenId: event.args?.tokenId.toNumber(), owner: event.args?.to }))
     setCollectionTokens(tokens)
+    setIsLoading(false)
     listenForNewCollectionTokens(address)
   }
 
@@ -151,7 +156,7 @@ const GatorCollection = () => {
   const handleOpenInviteModal = async () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
-      const {inviteCode, inviteSig} = await generateInviteCodes(collectionAddress)
+      const { inviteCode, inviteSig } = await generateInviteCodes(collectionAddress)
       const inviteLink = `${window?.origin}/gator/${collectionAddress}?inviteCode=${inviteCode}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
@@ -172,6 +177,10 @@ const GatorCollection = () => {
     routerReplace(`/gator/${collectionAddress}`, undefined, { shallow: true });
     setShowMintModal(false)
   }
+  const handleSuccessfulMint = () => {
+    setIsLoading(true)
+    handleCloseMintModal()
+  }
 
   useEffect(() => {
     if (!collectionAddress) return
@@ -182,8 +191,8 @@ const GatorCollection = () => {
   }, [collectionAddress])
 
   useEffect(() => {
-    if(!inviteCode) return
-    if(!inviteSig) return
+    if (!inviteCode) return
+    if (!inviteSig) return
     if (account) {
       handleShowMintModal()
     } else {
@@ -193,16 +202,23 @@ const GatorCollection = () => {
 
   return (
     <div>
-      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} />
+      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint}/>
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <Header>
         {collectionName}
       </Header>
       <div className="flex flex-col gap-8 p-8">
         <div className="flex justify-end w-full">
-          { collectionOwner === account && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
+          {collectionOwner === account && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
         </div>
         <TokenList tokens={collectionTokens} />
+        {isLoading && (
+          <div className="flex w-full justify-center">
+            <div className="w-8 h-8">
+              <Spinner />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
