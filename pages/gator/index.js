@@ -9,23 +9,26 @@ import { ethers, providers } from 'ethers';
 import { useState } from "react"
 import useInterval from "../../lib/useInterval"
 import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
-import { collection } from "firebase/firestore"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
+import Link from "next/link"
 
 const COLLECION_CREATOR_CONTRACT = "0xbb733594f37d6e94c6ab1686cd5780ec90d86528"
 
-const Header = () => {
+export const Header = ({ children }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, reset } = useWallet()
 
   return (
-    <div className="flex justify-end w-full p-4 bg-daonative-dark-200">
+    <div className="flex items-center justify-between w-full py-4 px-8 bg-daonative-dark-200">
+      <div className="md:text-3xl font-space">
+        {children}
+      </div>
       {!account && (
-        <SecondaryButton onClick={openConnectWalletModal} className="h-11">Connect</SecondaryButton>
+        <SecondaryButton onClick={openConnectWalletModal} className="h-12">Connect</SecondaryButton>
       )}
       {account && (
-        <SecondaryButton onClick={reset} className="h-11 inline-flex gap-4">
+        <SecondaryButton onClick={reset} className="h-12 inline-flex gap-4">
           <PFP address={account} />
           <ShortAddress>{account}</ShortAddress>
         </SecondaryButton>
@@ -106,22 +109,30 @@ const Gator = () => {
 
   return (
     <div>
-      <Header />
-      <div className="flex gap-8 p-8">
-        <div className="w-96">
+      <Header>
+        Gator
+      </Header>
+      <div className="flex flex-col md:flex-row gap-8 p-8">
+        <div className="md:w-96">
           <CollectionForm />
         </div>
         <div>
           <ul>
             {collectionsLoading && "loading..."}
             {!collectionsLoading && collections.length < 0 && "No NFT collections found"}
-            {collections.map(collection => <li key={collection.address}>{collection.name} ({collection.address})</li>)}
+            {collections.map(collection => (
+              <li key={collection.address}>
+                <Link href={`/gator/${collection.address}`}>
+                  <span>
+                    {collection.name} <span className="text-xs">({collection.address})</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
-      <div className="w-96">
-      </div>
-    </div>
+    </div >
   )
 }
 
