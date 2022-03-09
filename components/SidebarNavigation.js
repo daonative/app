@@ -26,7 +26,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const roomId = query.daoId
 
   const navigation = [
-    //    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
+    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
     { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
     { name: 'Leaderboard', href: `/dao/${roomId}/leaderboard`, icon: FireIcon, current: false },
     { name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon, current: false },

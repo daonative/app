@@ -10,9 +10,7 @@ import { isFirestoreDate } from '../../../lib/utils';
 import SidebarNavigation from '../../../components/SidebarNavigation'
 import HeaderNavigation from '../../../components/HeaderNavigation'
 import KPIs from '../../../components/KPIs'
-import Feed from '../../../components/Feed'
 import TasksTable from '../../../components/TasksTable'
-import Members from '../../../components/Members'
 import Treasury from '../../../components/Treasury'
 import UpcomingEvents from '../../../components/UpcomingEvents'
 import useMembership from '../../../lib/useMembership';
@@ -20,6 +18,8 @@ import { useWallet } from 'use-wallet';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
 import Spinner from '../../../components/Spinner';
 import { useRequireAuthentication } from '../../../lib/authenticate';
+import { Members } from './members';
+import { LayoutWrapper } from '../../../components/LayoutWrapper';
 
 const db = getFirestore()
 
@@ -246,114 +246,49 @@ const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
   )
 
   const membership = useMembership(account, roomId)
-  const isMember = !!membership
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
     roomId: daoSnapshot.id
   } : initialDAO
 
-  const feed = feedSnapshot?.docs.map((doc) => {
-    const event = doc.data()
-    return {
-      ...event,
-      created: isFirestoreDate(event?.created) ? event.created.toMillis() : '',
-      eventId: doc.id
-    }
-  }) || initialFeed
 
-  const myTasks = tasksSnapshot?.docs.map((doc) => {
-    const task = doc.data()
-    return {
-      ...task,
-      created: isFirestoreDate(task?.created) ? task.created.toMillis() : '',
-      deadline: isFirestoreDate(task?.deadline) ? task.deadline.toMillis() : '',
-      taskId: doc.id
-    }
-  }) || []
-
-  const openTasks = openTasksSnapshot?.docs.map((doc) => {
-    const task = doc.data()
-    return {
-      ...task,
-      created: isFirestoreDate(task?.created) ? task.created.toMillis() : '',
-      deadline: isFirestoreDate(task?.deadline) ? task.deadline.toMillis() : '',
-      taskId: doc.id
-    }
-  }) || []
-
-  const users = usersSnapshot?.docs.map(doc => ({account: doc.id, ...doc.data()}))
-
-  const members = membersSnapshot?.docs.map((doc) => {
-    const membership = doc.data()
-    const user = users?.find(user => user.account === doc.id)
-    return {
-      name: user?.name,
-      account: doc.id,
-      ...membership
-    }
-  }) || []
 
   const onShowMobileSidebar = () => setShowSidebarMobile(true)
   const onToggleDarkMode = () => setDarkMode(!darkMode)
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [darkMode])
+
 
   return (
     <>
-      <div>
-        <SidebarNavigation showMobile={showSidebarMobile} onClose={() => setShowSidebarMobile(false)} />
-        <HeaderNavigation onShowSidebar={onShowMobileSidebar} onToggleDarkMode={onToggleDarkMode} />
-        <div className="md:pl-64 flex-row md:flex overflow-hidden bg-daonative-dark-300 text-daonative-gray-100">
-          <main className="w-full py-6">
-            <div className="mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
-              <Mission roomId={roomId} mission={dao.mission} />
-            </div>
-            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <KPIs roomId={roomId} kpis={dao.kpis} />
-            </div>
-            {openTasks?.length > 0 && (
-              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-                <OpenTasks openTasks={openTasks} />
-              </div>
-            )}
-            {isMember && myTasks?.length > 0 && (
-              <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-                <TasksTable title="My Tasks" tasks={myTasks} showWeight={true} />
-              </div>
-            )}
-            <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
-              <Feed roomId={roomId} feed={feed} kpis={dao.kpis} />
-            </div>
-          </main>
-          <aside className="w-full md:max-w-xs md:py-6">
-            <div className="px-4">
-              <UpcomingEvents />
-            </div>
-            <div className="py-4 px-4">
-              <Treasury address={dao.treasury} enabled={false} />
-            </div>
-            <div className="py-4 px-4">
-              <Members members={members} />
-            </div>
-          </aside>
+      <LayoutWrapper>
+        <div className="mx-auto px-4 sm:px-6 md:px-8">
+          <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+          <Mission roomId={roomId} mission={dao.mission} />
         </div>
-      </div>
+        <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
+          <KPIs roomId={roomId} kpis={dao.kpis} />
+        </div>
+        <div className="py-4 mx-auto">
+          <Members />
+        </div>
+      </LayoutWrapper>
+      <aside className="w-full md:max-w-xs md:py-6">
+        <div className="px-4">
+          <UpcomingEvents />
+        </div>
+        <div className="py-4 px-4">
+          <Treasury address={dao.treasury} enabled={false} />
+        </div>
+      </aside>
     </>
   )
 }
 
 const DisabledDashboard = () => {
-  const {push, query: {daoId}} = useRouter()
+  const { push, query: { daoId } } = useRouter()
   useEffect(() => push(`/dao/${daoId}/challenges`), [])
   return <></>
 }
 
-export default DisabledDashboard
+export default Dashboard

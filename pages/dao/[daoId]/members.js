@@ -35,7 +35,7 @@ const MemberList = ({ members }) => {
     </ul>)
 }
 
-const Members = () => {
+export const Members = () => {
   const roomId = useRoomId()
   const [open, setOpen] = useState(false)
   const [inviteLink, setInviteLink] = useState('')
@@ -66,9 +66,8 @@ const Members = () => {
       ...member
     }
   })
-
   return (
-    <LayoutWrapper>
+    <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex flex-col gap-4">
@@ -79,8 +78,18 @@ const Members = () => {
           <MemberList members={members} />
         </div>
       </div>
+    </>
+  )
+
+
+}
+
+const MembersPage = () => {
+  return (
+    <LayoutWrapper>
+      <Members />
     </LayoutWrapper>
   )
 }
 
-export default Members
+export default MembersPage
