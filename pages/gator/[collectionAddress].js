@@ -54,7 +54,7 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig }) 
     const toastId = toast.loading("Minting your NFT...")
     try {
       await mintNFT(collectionAddress, inviteCode, inviteSig)
-      //onClose()
+      onClose()
       toast.success("Successfully minted your NFT", { id: toastId })
     } catch (e) {
       console.log(e)
@@ -83,19 +83,14 @@ const TokenList = ({ tokens }) => {
   return (
     <ul role="list" className="flex flex-col gap-3">
       {
-        tokens?.map((token, idx) => (
-          <li key={idx}>
+        tokens?.map((token) => (
+          <li key={token.tokenId}>
             <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
               <div className="flex items-center gap-3">
                 <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                  #{String(idx + 1).padStart(3, '0')}
+                  #{String(token.tokenId + 1).padStart(3, '0')}
                 </span>
-                <p className="text-sm font-medium text-daonative-gray-100">{idx}</p>
-              </div>
-              <div className="mt-2 sm:flex flex-col items-end gap-0.5">
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                  {idx}
-                </span>
+                <p className="text-sm font-medium text-daonative-gray-100">{token.owner}</p>
               </div>
             </div>
           </li>
@@ -127,8 +122,8 @@ const GatorCollection = () => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const mintFilter = contract.filters.Transfer(null)
     const mintEvents = await contract.queryFilter(mintFilter)
-    setCollectionTokens(mintEvents)
-    console.log(mintEvents)
+    const tokens = mintEvents.map(event => ({tokenId: event.args?.tokenId.toNumber(), owner: event.args?.to}))
+    setCollectionTokens(tokens)
   }
 
   const retrieveInviteCodes = async (message) => {
