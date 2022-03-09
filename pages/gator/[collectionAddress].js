@@ -194,7 +194,8 @@ const GatorCollection = () => {
     if (!inviteCode) return
     if (!inviteSig) return
     if (account) {
-      handleShowMintModal()
+      // Need to make sure the connect modal is closed
+      setTimeout(handleShowMintModal, 1000)
     } else {
       openConnectWalletModal()
     }
@@ -202,7 +203,7 @@ const GatorCollection = () => {
 
   return (
     <div>
-      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint}/>
+      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <Header>
         {collectionName}
