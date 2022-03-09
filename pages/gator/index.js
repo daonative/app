@@ -53,8 +53,7 @@ const CollectionForm = () => {
       { headers: { "Content-Type": "multipart/form-data" } }
     )
     console.log(response)
-    const url = `https://ipfs.infura.io/ipfs/${response.data.Hash}`
-    return url
+    return `https://ipfs.infura.io/ipfs/${response.data.Hash}`
   }
 
   const uploadMetaData = async (name, image) => {
@@ -123,20 +122,34 @@ const CollectionForm = () => {
 }
 
 const Gator = () => {
+  const { account } = useWallet()
   const [collections, setCollections] = useState([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
   const provider = new providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_RPC_POLYGON
   )
+  const myCollections = collections.filter(collection => collection.owner === account)
+
   const getCollectionName = (address) => {
     const contract = new ethers.Contract(address, collectionAbi, provider)
     return contract.name()
   }
 
+  const getOwner = (address) => {
+    const contract = new ethers.Contract(address, collectionAbi, provider)
+    return contract.owner()
+  }
+
   useInterval(async () => {
     const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, provider)
     const collectionAddresses = await contract.getCollections()
-    const collections = await Promise.all(collectionAddresses.map(async address => ({ address, name: await getCollectionName(address) })))
+    const collections = await Promise.all(
+      collectionAddresses.map(async address => ({
+        address,
+        name: await getCollectionName(address),
+        owner: await getOwner(address)
+      }))
+    )
     setCollections(collections)
     setCollectionsLoading(false)
   }, 3000)
@@ -153,8 +166,8 @@ const Gator = () => {
         <div>
           <ul>
             {collectionsLoading && "loading..."}
-            {!collectionsLoading && collections.length < 0 && "No NFT collections found"}
-            {collections.map(collection => (
+            {!collectionsLoading && myCollections.length === 0 && "No NFT collections found"}
+            {myCollections.map(collection => (
               <li key={collection.address}>
                 <Link href={`/gator/${collection.address}`}>
                   <a>
