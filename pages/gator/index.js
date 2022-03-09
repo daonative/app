@@ -123,9 +123,9 @@ const Gator = () => {
             {collections.map(collection => (
               <li key={collection.address}>
                 <Link href={`/gator/${collection.address}`}>
-                  <span>
+                  <a>
                     {collection.name} <span className="text-xs">({collection.address})</span>
-                  </span>
+                  </a>
                 </Link>
               </li>
             ))}
