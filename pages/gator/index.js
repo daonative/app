@@ -12,10 +12,7 @@ import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
 import Link from "next/link"
-import { create as IPFSClient } from "ipfs-http-client"
- const ipfs = IPFSClient({
-   url: "https://ipfs.infura.io:5001/api/v0",
- });
+import axios from "axios"
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
@@ -47,17 +44,27 @@ const CollectionForm = () => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
   const isPolygon = chainId === 137
 
-  const uploadMetaData = async (name, image) => {
-    const imageUploadResult = await ipfs.add(image[0])
-    const imageUri = `http://ipfs.infura.io/ipfs/${imageUploadResult.path}`
+  const uploadToIPFS = async (data) => {
+    const formData = new FormData()
+    formData.append('file', data)
+    const response = await axios.post(
+      "https://ipfs.infura.io:5001/api/v0/add",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    )
+    console.log(response)
+    const url = `http://ipfs.infura.io/ipfs/${response.data.Hash}`
+    return url
+  }
 
+  const uploadMetaData = async (name, image) => {
+    const imageUri = await uploadToIPFS(image[0])
     const metadata = {
       image: imageUri,
       name
     }
-
-    const metadataUploadResult = await ipfs.add(JSON.stringify(metadata))
-    return `ipfs://${metadataUploadResult.path}`
+    const metadataUri = await uploadToIPFS(JSON.stringify(metadata))
+    return metadataUri
   }
 
   const createCollection = async (name, symbol, image) => {
@@ -100,7 +107,7 @@ const CollectionForm = () => {
             <label className="block text-sm font-medium pb-2">
               Image
             </label>
-            <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300 pr-4"/>
+            <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300 pr-4" />
             {errors.image && (
               <span className="text-xs text-red-400">You need to set an image</span>
             )}

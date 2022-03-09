@@ -11,10 +11,8 @@ import { useWallet } from 'use-wallet'
 import PolygonWarning from '../../components/PolygonWarning'
 import { useConnectWalletModal } from '../../components/ConnectWalletModal'
 import Spinner from '../../components/Spinner'
-import { create as IPFSClient } from "ipfs-http-client"
- const ipfs = IPFSClient({
-   url: "https://ipfs.infura.io:5001/api/v0",
- });
+import axios from 'axios'
+import ShortAddress from '../../components/ShortAddress'
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
   return (
@@ -84,44 +82,55 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig, on
   )
 }
 
-const Token = ({ tokenId, owner, metadataUri }) => {
+const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   const [metadata, setMetadata] = useState({})
+  const date = new Date(timestamp * 1000)
 
   const retrieveMetadata = async (uri) => {
-    const metadata = await ipfs.get(metadataUri)
-    console.log(metadata)
-    setMetadata(JSON.parse(metadata))
-
+    try {
+      const response = await axios.get(uri)
+      const metadata = response.data
+      setMetadata(metadata)
+    } catch (e) { }
   }
 
   useEffect(() => {
-    retrieveMetadata()
+    retrieveMetadata(metadataUri)
   }, [])
 
   return (
-    <>{metadata.image}</>
+    <a href={`https://opensea.io/assets/matic/${tokenAddress}/${tokenId}`}>
+      <div className="relative w-64 rounded-lg overflow-hidden">
+        <img className="object-cover w-full" src={metadata.image} />
+        <div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
+          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+            <ShortAddress>{owner}</ShortAddress>
+          </span>
+          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+            {date.getFullYear()}-{date.getMonth()}-{date.getDay()}
+          </span>
+        </div>
+        <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
+          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+            #{String(tokenId + 1).padStart(3, '0')}
+          </span>
+        </div>
+      </div>
+    </a>
   )
 }
 
-const TokenList = ({ tokens }) => {
+const TokenList = ({ address, tokens }) => {
   return (
-    <ul role="list" className="flex flex-col gap-3">
-      {
-        tokens?.map((token) => {
-          return (
-            <li key={token.tokenId}>
-              <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                    #{String(token.tokenId + 1).padStart(3, '0')}
-                  </span>
-                  <p className="text-sm font-medium text-daonative-gray-100">{token.owner}</p>
-                </div>
-              </div>
-            </li>
-          )
-        })}
-    </ul>)
+    <div className="flex justify-center">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          tokens?.map((token) => (
+            <Token key={token.tokenId} {...token} tokenAddress={address} />
+          ))}
+      </div>
+    </div>
+  )
 }
 
 const GatorCollection = () => {
@@ -160,11 +169,13 @@ const GatorCollection = () => {
 
   const listenForNewCollectionTokens = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    contract.on('Transfer', async (from, to, tokenId) => {
+    const mintFilter = contract.filters.Transfer(null)
+    contract.on(mintFilter, async (_, to, tokenId, event) => {
       const token = {
-        tokenId: tokenId.toNumber(),
+        tokenId: tokenId?.toNumber(),
         owner: to,
-        metadataUri: await getTokenURI(address, tokenId.toNumber())
+        metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
+        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
       }
       setCollectionTokens(tokens => [...tokens, token])
       setIsLoading(false)
@@ -179,8 +190,10 @@ const GatorCollection = () => {
     const tokens = await Promise.all(mintEvents.map(async event => ({
       tokenId: event.args?.tokenId.toNumber(),
       owner: event.args?.to,
-      metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber())
+      metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
+      timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
     })))
+    console.log(tokens)
     setCollectionTokens(tokens)
     setIsLoading(false)
     listenForNewCollectionTokens(address)
@@ -252,7 +265,7 @@ const GatorCollection = () => {
         <div className="flex justify-end w-full">
           {collectionOwner === account && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
         </div>
-        <TokenList tokens={collectionTokens} />
+        <TokenList address={collectionAddress} tokens={collectionTokens} />
         {isLoading && (
           <div className="flex w-full justify-center">
             <div className="w-8 h-8">
