@@ -125,12 +125,20 @@ const GatorCollection = () => {
     setCollectionOwner(owner)
   }
 
+  const listenForNewCollectionTokens = async (address) => {
+    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+    contract.on('Transfer', (from, to, tokenId) => {
+      setCollectionTokens(tokens => [...tokens, {tokenId: tokenId.toNumber(), owner: to}])
+    })
+  }
+
   const retrieveCollectionTokens = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const mintFilter = contract.filters.Transfer(null)
     const mintEvents = await contract.queryFilter(mintFilter)
     const tokens = mintEvents.map(event => ({tokenId: event.args?.tokenId.toNumber(), owner: event.args?.to}))
     setCollectionTokens(tokens)
+    listenForNewCollectionTokens(address)
   }
 
   const generateInviteCodes = async (message) => {
