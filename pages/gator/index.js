@@ -75,9 +75,16 @@ const CreateCollectionModal = ({ show, onClose }) => {
 
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
-    await createCollection(data.name, data.symbol, data.image)
-    toast.success("NFT collection created", { id: toastId })
-    reset()
+    try {
+      const newCollection = await createCollection(data.name, data.symbol, data.image)
+      console.log(newCollection)
+      toast.success("NFT collection created", { id: toastId })
+      onClose()
+      reset()
+    } catch (e) {
+      toast.error("Failed to create NFT collection", { id: toastId })
+      toast.error(e.message)
+    }
   }
   return (
     <Modal show={show} onClose={onClose}>
@@ -112,8 +119,6 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 {errors.image && (
                   <span className="text-xs text-red-400">You need to set an image</span>
                 )}
-              </div>
-              <div>
               </div>
             </div>
           </ModalBody>
