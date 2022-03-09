@@ -87,6 +87,7 @@ const CollectionForm = () => {
 
 const Gator = () => {
   const [collections, setCollections] = useState([])
+  const [collectionsLoading, setCollectionsLoading] = useState(true)
   const provider = new providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_RPC_POLYGON
   )
@@ -100,6 +101,7 @@ const Gator = () => {
     const collectionAddresses = await contract.getCollections()
     const collections = await Promise.all(collectionAddresses.map(async address => ({ address, name: await getCollectionName(address) })))
     setCollections(collections)
+    setCollectionsLoading(false)
   }, 3000)
 
   return (
@@ -111,6 +113,8 @@ const Gator = () => {
         </div>
         <div>
           <ul>
+            {collectionsLoading && "loading..."}
+            {!collectionsLoading && collections.length < 0 && "No NFT collections found"}
             {collections.map(collection => <li key={collection.address}>{collection.name} ({collection.address})</li>)}
           </ul>
         </div>
