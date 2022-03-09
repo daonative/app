@@ -11,6 +11,10 @@ import { useWallet } from 'use-wallet'
 import PolygonWarning from '../../components/PolygonWarning'
 import { useConnectWalletModal } from '../../components/ConnectWalletModal'
 import Spinner from '../../components/Spinner'
+import { create as IPFSClient } from "ipfs-http-client"
+ const ipfs = IPFSClient({
+   url: "https://ipfs.infura.io:5001/api/v0",
+ });
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
   return (
@@ -80,22 +84,43 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig, on
   )
 }
 
+const Token = ({ tokenId, owner, metadataUri }) => {
+  const [metadata, setMetadata] = useState({})
+
+  const retrieveMetadata = async (uri) => {
+    const metadata = await ipfs.get(metadataUri)
+    console.log(metadata)
+    setMetadata(JSON.parse(metadata))
+
+  }
+
+  useEffect(() => {
+    retrieveMetadata()
+  }, [])
+
+  return (
+    <>{metadata.image}</>
+  )
+}
+
 const TokenList = ({ tokens }) => {
   return (
     <ul role="list" className="flex flex-col gap-3">
       {
-        tokens?.map((token) => (
-          <li key={token.tokenId}>
-            <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
-              <div className="flex items-center gap-3">
-                <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                  #{String(token.tokenId + 1).padStart(3, '0')}
-                </span>
-                <p className="text-sm font-medium text-daonative-gray-100">{token.owner}</p>
+        tokens?.map((token) => {
+          return (
+            <li key={token.tokenId}>
+              <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+                    #{String(token.tokenId + 1).padStart(3, '0')}
+                  </span>
+                  <p className="text-sm font-medium text-daonative-gray-100">{token.owner}</p>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          )
+        })}
     </ul>)
 }
 
@@ -127,10 +152,21 @@ const GatorCollection = () => {
     setCollectionOwner(owner)
   }
 
+  const getTokenURI = async (address, tokenId) => {
+    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+    const uri = await contract.tokenURI(tokenId)
+    return uri
+  }
+
   const listenForNewCollectionTokens = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    contract.on('Transfer', (from, to, tokenId) => {
-      setCollectionTokens(tokens => [...tokens, { tokenId: tokenId.toNumber(), owner: to }])
+    contract.on('Transfer', async (from, to, tokenId) => {
+      const token = {
+        tokenId: tokenId.toNumber(),
+        owner: to,
+        metadataUri: await getTokenURI(address, tokenId.toNumber())
+      }
+      setCollectionTokens(tokens => [...tokens, token])
       setIsLoading(false)
     })
   }
@@ -140,7 +176,11 @@ const GatorCollection = () => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const mintFilter = contract.filters.Transfer(null)
     const mintEvents = await contract.queryFilter(mintFilter)
-    const tokens = mintEvents.map(event => ({ tokenId: event.args?.tokenId.toNumber(), owner: event.args?.to }))
+    const tokens = await Promise.all(mintEvents.map(async event => ({
+      tokenId: event.args?.tokenId.toNumber(),
+      owner: event.args?.to,
+      metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber())
+    })))
     setCollectionTokens(tokens)
     setIsLoading(false)
     listenForNewCollectionTokens(address)

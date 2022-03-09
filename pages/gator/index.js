@@ -12,8 +12,12 @@ import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
 import Link from "next/link"
+import { create as IPFSClient } from "ipfs-http-client"
+ const ipfs = IPFSClient({
+   url: "https://ipfs.infura.io:5001/api/v0",
+ });
 
-const COLLECION_CREATOR_CONTRACT = "0xbb733594f37d6e94c6ab1686cd5780ec90d86528"
+const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
 export const Header = ({ children }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
@@ -43,15 +47,29 @@ const CollectionForm = () => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
   const isPolygon = chainId === 137
 
-  const createCollection = async (name, symbol) => {
+  const uploadMetaData = async (name, image) => {
+    const imageUploadResult = await ipfs.add(image[0])
+    const imageUri = `http://ipfs.infura.io/ipfs/${imageUploadResult.path}`
+
+    const metadata = {
+      image: imageUri,
+      name
+    }
+
+    const metadataUploadResult = await ipfs.add(JSON.stringify(metadata))
+    return `ipfs://${metadataUploadResult.path}`
+  }
+
+  const createCollection = async (name, symbol, image) => {
     const signer = provider.getSigner(account)
     const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, signer)
-    return await contract.createCollection(name, symbol)
+    const metadataUri = await uploadMetaData(name, image)
+    return await contract.createCollection(name, symbol, metadataUri)
   }
 
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
-    await createCollection(data.name, data.symbol)
+    await createCollection(data.name, data.symbol, data.image)
     toast.success("NFT collection created", { id: toastId })
     reset()
   }
@@ -62,7 +80,7 @@ const CollectionForm = () => {
         <div className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium pb-2">
-              Name
+              Collection Name
             </label>
             <input type="text" rows="8" {...register("name", { required: true })} placeholder="School DAO Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
             {errors.name && (
@@ -76,6 +94,15 @@ const CollectionForm = () => {
             <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="SDM" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
             {errors.symbol && (
               <span className="text-xs text-red-400">You need to set a symbol</span>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium pb-2">
+              Image
+            </label>
+            <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300 pr-4"/>
+            {errors.image && (
+              <span className="text-xs text-red-400">You need to set an image</span>
             )}
           </div>
           <div>
