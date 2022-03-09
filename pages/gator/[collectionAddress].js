@@ -100,6 +100,7 @@ const TokenList = ({ tokens }) => {
 
 const GatorCollection = () => {
   const [collectionName, setCollectionName] = useState("")
+  const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [showMintModal, setShowMintModal] = useState(false)
@@ -118,6 +119,12 @@ const GatorCollection = () => {
     setCollectionName(collectionName)
   }
 
+  const retrieveCollectionOwner = async (address) => {
+    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+    const owner = await contract.owner()
+    setCollectionOwner(owner)
+  }
+
   const retrieveCollectionTokens = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const mintFilter = contract.filters.Transfer(null)
@@ -126,7 +133,7 @@ const GatorCollection = () => {
     setCollectionTokens(tokens)
   }
 
-  const retrieveInviteCodes = async (message) => {
+  const generateInviteCodes = async (message) => {
     const signer = injectedProvider.getSigner()
     const inviteHash = ethers.utils.solidityKeccak256(['string'], [message]);
     const inviteSig = await signer.signMessage(ethers.utils.arrayify(inviteHash))
@@ -136,7 +143,7 @@ const GatorCollection = () => {
   const handleOpenInviteModal = async () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
-      const {inviteCode, inviteSig} = await retrieveInviteCodes(collectionAddress)
+      const {inviteCode, inviteSig} = await generateInviteCodes(collectionAddress)
       const inviteLink = `${window?.origin}/gator/${collectionAddress}?inviteCode=${inviteCode}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
@@ -145,6 +152,7 @@ const GatorCollection = () => {
       toast.error("Failed to generated link", { id: toastId })
     }
   }
+
   const handleCloseInviteModal = () => {
     setShowInviteModal(false)
     setInviteLink(null)
@@ -162,6 +170,7 @@ const GatorCollection = () => {
     if (!ethers.utils.isAddress(collectionAddress)) return
     retrieveCollectionName(collectionAddress)
     retrieveCollectionTokens(collectionAddress)
+    retrieveCollectionOwner(collectionAddress)
   }, [collectionAddress])
 
   useEffect(() => {
@@ -183,7 +192,7 @@ const GatorCollection = () => {
       </Header>
       <div className="flex flex-col gap-8 p-8">
         <div className="flex justify-end w-full">
-          <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>
+          { collectionOwner === account && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
         </div>
         <TokenList tokens={collectionTokens} />
       </div>
