@@ -280,7 +280,7 @@ export const GatorCollection = () => {
       <CreateDAOModal show={showCreateDAOModal} onClose={handleCloseCreateDAOModal} />
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
-      <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
+      <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
           <div className="flex gap-4">
