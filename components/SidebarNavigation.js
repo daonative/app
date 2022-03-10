@@ -28,13 +28,14 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const dashboardUrl = roomId ? `/dao/${roomId}` : '/'
   const challengesUrl = roomId ? `/dao/${roomId}/challenges` : '/'
   const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : '/'
+  const nftsUrl = roomId ? `/dao/${roomId}/nfts` : '/gator'
 
   const navigation = [
     { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$" },
     { name: 'Challenges', href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9]*)$" },
     { name: 'Leaderboard', href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
     //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
-    { name: 'NFTs', href: `/gator`, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|gator)(/[a-zA-Z0-9]*)?$" },
+    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|gator)(/[a-zA-Z0-9]*)?$" },
     { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon },
@@ -93,7 +94,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
                   {navigation.map((item) => {
-                    const current = asPath.match(item.match)
+                    const current = !item.comingSoon && asPath.match(item.match)
                     return (
                       <Link key={item.name} href={item.href}>
                         <a
@@ -148,7 +149,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => {
-                const current = asPath.match(item.match)
+                const current = !item.comingSoon && asPath.match(item.match)
                 return (
                   <Link key={item.name} href={item.href}>
                     <a

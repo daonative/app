@@ -31,7 +31,6 @@ const CreateDAOModal = ({ show, onClose }) => {
       </ModalActionFooter>
     </Modal>
   )
-
 }
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
@@ -150,7 +149,7 @@ const TokenList = ({ address, tokens }) => {
   )
 }
 
-const GatorCollection = () => {
+export const GatorCollection = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
@@ -285,7 +284,7 @@ const GatorCollection = () => {
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
           <div className="flex gap-4">
-            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Create a DAO</SecondaryButton>
+            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Link to DAO</SecondaryButton>
             <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
           </div>
         </div>

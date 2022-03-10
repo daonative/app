@@ -15,7 +15,6 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { account } = useWallet()
   const isConnected = !!account
-  
 
   useEffect(() => {
     const getMyRoomIds = async () => {

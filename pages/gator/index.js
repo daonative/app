@@ -16,6 +16,7 @@ import axios from "axios"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "../../components/Modal"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
 import Spinner from "../../components/Spinner"
+import { useRouter } from "next/router"
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
@@ -141,6 +142,8 @@ const CreateCollectionModal = ({ show, onClose }) => {
 }
 
 const CollectionList = ({ collections, isLoading }) => {
+  const {asPath: path} = useRouter()
+
   if (isLoading) {
     return (
       <div className="flex w-full justify-center p-8">
@@ -159,10 +162,9 @@ const CollectionList = ({ collections, isLoading }) => {
 
   return (
     <ul role="list" className="flex flex-col gap-3">
-      {
-        collections?.map(collection => (
+      {collections?.map(collection => (
           <li key={collection.address}>
-            <Link href={`/gator/${collection.address}`}>
+            <Link href={`${path}/${collection.address}`}>
               <a>
                 <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
                   <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
@@ -178,7 +180,7 @@ const CollectionList = ({ collections, isLoading }) => {
   )
 }
 
-const Gator = () => {
+export const Gator = ({ roomId }) => {
   const { account } = useWallet()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [collections, setCollections] = useState([])
@@ -186,6 +188,8 @@ const Gator = () => {
   const provider = new providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_RPC_POLYGON
   )
+
+  const roomCollections = collections.filter(collection => collection.address === '0xF232De84715521592375d0B87e775a5388DAd973')
   const myCollections = collections.filter(collection => collection.owner === account)
 
   const handleShowCreateModal = () => setShowCreateModal(true)
@@ -233,6 +237,16 @@ const Gator = () => {
       <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
       <div className="flex justify-center">
         <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
+          {false && roomId && (
+            <>
+              <div className="flex justify-between items-center w-full">
+                <h2 className="text-2xl">DAO NFT collections</h2>
+              </div>
+              <div className="w-full">
+                <CollectionList collections={roomCollections} isLoading={collectionsLoading} />
+              </div>
+            </>
+          )}
           <div className="flex justify-between items-center w-full">
             <h2 className="text-2xl">My NFT collections</h2>
             <PrimaryButton onClick={handleShowCreateModal}>Create Collection</PrimaryButton>
