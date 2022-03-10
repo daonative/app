@@ -257,11 +257,12 @@ const GatorCollection = () => {
   }, [inviteCode, inviteSig, account])
 
   return (
-    <div>
+    <div className="flex justify-center">
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
-      <div className="flex flex-col gap-8 p-8">
-        <div className="flex justify-end w-full">
+      <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
+        <div className="flex justify-between">
+          <h2 className="text-2xl">{collectionName}</h2>
           <PrimaryButton onClick={handleOpenInviteModal} className={collectionOwner !== account && "invisible"}>Invite to mint</PrimaryButton>
         </div>
         <TokenList address={collectionAddress} tokens={collectionTokens} />

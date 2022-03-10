@@ -217,7 +217,7 @@ const Gator = () => {
       <div className="flex justify-center">
         <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
           <div className="flex justify-between items-center w-full">
-            <h2>My NFT Collections</h2>
+            <h2 className="text-2xl">My NFT collections</h2>
             <PrimaryButton onClick={handleShowCreateModal}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
