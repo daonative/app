@@ -15,6 +15,7 @@ import Link from "next/link"
 import axios from "axios"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "../../components/Modal"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
+import Spinner from "../../components/Spinner"
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
@@ -139,7 +140,23 @@ const CreateCollectionModal = ({ show, onClose }) => {
   )
 }
 
-const CollectionList = ({ collections }) => {
+const CollectionList = ({ collections, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="flex w-full justify-center p-8">
+        <div className="w-8 h-8">
+          <Spinner />
+        </div>
+      </div>
+    )
+  }
+
+  if (collections.length === 0) {
+    return (
+      <></>
+    )
+  }
+
   return (
     <ul role="list" className="flex flex-col gap-3">
       {
@@ -221,9 +238,7 @@ const Gator = () => {
             <PrimaryButton onClick={handleShowCreateModal}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
-            {collectionsLoading && "loading..."}
-            {!collectionsLoading && myCollections.length === 0 && "No NFT collections found"}
-            <CollectionList collections={myCollections} />
+            <CollectionList collections={myCollections} isLoading={collectionsLoading} />
           </div>
         </div>
       </div>
