@@ -1,33 +1,44 @@
-import { collection, getDocs, getFirestore, doc } from "firebase/firestore"
+import { collection, getDocs, getFirestore, doc, collectionGroup } from "firebase/firestore"
 import { useWallet } from "use-wallet"
 import ConnectWalletButton from "../components/ConnectWalletButton"
 import useDarkMode from "../lib/useDarkMode"
-import useIsConnected from "../lib/useIsConnected"
+import useUser from "../lib/useUser"
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Link from "next/link"
 import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"
+import { LayoutWrapper } from '../components/LayoutWrapper'
+
+import { query, where, documentId } from 'firebase/firestore'
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useEffect, useState } from "react"
 
 const db = getFirestore()
 
-const getRooms = async () => {
-  const db = getFirestore()
-  const snapshot = await getDocs(collection(db, 'rooms'))
-  return snapshot.docs.map((doc) => ({ roomId: doc.id, ...doc.data() }))
-}
-
-export const getServerSideProps = async ({ params }) => {
-  const rooms = await getRooms()
-  return { props: { rooms } }
-}
-
-const Home = ({ rooms }) => {
+const Home = () => {
+  const [rooms, setRooms] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const { account } = useWallet()
-  const isConnected = useIsConnected()
-  const [user, loading] = useDocumentDataOnce(
-    doc(db, 'users', account || 'x')
-  )
+  const isConnected = !!account
+  
 
-  useDarkMode()
+  useEffect(() => {
+    if (!isConnected) return
+
+    const retrieveMyRooms = async () => {
+      setIsLoading(true)
+      setRooms([])
+      const membershipsQuery = query(collectionGroup(db, 'members'), where('account', '==', account))
+      const membershipsSnapshot = await getDocs(membershipsQuery)
+      const roomIds = membershipsSnapshot.docs.map(doc => doc?.ref?.parent?.parent?.id)
+      const roomsQuery = query(collection(db, 'rooms'), where(documentId(), 'in', roomIds))
+      const roomsSnapshot = await getDocs(roomsQuery)
+      const roomsData = roomsSnapshot.docs.map(doc => ({roomId: doc.id, ...doc.data()}))
+      setRooms(roomsData)
+      setIsLoading(false)
+    }
+
+    retrieveMyRooms()
+  }, [account])
 
   if (!isConnected) {
     return (
@@ -40,15 +51,14 @@ const Home = ({ rooms }) => {
     )
   }
 
-  if (loading) {
+  if (isLoading) {
     return <>Loading</>
   }
+
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <ul className="text-center text-xl">
-        {rooms
-          .filter(room => user?.rooms?.includes(room.roomId))
-          .map(room => (
+        {rooms.map(room => (
             <li key={room.roomId} className="m-2 py-2 px-6 rounded-md bg-daonative-dark-100 hover:bg-daonative-dark-200">
               <Link href={`/dao/${room.roomId}/`}>{room.name}</Link>
             </li>
@@ -59,4 +69,12 @@ const Home = ({ rooms }) => {
   )
 }
 
-export default Home
+const HomePage = () => {
+  return (
+    <LayoutWrapper>
+      <Home />
+    </LayoutWrapper>
+  )
+}
+
+export default HomePage
