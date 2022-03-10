@@ -8,6 +8,7 @@ import {
   XIcon,
   LightningBoltIcon,
   FireIcon,
+  HeartIcon,
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
@@ -36,7 +37,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Leaderboard', href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
     //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|gator)(/[a-zA-Z0-9]*)?$" },
-    { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon },
+    { name: 'Rewards', comingSoon: true, href: '#', icon: HeartIcon },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon },
   ]
