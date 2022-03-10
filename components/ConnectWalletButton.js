@@ -5,6 +5,7 @@ import useIsConnected from '../lib/useIsConnected'
 import useMembership from '../lib/useMembership'
 import PFP from './PFP'
 import { useRouter } from 'next/router'
+import useUser from '../lib/useUser'
 
 const ConnectWalletButton = () => {
   const { account } = useWallet()
@@ -12,6 +13,7 @@ const ConnectWalletButton = () => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const membership = useMembership(account, roomId)
+  const user = useUser()
   const { openConnectWalletModal } = useConnectWalletModal()
 
   return (
@@ -26,8 +28,8 @@ const ConnectWalletButton = () => {
           </div>
 
           <div className="px-4">
-            {membership ? (
-              <>{membership.name}</>
+            {user ? (
+              <>{user.name}</>
             ) : (
               <ShortAddress>{account}</ShortAddress>
             )}

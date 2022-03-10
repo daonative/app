@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
 import PFP from './PFP';
+import useUser from '../lib/useUser';
 
 const auth = getAuth()
 
@@ -23,15 +24,13 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
   const { account, reset: disconnect } = useWallet()
   const isConnected = useIsConnected()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
-  const [user] = useAuthState(auth)
   const provider = useProvider()
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const requireAuthentication = useRequireAuthentication()
   const membership = useMembership(account, roomId)
+  const user = useUser()
   const isMember = !!membership
-
-  const isAuthenticated = !!user
 
   const logWork = async (data) => {
     await requireAuthentication()
@@ -119,8 +118,8 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                     */}
                     <PFP address={account} size={32} />
                     <div className="px-2">
-                      {membership ? (
-                        <>{membership.name}</>
+                      {user ? (
+                        <>{user.name}</>
                       ) : (
                         <ShortAddress>{account}</ShortAddress>
                       )}
