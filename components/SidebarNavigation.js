@@ -30,11 +30,11 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : '/'
 
   const navigation = [
-    { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*/?$" },
-    { name: 'Challenges', href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges/?$" },
-    { name: 'Leaderboard', href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard/?$" },
+    { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$" },
+    { name: 'Challenges', href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9]*)$" },
+    { name: 'Leaderboard', href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
     //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
-    { name: 'NFTs', href: `/gator`, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|gator)/?$" },
+    { name: 'NFTs', href: `/gator`, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|gator)(/[a-zA-Z0-9]*)?$" },
     { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon },
