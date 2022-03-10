@@ -25,11 +25,16 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const { query, asPath } = useRouter()
   const roomId = query.daoId
 
+  const dashboardUrl = roomId ? `/dao/${roomId}` : '/about'
+  const challengesUrl = roomId ? `/dao/${roomId}/challenges` : '/about'
+  const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : '/about'
+
   const navigation = [
-    { name: 'Dashboard', href: `/dao/${roomId}`, icon: HomeIcon, current: true, exact: true },
-    { name: 'Challenges', href: `/dao/${roomId}/challenges`, icon: LightningBoltIcon, current: false },
-    { name: 'Leaderboard', href: `/dao/${roomId}/leaderboard`, icon: FireIcon, current: false },
-    { name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon, current: false },
+    { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, current: true, exact: true },
+    { name: 'Challenges', href: challengesUrl, icon: LightningBoltIcon, current: false },
+    { name: 'Leaderboard', href: leaderboardUrl, icon: FireIcon, current: false },
+    //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon, current: false },
+    { name: 'NFTs', href: `/gator`, icon: CollectionIcon, current: false },
     { name: 'Rewards', comingSoon: true, href: '#', icon: CollectionIcon, current: false },
     { name: 'Events', comingSoon: true, href: '#', icon: CalendarIcon, current: false },
     { name: 'Members', comingSoon: true, href: '#', icon: UsersIcon, current: false },

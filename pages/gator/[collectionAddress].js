@@ -13,6 +13,7 @@ import { useConnectWalletModal } from '../../components/ConnectWalletModal'
 import Spinner from '../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../components/ShortAddress'
+import { LayoutWrapper } from '../../components/LayoutWrapper'
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
   return (
@@ -149,6 +150,8 @@ const GatorCollection = () => {
     process.env.NEXT_PUBLIC_RPC_POLYGON
   )
 
+  console.log(collectionOwner, account)
+
   const retrieveCollectionName = async (address) => {
     const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
     const collectionName = await contract.name()
@@ -193,7 +196,6 @@ const GatorCollection = () => {
       metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
       timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
     })))
-    console.log(tokens)
     setCollectionTokens(tokens)
     setIsLoading(false)
     listenForNewCollectionTokens(address)
@@ -258,12 +260,9 @@ const GatorCollection = () => {
     <div>
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
-      <Header>
-        {collectionName}
-      </Header>
       <div className="flex flex-col gap-8 p-8">
         <div className="flex justify-end w-full">
-          {collectionOwner === account && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
+          <PrimaryButton onClick={handleOpenInviteModal} className={collectionOwner !== account && "invisible"}>Invite to mint</PrimaryButton>
         </div>
         <TokenList address={collectionAddress} tokens={collectionTokens} />
         {isLoading && (
@@ -278,4 +277,12 @@ const GatorCollection = () => {
   )
 }
 
-export default GatorCollection;
+const CollectionPage = () => {
+  return (
+    <LayoutWrapper>
+      <GatorCollection />
+    </LayoutWrapper>
+  )
+}
+
+export default CollectionPage;

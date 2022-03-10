@@ -14,6 +14,7 @@ import toast from "react-hot-toast"
 import Link from "next/link"
 import axios from "axios"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "../../components/Modal"
+import { LayoutWrapper } from "../../components/LayoutWrapper"
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
@@ -213,9 +214,6 @@ const Gator = () => {
   return (
     <div>
       <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
-      <Header>
-        Gator
-      </Header>
       <div className="flex justify-center">
         <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
           <div className="flex justify-between items-center w-full">
@@ -233,4 +231,13 @@ const Gator = () => {
   )
 }
 
-export default Gator
+
+const CollectionListPage = () => {
+  return (
+    <LayoutWrapper>
+      <Gator />
+    </LayoutWrapper>
+  )
+}
+
+export default CollectionListPage
