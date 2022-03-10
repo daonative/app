@@ -13,22 +13,85 @@ import Spinner from '../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../components/ShortAddress'
 import { LayoutWrapper } from '../../components/LayoutWrapper'
-import ComingSoonBadge from '../../components/ComingSoonBadge'
+import { useForm } from 'react-hook-form'
+import { getUserRooms } from '../../lib/useMembership'
 
-const CreateDAOModal = ({ show, onClose }) => {
+const LinkDAOModal = ({ show, onClose }) => {
+  const [rooms, setRooms] = useState([])
+  const { account } = useWallet()
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+
+  useEffect(() => {
+    const retrieveMyRooms = async () => {
+      setRooms([])
+      const userRooms = await getUserRooms(account)
+      const userAdminRooms = userRooms.filter(room => room?.membership?.roles?.includes('admin'))
+      setRooms(userAdminRooms)
+    }
+
+    if (!account) return
+
+    retrieveMyRooms()
+  }, [account])
+
+  const handleLinkDAO = (data) => {
+    console.log(data)
+  }
+
+  const RoomOption = ({roomId, name}) => (
+    <li className="w-full py-1">
+      <label className="text-sm">
+        <input className="sr-only peer" type="radio" value={roomId} {...register('room', { required: true })} />
+        <div className="peer-checked:bg-daonative-dark-100 bg-daonative-dark-200 hover:cursor-pointer hover:bg-daonative-dark-200 hover:bg-opacity-50 px-2 py-1.5 rounded-md">
+          {name}
+        </div>
+      </label>
+    </li>
+  )
+
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Create your DAO</ModalTitle>
-      <ModalBody>
-        <div className="flex justify-center p-4">
-          <ComingSoonBadge />
-        </div>
-      </ModalBody>
-      <ModalActionFooter>
-        <SecondaryButton onClick={onClose}>
-          Close
-        </SecondaryButton>
-      </ModalActionFooter>
+      <ModalTitle>Link your DAO</ModalTitle>
+      <form onSubmit={handleSubmit(handleLinkDAO)}>
+        <ModalBody>
+          <div className="flex flex-col gap-8">
+            <p className="text-center text-sm text-daonative-gray-200 pb-4">Make your NFT holders become a member of your DAO.</p>
+            <div>
+              <label className="block font-bold pb-2 font-space">
+                Membership Roles
+              </label>
+              <div className="flex gap-2 items-center">
+                <input type="checkbox" {...register("admin", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" id="admin-roles" />
+                <label className="text-sm font-medium" htmlFor="admin-roles">
+                  Admin
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="block font-bold pb-2 font-space">
+                DAO
+              </label>
+              <ul className="justify-center w-full">
+                <RoomOption name="Create a new DAO" roomId={null} />
+                {rooms.map((room) => <RoomOption key={room.roomid} name={room.name} roomId={room.roomId} />)}
+              </ul>
+              {errors.room && (
+                <span className="text-xs text-red-400">You need to select a DAO</span>
+              )}
+            </div>
+          </div>
+        </ModalBody>
+        <ModalActionFooter>
+          <div className="flex gap-2">
+            <SecondaryButton onClick={onClose}>
+              Close
+            </SecondaryButton>
+            <PrimaryButton type="submit">
+              Link
+            </PrimaryButton>
+          </div>
+        </ModalActionFooter>
+      </form>
     </Modal>
   )
 }
@@ -151,13 +214,16 @@ const TokenList = ({ address, tokens }) => {
 
 export const GatorCollection = () => {
   const [isLoading, setIsLoading] = useState(false)
+  // Collection
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
-  const [showCreateDAOModal, setShowCreateDAOModal] = useState(false)
+  // Modals
+  const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [showMintModal, setShowMintModal] = useState(false)
   const [inviteLink, setInviteLink] = useState(null)
+
   const { replace: routerReplace, query: { collectionAddress, inviteCode, inviteSig } } = useRouter()
   const { account } = useWallet()
   const { openConnectWalletModal } = useConnectWalletModal()
@@ -190,10 +256,10 @@ export const GatorCollection = () => {
     setInviteLink(null)
   }
 
-  const handleOpenCreateDAOModal = () => setShowCreateDAOModal(true)
-  const handleCloseCreateDAOModal = () => setShowCreateDAOModal(false)
+  const handleOpenCreateDAOModal = () => setShowLinkDAOModal(true)
+  const handleCloseLinkDAOModal = () => setShowLinkDAOModal(false)
 
-  const handleShowMintModal = () => setShowMintModal(true)
+  const handleOpenMintModal = () => setShowMintModal(true)
   const handleCloseMintModal = () => {
     // clear url query params
     routerReplace(`/gator/${collectionAddress}`, undefined, { shallow: true });
@@ -269,15 +335,15 @@ export const GatorCollection = () => {
     if (!inviteSig) return
     if (account) {
       // Need to make sure the connect modal is closed
-      setTimeout(handleShowMintModal, 1000)
+      setTimeout(handleOpenMintModal, 1000)
     } else {
       openConnectWalletModal()
     }
   }, [inviteCode, inviteSig, account, openConnectWalletModal])
 
   return (
-    <div className="flex justify-center">
-      <CreateDAOModal show={showCreateDAOModal} onClose={handleCloseCreateDAOModal} />
+    <div className="flex justify-center px-8 lg:px-0">
+      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} />
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">

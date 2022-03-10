@@ -9,6 +9,7 @@ import { query, where, documentId } from 'firebase/firestore'
 import { useEffect, useState } from "react"
 import Spinner from "../components/Spinner"
 import { UserGroupIcon } from "@heroicons/react/solid"
+import { getUserRooms } from "../lib/useMembership"
 
 const db = getFirestore()
 
@@ -24,20 +25,14 @@ const DAOList = ({ rooms, isLoading }) => {
   }
 
   if (rooms.length === 0) {
-    return (
-      <div className="w-full p-8 text-center flex flex-col items-center">
-        <UserGroupIcon className="h-24 w-24 m-8"/>
-        <h3 className="mt-2 text-lg font-medium text-daonative-gray-100">{"You're not part of any DAO"}</h3>
-        <p className="mt-1 text-sm text-gray-500"><a href="https://daonative.xyz">Request early access</a></p>
-      </div>
-    )
+    return <EmptyStateNoDAOs />
   }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between w-full items-center">
-        <p className="text-daonative-gray-300">Choose the DAO you want to see</p>
         <h2 className="text-2xl">My DAOs</h2>
+        <p className="text-daonative-gray-300">Choose the DAO you want to see</p>
       </div>
       <div className="w-full">
         <ul role="list" className="flex flex-col gap-3">
@@ -72,34 +67,10 @@ const Home = () => {
   const isConnected = !!account
 
   useEffect(() => {
-    const getUserRooms = async () => {
-      const membershipsQuery = query(collectionGroup(db, 'members'), where('account', '==', account))
-      const membershipsSnapshot = await getDocs(membershipsQuery)
-      const memberships = membershipsSnapshot.docs.map(doc => ({
-        roomId: doc?.ref?.parent?.parent?.id,
-        membership: doc.data()
-      }))
-      const roomIds = memberships.map(membership => membership.roomId)
-
-      if (roomIds?.length === 0) return []
-
-      const roomsQuery = query(collection(db, 'rooms'), where(documentId(), 'in', roomIds))
-      const roomsSnapshot = await getDocs(roomsQuery)
-      const rooms = roomsSnapshot.docs.map(doc => ({
-        ...doc.data(),
-        roomId: doc.id,
-        membership: memberships
-          .find(membership => membership.roomId === doc.id)
-          ?.membership
-      }))
-
-      return rooms
-    }
-
     const retrieveMyRooms = async () => {
       setIsLoading(true)
       setRooms([])
-      const roomsData = await getUserRooms()
+      const roomsData = await getUserRooms(account)
       setRooms(roomsData)
       setIsLoading(false)
     }
@@ -121,7 +92,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center px-8 lg:px-0">
       <div className="w-full lg:w-3/4">
         <DAOList rooms={rooms} isLoading={isLoading} />
       </div>

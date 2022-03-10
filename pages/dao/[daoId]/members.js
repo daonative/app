@@ -55,7 +55,7 @@ export const Members = () => {
 
   useEffect(() => {
     setInviteLink(`${window?.origin}/dao/${roomId}/join`)
-  }, [])
+  }, [roomId])
 
   const users = usersSnapshot?.docs.map(doc => ({ account: doc.id, ...doc.data() }))
   const members = membersSnapshot?.docs.map((doc) => {

@@ -235,7 +235,7 @@ export const Gator = ({ roomId }) => {
   return (
     <div>
       <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
-      <div className="flex justify-center">
+      <div className="flex justify-center px-8 lg:px-0">
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
           {false && roomId && (
             <>
