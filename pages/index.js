@@ -34,8 +34,9 @@ const DAOList = ({ rooms, isLoading }) => {
   }
 
   return (
-    <>
-      <div className="flex justify-between items-center w-full">
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between w-full items-center">
+        <p className="text-daonative-gray-300">Choose the DAO you want to see</p>
         <h2 className="text-2xl">My DAOs</h2>
       </div>
       <div className="w-full">
@@ -60,7 +61,7 @@ const DAOList = ({ rooms, isLoading }) => {
           ))}
         </ul>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -121,7 +122,7 @@ const Home = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-8 w-full lg:w-3/4">
+      <div className="w-full lg:w-3/4">
         <DAOList rooms={rooms} isLoading={isLoading} />
       </div>
     </div>
