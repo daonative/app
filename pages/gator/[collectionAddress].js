@@ -1,4 +1,3 @@
-import { Header } from '.'
 import { ethers, providers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -14,6 +13,26 @@ import Spinner from '../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../components/ShortAddress'
 import { LayoutWrapper } from '../../components/LayoutWrapper'
+import ComingSoonBadge from '../../components/ComingSoonBadge'
+
+const CreateDAOModal = ({ show, onClose }) => {
+  return (
+    <Modal show={show} onClose={onClose}>
+      <ModalTitle>Create your DAO</ModalTitle>
+      <ModalBody>
+        <div className="flex justify-center p-4">
+          <ComingSoonBadge />
+        </div>
+      </ModalBody>
+      <ModalActionFooter>
+        <SecondaryButton onClick={onClose}>
+          Close
+        </SecondaryButton>
+      </ModalActionFooter>
+    </Modal>
+  )
+
+}
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
   return (
@@ -87,17 +106,17 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   const [metadata, setMetadata] = useState({})
   const date = new Date(timestamp * 1000)
 
-  const retrieveMetadata = async (uri) => {
-    try {
-      const response = await axios.get(uri)
-      const metadata = response.data
-      setMetadata(metadata)
-    } catch (e) { }
-  }
-
   useEffect(() => {
+    const retrieveMetadata = async (uri) => {
+      try {
+        const response = await axios.get(uri)
+        const metadata = response.data
+        setMetadata(metadata)
+      } catch (e) { }
+    }
+
     retrieveMetadata(metadataUri)
-  }, [])
+  }, [metadataUri])
 
   return (
     <a href={`https://opensea.io/assets/matic/${tokenAddress}/${tokenId}`}>
@@ -136,6 +155,7 @@ const GatorCollection = () => {
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
+  const [showCreateDAOModal, setShowCreateDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [showMintModal, setShowMintModal] = useState(false)
   const [inviteLink, setInviteLink] = useState(null)
@@ -143,60 +163,8 @@ const GatorCollection = () => {
   const { account } = useWallet()
   const { openConnectWalletModal } = useConnectWalletModal()
   const injectedProvider = useProvider()
-  const readonlyProvider = new providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_POLYGON
-  )
 
-  console.log(collectionOwner, account)
-
-  const retrieveCollectionName = async (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    const collectionName = await contract.name()
-    setCollectionName(collectionName)
-  }
-
-  const retrieveCollectionOwner = async (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    const owner = await contract.owner()
-    setCollectionOwner(owner)
-  }
-
-  const getTokenURI = async (address, tokenId) => {
-    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    const uri = await contract.tokenURI(tokenId)
-    return uri
-  }
-
-  const listenForNewCollectionTokens = async (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    const mintFilter = contract.filters.Transfer(null)
-    contract.on(mintFilter, async (_, to, tokenId, event) => {
-      const token = {
-        tokenId: tokenId?.toNumber(),
-        owner: to,
-        metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
-        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
-      }
-      setCollectionTokens(tokens => [...tokens, token])
-      setIsLoading(false)
-    })
-  }
-
-  const retrieveCollectionTokens = async (address) => {
-    setIsLoading(true)
-    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-    const mintFilter = contract.filters.Transfer(null)
-    const mintEvents = await contract.queryFilter(mintFilter)
-    const tokens = await Promise.all(mintEvents.map(async event => ({
-      tokenId: event.args?.tokenId.toNumber(),
-      owner: event.args?.to,
-      metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
-      timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
-    })))
-    setCollectionTokens(tokens)
-    setIsLoading(false)
-    listenForNewCollectionTokens(address)
-  }
+  const isOwner = collectionOwner === account
 
   const generateInviteCodes = async (message) => {
     const signer = injectedProvider.getSigner()
@@ -223,6 +191,9 @@ const GatorCollection = () => {
     setInviteLink(null)
   }
 
+  const handleOpenCreateDAOModal = () => setShowCreateDAOModal(true)
+  const handleCloseCreateDAOModal = () => setShowCreateDAOModal(false)
+
   const handleShowMintModal = () => setShowMintModal(true)
   const handleCloseMintModal = () => {
     // clear url query params
@@ -235,8 +206,60 @@ const GatorCollection = () => {
   }
 
   useEffect(() => {
+    const readonlyProvider = new providers.JsonRpcProvider(
+      process.env.NEXT_PUBLIC_RPC_POLYGON
+    )
+    const retrieveCollectionName = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const collectionName = await contract.name()
+      setCollectionName(collectionName)
+    }
+
+    const retrieveCollectionOwner = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const owner = await contract.owner()
+      setCollectionOwner(owner)
+    }
+
+    const getTokenURI = async (address, tokenId) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const uri = await contract.tokenURI(tokenId)
+      return uri
+    }
+
+    const listenForNewCollectionTokens = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const mintFilter = contract.filters.Transfer(null)
+      contract.on(mintFilter, async (_, to, tokenId, event) => {
+        const token = {
+          tokenId: tokenId?.toNumber(),
+          owner: to,
+          metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
+          timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
+        }
+        setCollectionTokens(tokens => [...tokens, token])
+        setIsLoading(false)
+      })
+    }
+
+    const retrieveCollectionTokens = async (address) => {
+      setIsLoading(true)
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const mintFilter = contract.filters.Transfer(null)
+      const mintEvents = await contract.queryFilter(mintFilter)
+      const tokens = await Promise.all(mintEvents.map(async event => ({
+        tokenId: event.args?.tokenId.toNumber(),
+        owner: event.args?.to,
+        metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
+        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
+      })))
+      setCollectionTokens(tokens)
+      setIsLoading(false)
+      listenForNewCollectionTokens(address)
+    }
     if (!collectionAddress) return
     if (!ethers.utils.isAddress(collectionAddress)) return
+
     retrieveCollectionName(collectionAddress)
     retrieveCollectionTokens(collectionAddress)
     retrieveCollectionOwner(collectionAddress)
@@ -251,16 +274,20 @@ const GatorCollection = () => {
     } else {
       openConnectWalletModal()
     }
-  }, [inviteCode, inviteSig, account])
+  }, [inviteCode, inviteSig, account, openConnectWalletModal])
 
   return (
     <div className="flex justify-center">
+      <CreateDAOModal show={showCreateDAOModal} onClose={handleCloseCreateDAOModal} />
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 p-8 w-full lg:w-3/4">
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
-          <PrimaryButton onClick={handleOpenInviteModal} className={collectionOwner !== account && "invisible"}>Invite to mint</PrimaryButton>
+          <div className="flex gap-4">
+            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Create a DAO</SecondaryButton>
+            <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
+          </div>
         </div>
         <TokenList address={collectionAddress} tokens={collectionTokens} />
         {isLoading && (

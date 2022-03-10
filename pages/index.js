@@ -22,8 +22,6 @@ const Home = () => {
   
 
   useEffect(() => {
-    if (!isConnected) return
-
     const getMyRoomIds = async () => {
       const membershipsQuery = query(collectionGroup(db, 'members'), where('account', '==', account))
       const membershipsSnapshot = await getDocs(membershipsQuery)
@@ -49,8 +47,10 @@ const Home = () => {
       setIsLoading(false)
     }
 
+    if (!isConnected) return
+
     retrieveMyRooms()
-  }, [account])
+  }, [account, isConnected])
 
   if (!isConnected) {
     return (
@@ -64,7 +64,11 @@ const Home = () => {
   }
 
   if (isLoading) {
-    return <>Loading</>
+    return <></>
+  }
+
+  if (rooms.length === 0) {
+    return <EmptyStateNoDAOs />
   }
 
   return (
