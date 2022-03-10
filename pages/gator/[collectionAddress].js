@@ -123,13 +123,10 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
 
 const TokenList = ({ address, tokens }) => {
   return (
-    <div className="flex justify-center">
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          tokens?.map((token) => (
-            <Token key={token.tokenId} {...token} tokenAddress={address} />
-          ))}
-      </div>
+    <div className="flex flex-wrap gap-4 justify-center">
+      {tokens?.map((token) => (
+        <Token key={token.tokenId} {...token} tokenAddress={address} />
+      ))}
     </div>
   )
 }
