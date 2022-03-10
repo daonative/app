@@ -222,7 +222,7 @@ export const GatorCollection = () => {
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [showMintModal, setShowMintModal] = useState(false)
-  const [inviteLink, setInviteLink] = useState(null)
+  const [inviteLink, setInviteLink] = useState("")
 
   const { replace: routerReplace, query: { collectionAddress, inviteCode, inviteSig } } = useRouter()
   const { account } = useWallet()
@@ -253,7 +253,7 @@ export const GatorCollection = () => {
 
   const handleCloseInviteModal = () => {
     setShowInviteModal(false)
-    setInviteLink(null)
+    setInviteLink("")
   }
 
   const handleOpenCreateDAOModal = () => setShowLinkDAOModal(true)
