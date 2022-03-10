@@ -24,15 +24,27 @@ const Home = () => {
   useEffect(() => {
     if (!isConnected) return
 
+    const getMyRoomIds = async () => {
+      const membershipsQuery = query(collectionGroup(db, 'members'), where('account', '==', account))
+      const membershipsSnapshot = await getDocs(membershipsQuery)
+      return membershipsSnapshot.docs.map(doc => doc?.ref?.parent?.parent?.id)
+    }
+
+    const getRooms = async (roomIds) => {
+      if (roomIds?.length === 0) return []
+
+      const roomsQuery = query(collection(db, 'rooms'), where(documentId(), 'in', roomIds))
+      const roomsSnapshot = await getDocs(roomsQuery)
+      return roomsSnapshot.docs.map(doc => ({roomId: doc.id, ...doc.data()}))
+    }
+
     const retrieveMyRooms = async () => {
       setIsLoading(true)
       setRooms([])
-      const membershipsQuery = query(collectionGroup(db, 'members'), where('account', '==', account))
-      const membershipsSnapshot = await getDocs(membershipsQuery)
-      const roomIds = membershipsSnapshot.docs.map(doc => doc?.ref?.parent?.parent?.id)
-      const roomsQuery = query(collection(db, 'rooms'), where(documentId(), 'in', roomIds))
-      const roomsSnapshot = await getDocs(roomsQuery)
-      const roomsData = roomsSnapshot.docs.map(doc => ({roomId: doc.id, ...doc.data()}))
+
+      const roomIds = await getMyRoomIds()
+      const roomsData = await getRooms(roomIds)
+
       setRooms(roomsData)
       setIsLoading(false)
     }
