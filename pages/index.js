@@ -1,15 +1,11 @@
 import { collection, getDocs, getFirestore, doc, collectionGroup } from "firebase/firestore"
 import { useWallet } from "use-wallet"
 import ConnectWalletButton from "../components/ConnectWalletButton"
-import useDarkMode from "../lib/useDarkMode"
-import useUser from "../lib/useUser"
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import Link from "next/link"
 import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"
 import { LayoutWrapper } from '../components/LayoutWrapper'
 
 import { query, where, documentId } from 'firebase/firestore'
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useEffect, useState } from "react"
 
 const db = getFirestore()
