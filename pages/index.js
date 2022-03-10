@@ -37,7 +37,7 @@ const DAOList = ({ rooms, isLoading }) => {
       <div className="w-full">
         <ul role="list" className="flex flex-col gap-3">
           {rooms?.map(room => (
-            <li key={room.address}>
+            <li key={room.roomId}>
               <Link href={`/dao/${room.roomId}`}>
                 <a>
                   <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">

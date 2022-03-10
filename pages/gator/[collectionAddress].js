@@ -73,7 +73,7 @@ const LinkDAOModal = ({ show, onClose }) => {
               </label>
               <ul className="justify-center w-full">
                 <RoomOption name="Create a new DAO" roomId={null} />
-                {rooms.map((room) => <RoomOption key={room.roomid} name={room.name} roomId={room.roomId} />)}
+                {rooms.map((room) => <RoomOption key={room.roomId} name={room.name} roomId={room.roomId} />)}
               </ul>
               {errors.room && (
                 <span className="text-xs text-red-400">You need to select a DAO</span>
