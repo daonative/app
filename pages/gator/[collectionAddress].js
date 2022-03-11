@@ -15,11 +15,13 @@ import ShortAddress from '../../components/ShortAddress'
 import { LayoutWrapper } from '../../components/LayoutWrapper'
 import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../lib/useMembership'
+import { useRequireAuthentication } from '../../lib/authenticate'
 
-const LinkDAOModal = ({ show, onClose }) => {
+const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
   const [rooms, setRooms] = useState([])
   const { account } = useWallet()
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const requireAuthentication = useRequireAuthentication()
 
   useEffect(() => {
     const retrieveMyRooms = async () => {
@@ -34,11 +36,17 @@ const LinkDAOModal = ({ show, onClose }) => {
     retrieveMyRooms()
   }, [account])
 
-  const handleLinkDAO = (data) => {
-    console.log(data)
+  const linkDAO = async (collectionAddress, roomId, admin) => {
+    const tokenId = await requireAuthentication()
+    const result = await axios.post('/api/link-nft', {collectionAddress, roomId, admin}, { headers: { 'Authorization': `Bearer ${tokenId}` } })
+    console.log(result.data)
   }
 
-  const RoomOption = ({roomId, name}) => (
+  const handleLinkDAO = async (data) => {
+    await linkDAO(collectionAddress, data.room, !!data.admin)
+  }
+
+  const RoomOption = ({ roomId, name }) => (
     <li className="w-full py-1">
       <label className="text-sm">
         <input className="sr-only peer" type="radio" value={roomId} {...register('room', { required: true })} />
@@ -51,17 +59,17 @@ const LinkDAOModal = ({ show, onClose }) => {
 
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Link your DAO</ModalTitle>
+      <ModalTitle>Link a DAO</ModalTitle>
       <form onSubmit={handleSubmit(handleLinkDAO)}>
         <ModalBody>
           <div className="flex flex-col gap-8">
-            <p className="text-center text-sm text-daonative-gray-200 pb-4">Make your NFT holders become a member of your DAO.</p>
+            <p className="text-center text-sm text-daonative-gray-200 pb-4">Make the NFT holders become a member of the DAO.</p>
             <div>
               <label className="block font-bold pb-2 font-space">
                 Membership Roles
               </label>
               <div className="flex gap-2 items-center">
-                <input type="checkbox" {...register("admin", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" id="admin-roles" />
+                <input type="checkbox" {...register("admin")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" id="admin-roles" />
                 <label className="text-sm font-medium" htmlFor="admin-roles">
                   Admin
                 </label>
@@ -72,8 +80,9 @@ const LinkDAOModal = ({ show, onClose }) => {
                 DAO
               </label>
               <ul className="justify-center w-full">
-                <RoomOption name="Create a new DAO" roomId={null} />
                 {rooms.map((room) => <RoomOption key={room.roomId} name={room.name} roomId={room.roomId} />)}
+                {rooms.length > 0 && <div className="flex-grow border-t border-daonative-dark-100 my-2"></div>}
+                <RoomOption name="Create a new DAO" roomId="" />
               </ul>
               {errors.room && (
                 <span className="text-xs text-red-400">You need to select a DAO</span>
@@ -343,14 +352,14 @@ export const GatorCollection = () => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0">
-      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} />
+      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} collectionAddress={collectionAddress} />
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
           <div className="flex gap-4">
-            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Link to DAO</SecondaryButton>
+            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Link a DAO</SecondaryButton>
             <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
           </div>
         </div>
