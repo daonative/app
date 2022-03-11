@@ -3,8 +3,7 @@ import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../components/Button"
 import PolygonWarning from "../../components/PolygonWarning"
 import { ethers, providers } from 'ethers';
-import { useState } from "react"
-import useInterval from "../../lib/useInterval"
+import { useEffect, useState } from "react"
 import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
@@ -14,6 +13,7 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "../../component
 import { LayoutWrapper } from "../../components/LayoutWrapper"
 import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
+import { CollectionIcon } from "@heroicons/react/solid";
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
 
@@ -148,41 +148,33 @@ const CreateCollectionModal = ({ show, onClose }) => {
   )
 }
 
-const CollectionList = ({ collections, isLoading }) => {
-  const {asPath: path} = useRouter()
+const EmptyCollectionList = ({ onCreateCollection }) => (
+  <div className="w-full p-8 text-center flex flex-col items-center">
+    <CollectionIcon className="h-24 w-24 m-8" />
+    <h3 className="mt-2 text-lg font-medium text-daonative-gray-100 pb-6">{"Looks like you don't have any collections"}</h3>
+    <PrimaryButton onClick={onCreateCollection}>Create a collection</PrimaryButton>
+  </div>
+)
 
-  if (isLoading) {
-    return (
-      <div className="flex w-full justify-center p-8">
-        <div className="w-8 h-8">
-          <Spinner />
-        </div>
-      </div>
-    )
-  }
-
-  if (collections.length === 0) {
-    return (
-      <></>
-    )
-  }
+const CollectionList = ({ collections }) => {
+  const { asPath: path } = useRouter()
 
   return (
     <ul role="list" className="flex flex-col gap-3">
       {collections?.map(collection => (
-          <li key={collection.address}>
-            <Link href={`${path}/${collection.address}`}>
-              <a>
-                <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
-                  <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
-                  <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                    {collection.symbol}
-                  </span>
-                </div>
-              </a>
-            </Link>
-          </li>
-        ))}
+        <li key={collection.address}>
+          <Link href={`${path}/${collection.address}`}>
+            <a>
+              <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
+                <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
+                <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+                  {collection.symbol}
+                </span>
+              </div>
+            </a>
+          </Link>
+        </li>
+      ))}
     </ul>
   )
 }
@@ -192,74 +184,83 @@ export const Gator = ({ roomId }) => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [collections, setCollections] = useState([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
-  const provider = new providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_POLYGON
-  )
 
-  const roomCollections = collections.filter(collection => collection.address === '0xF232De84715521592375d0B87e775a5388DAd973')
   const myCollections = collections.filter(collection => collection.owner === account)
 
   const handleShowCreateModal = () => setShowCreateModal(true)
   const handleCloseCreateModal = () => setShowCreateModal(false)
 
-  const getCollectionName = (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, provider)
-    return contract.name()
-  }
-
-  const getOwner = (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, provider)
-    return contract.owner()
-  }
-
-  const getSymbol = (address) => {
-    const contract = new ethers.Contract(address, collectionAbi, provider)
-    return contract.symbol()
-  }
-
-  useInterval(async () => {
-    const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, provider)
-    const collectionAddresses = await contract.getCollections()
-    const collections = await Promise.all(
-      collectionAddresses.map(async address => {
-        const [name, owner, symbol] = await Promise.all([
-          getCollectionName(address),
-          getOwner(address),
-          getSymbol(address)
-        ])
-        return {
-          address,
-          name,
-          owner,
-          symbol
-        }
-      })
+  useEffect(() => {
+    const readonlyProvider = new providers.JsonRpcProvider(
+      process.env.NEXT_PUBLIC_RPC_POLYGON
     )
-    setCollections(collections)
-    setCollectionsLoading(false)
-  }, 3000)
+
+    const getCollectionName = (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      return contract.name()
+    }
+
+    const getOwner = (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      return contract.owner()
+    }
+
+    const getSymbol = (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      return contract.symbol()
+    }
+
+    const retrieveCollections = async () => {
+      const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, readonlyProvider)
+      const collectionAddresses = await contract.getCollections()
+      const collections = await Promise.all(
+        collectionAddresses.map(async address => {
+          const [name, owner, symbol] = await Promise.all([
+            getCollectionName(address),
+            getOwner(address),
+            getSymbol(address)
+          ])
+          return {
+            address,
+            name,
+            owner,
+            symbol
+          }
+        })
+      )
+      setCollections(collections)
+      setCollectionsLoading(false)
+    }
+
+    retrieveCollections()
+  }, [])
 
   return (
     <div>
       <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
       <div className="flex justify-center px-8 lg:px-0">
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
-          {false && roomId && (
-            <>
-              <div className="flex justify-between items-center w-full">
-                <h2 className="text-2xl">DAO NFT collections</h2>
-              </div>
-              <div className="w-full">
-                <CollectionList collections={roomCollections} isLoading={collectionsLoading} />
-              </div>
-            </>
-          )}
           <div className="flex justify-between items-center w-full">
             <h2 className="text-2xl">My NFT collections</h2>
-            <PrimaryButton onClick={handleShowCreateModal}>Create Collection</PrimaryButton>
+            <PrimaryButton onClick={handleShowCreateModal} className={(!collectionsLoading && myCollections.length === 0) && "invisible"}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
-            <CollectionList collections={myCollections} isLoading={collectionsLoading} />
+
+            {collectionsLoading && (
+              <div className="flex w-full justify-center p-8">
+                <div className="w-8 h-8">
+                  <Spinner />
+                </div>
+              </div>
+            )}
+
+            {!collectionsLoading && myCollections.length === 0 && (
+              <EmptyCollectionList />
+            )}
+
+            {!collectionsLoading && myCollections.length > 0 && (
+              <CollectionList collections={myCollections} />
+            )}
           </div>
         </div>
       </div>
