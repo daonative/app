@@ -1,10 +1,7 @@
 import { useForm } from "react-hook-form"
 import { useWallet } from "use-wallet"
-import { PrimaryButton, SecondaryButton } from "../../components/Button"
-import { useConnectWalletModal } from "../../components/ConnectWalletModal"
-import PFP from "../../components/PFP"
+import { PrimaryButton } from "../../components/Button"
 import PolygonWarning from "../../components/PolygonWarning"
-import ShortAddress from "../../components/ShortAddress"
 import { ethers, providers } from 'ethers';
 import { useState } from "react"
 import useInterval from "../../lib/useInterval"
@@ -19,28 +16,6 @@ import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
 
 const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
-
-export const Header = ({ children }) => {
-  const { openConnectWalletModal } = useConnectWalletModal()
-  const { account, reset } = useWallet()
-
-  return (
-    <div className="flex items-center justify-between w-full py-4 px-8 bg-daonative-dark-200">
-      <div className="md:text-3xl font-space">
-        {children}
-      </div>
-      {!account && (
-        <SecondaryButton onClick={openConnectWalletModal} className="h-12">Connect</SecondaryButton>
-      )}
-      {account && (
-        <SecondaryButton onClick={reset} className="h-12 inline-flex gap-4">
-          <PFP address={account} />
-          <ShortAddress>{account}</ShortAddress>
-        </SecondaryButton>
-      )}
-    </div>
-  )
-}
 
 const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
