@@ -18,7 +18,6 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig)
 
-
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (typeof window === "undefined")

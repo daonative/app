@@ -46,6 +46,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
   const provider = useProvider()
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const router = useRouter()
   const isPolygon = chainId === 137
 
   const uploadToIPFS = async (data) => {
@@ -76,12 +77,38 @@ const CreateCollectionModal = ({ show, onClose }) => {
     return await contract.createCollection(name, symbol, metadataUri)
   }
 
+
+  const getNewCollectionAddressFromTxReceipt = (txReceipt) => {
+    const collectionCreatorInterface = new ethers.utils.Interface(collectionCreatorAbi)
+    return txReceipt.logs
+      // Parse log events
+      .map((log) => {
+        try {
+          const event = collectionCreatorInterface.parseLog(log)
+          return event
+        } catch (e) {
+          return undefined
+        }
+      })
+      // Get rid of the unknown events
+      .filter((event) => event !== undefined)
+      // Keep only Transfer events
+      .filter((event) => event.name === "CollectionCreated")
+      // Take the third argument which is the token id
+      .map((event) => event.args[0].toString())
+      // Take the first token id (there is only one)
+      .shift()
+  }
+
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
     try {
-      const newCollection = await createCollection(data.name, data.symbol, data.image)
-      console.log(newCollection)
+      const newCollectionTx = await createCollection(data.name, data.symbol, data.image)
+      const newCollectionReceipt = await newCollectionTx.wait()
+      const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
+      console.log(newCollectionAddress)
       toast.success("NFT collection created", { id: toastId })
+      router.push(`${router.asPath}/${newCollectionAddress}`)
       onClose()
       reset()
     } catch (e) {
@@ -126,7 +153,12 @@ const CreateCollectionModal = ({ show, onClose }) => {
             </div>
           </ModalBody>
           <ModalActionFooter>
-            <PrimaryButton type="sumbit">Create collection</PrimaryButton>
+            <PrimaryButton type="sumbit" disabled={isSubmitting}>
+              {isSubmitting && (
+                <span className="w-4 h-4 mr-2"><Spinner /></span>
+              )}
+              Create collection
+            </PrimaryButton>
           </ModalActionFooter>
         </form>
       )}
