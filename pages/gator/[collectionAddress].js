@@ -239,6 +239,7 @@ export const GatorCollection = () => {
   const injectedProvider = useProvider()
 
   const isOwner = collectionOwner === account
+  const isLrnt = account === '0xec55D3113fb2fb929bE6Ca6B328927D7EF32a719'
 
   const generateInviteCodes = async (message) => {
     const signer = injectedProvider.getSigner()
@@ -359,7 +360,7 @@ export const GatorCollection = () => {
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
           <div className="flex gap-4">
-            <SecondaryButton onClick={handleOpenCreateDAOModal} className={!isOwner && "invisible"}>Link a DAO</SecondaryButton>
+            <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
             <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
           </div>
         </div>
