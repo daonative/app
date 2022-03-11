@@ -242,7 +242,7 @@ export const Gator = ({ roomId }) => {
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
           <div className="flex justify-between items-center w-full">
             <h2 className="text-2xl">My NFT collections</h2>
-            <PrimaryButton onClick={handleShowCreateModal} className={(!collectionsLoading && myCollections.length === 0) && "invisible"}>Create Collection</PrimaryButton>
+            <PrimaryButton onClick={handleShowCreateModal} className={!collectionsLoading && myCollections.length === 0 && "invisible"}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
 
@@ -255,7 +255,7 @@ export const Gator = ({ roomId }) => {
             )}
 
             {!collectionsLoading && myCollections.length === 0 && (
-              <EmptyCollectionList />
+              <EmptyCollectionList onCreateCollection={handleShowCreateModal} />
             )}
 
             {!collectionsLoading && myCollections.length > 0 && (

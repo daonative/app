@@ -16,6 +16,8 @@ import { LayoutWrapper } from '../../components/LayoutWrapper'
 import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../lib/useMembership'
 import { useRequireAuthentication } from '../../lib/authenticate'
+import { CubeTransparentIcon } from '@heroicons/react/solid'
+import { classNames } from '../../lib/utils'
 
 const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
   const [rooms, setRooms] = useState([])
@@ -38,7 +40,7 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
 
   const linkDAO = async (collectionAddress, roomId, admin) => {
     const tokenId = await requireAuthentication()
-    const result = await axios.post('/api/link-nft', {collectionAddress, roomId, admin}, { headers: { 'Authorization': `Bearer ${tokenId}` } })
+    const result = await axios.post('/api/link-nft', { collectionAddress, roomId, admin }, { headers: { 'Authorization': `Bearer ${tokenId}` } })
     console.log(result.data)
   }
 
@@ -211,15 +213,27 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   )
 }
 
-const TokenList = ({ address, tokens }) => {
-  return (
-    <div className="flex flex-wrap gap-4 justify-center">
-      {tokens?.map((token) => (
-        <Token key={token.tokenId} {...token} tokenAddress={address} />
-      ))}
-    </div>
-  )
-}
+
+const EmptyTokenList = ({ onInviteToMint, canInvite }) => (
+  <div className="w-full p-8 text-center flex flex-col items-center">
+    <CubeTransparentIcon className="h-24 w-24 m-8" />
+    <h3 className="mt-2 text-lg font-medium text-daonative-gray-100">{"No NFTs have been minted in this collection"}</h3>
+    {canInvite && (
+      <>
+        <p className="mt-1 text-sm text-daonative-gray-300 mb-6">Create an invitation link and mint your first NFT</p>
+        <PrimaryButton onClick={onInviteToMint}>Create an invitation link</PrimaryButton>
+      </>
+    )}
+  </div>
+)
+
+const TokenList = ({ address, tokens }) => (
+  <>
+    {tokens?.map((token) => (
+      <Token key={token.tokenId} {...token} tokenAddress={address} />
+    ))}
+  </>
+)
 
 export const GatorCollection = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -351,6 +365,8 @@ export const GatorCollection = () => {
     }
   }, [inviteCode, inviteSig, account, openConnectWalletModal])
 
+  console.log(collectionTokens)
+
   return (
     <div className="flex justify-center px-8 lg:px-0">
       <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} collectionAddress={collectionAddress} />
@@ -359,12 +375,22 @@ export const GatorCollection = () => {
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between">
           <h2 className="text-2xl">{collectionName}</h2>
-          <div className="flex gap-4">
+          <div className={classNames(
+            "flex gap-4",
+            (isLoading || collectionTokens.length === 0) && "invisible"
+          )}>
             <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
             <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
           </div>
         </div>
-        <TokenList address={collectionAddress} tokens={collectionTokens} />
+        {collectionTokens.length > 0 && (
+          <div className="flex flex-wrap gap-4 justify-center">
+            <TokenList address={collectionAddress} tokens={collectionTokens} />
+          </div>
+        )}
+        {!isLoading && collectionTokens.length === 0 && (
+          <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} />
+        )}
         {isLoading && (
           <div className="flex w-full justify-center">
             <div className="w-8 h-8">
@@ -373,7 +399,7 @@ export const GatorCollection = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   )
 }
 
