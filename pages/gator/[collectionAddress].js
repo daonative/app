@@ -143,18 +143,20 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig, on
   const mintNFT = async (collectionAddress, inviteCode, inviteSig) => {
     const signer = injectedProvider.getSigner()
     const contract = new ethers.Contract(collectionAddress, collectionAbi, signer)
-    await contract.safeMint(inviteCode, inviteSig)
+    return await contract.safeMint(inviteCode, inviteSig)
   }
 
   const handleMintNFT = async () => {
     const toastId = toast.loading("Minting your NFT...")
     try {
-      await mintNFT(collectionAddress, inviteCode, inviteSig)
+      const tx = await mintNFT(collectionAddress, inviteCode, inviteSig)
+      await tx.wait()
       onSuccessfulMint()
       toast.success("Successfully minted your NFT", { id: toastId })
     } catch (e) {
       console.log(e)
       toast.error("Failed to mint your NFT", { id: toastId })
+      toast.error(e.message)
     }
   }
 
