@@ -135,28 +135,29 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
   )
 }
 
-const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteSig, onSuccessfulMint = () => { } }) => {
+const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteMaxUse, inviteSig }) => {
   const { account, chainId } = useWallet()
   const injectedProvider = useProvider()
   const isPolygon = chainId === 137
 
-  const mintNFT = async (collectionAddress, inviteCode, inviteSig) => {
+  const mintNFT = async (collectionAddress, inviteCode, inviteMaxUse, inviteSig) => {
     const signer = injectedProvider.getSigner()
     const contract = new ethers.Contract(collectionAddress, collectionAbi, signer)
-    return await contract.safeMint(inviteCode, inviteSig)
+    return await contract.safeMint(inviteCode, inviteMaxUse, inviteSig)
   }
 
   const handleMintNFT = async () => {
     const toastId = toast.loading("Minting your NFT...")
     try {
-      const tx = await mintNFT(collectionAddress, inviteCode, inviteSig)
+      const tx = await mintNFT(collectionAddress, inviteCode, inviteMaxUse, inviteSig)
       await tx.wait()
-      onSuccessfulMint()
       toast.success("Successfully minted your NFT", { id: toastId })
+      onClose()
     } catch (e) {
       console.log(e)
       toast.error("Failed to mint your NFT", { id: toastId })
-      toast.error(e.message)
+      const message = e?.data?.message || e.message
+      toast.error(message)
     }
   }
 
@@ -249,7 +250,7 @@ export const GatorCollection = () => {
   const [showMintModal, setShowMintModal] = useState(false)
   const [inviteLink, setInviteLink] = useState("")
 
-  const { replace: routerReplace, query: { collectionAddress, inviteCode, inviteSig } } = useRouter()
+  const { replace: routerReplace, query: { collectionAddress, inviteCode, inviteMaxUse, inviteSig } } = useRouter()
   const { account } = useWallet()
   const { openConnectWalletModal } = useConnectWalletModal()
   const injectedProvider = useProvider()
@@ -257,22 +258,24 @@ export const GatorCollection = () => {
   const isOwner = collectionOwner === account
   const isLrnt = account === '0xec55D3113fb2fb929bE6Ca6B328927D7EF32a719'
 
-  const generateInviteCodes = async (message) => {
+  const generateInviteCodes = async (inviteMaxUse) => {
     const signer = injectedProvider.getSigner()
-    const inviteHash = ethers.utils.solidityKeccak256(['string'], [message]);
+    const inviteCode = (Math.random() + 1).toString(36).substring(2)
+    const inviteHash = ethers.utils.solidityKeccak256(['string', 'uint'], [inviteCode, 0]);
     const inviteSig = await signer.signMessage(ethers.utils.arrayify(inviteHash))
-    return { inviteCode: inviteHash, inviteSig }
+    return { inviteCode, inviteMaxUse, inviteSig }
   }
 
   const handleOpenInviteModal = async () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
-      const { inviteCode, inviteSig } = await generateInviteCodes(collectionAddress)
-      const inviteLink = `${window?.origin}/gator/${collectionAddress}?inviteCode=${inviteCode}&inviteSig=${inviteSig}`
+      const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
+      const inviteLink = `${window?.origin}/gator/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
       toast.success("Invite link generated", { id: toastId })
     } catch (e) {
+      console.log(e)
       toast.error("Failed to generated link", { id: toastId })
     }
   }
@@ -290,10 +293,6 @@ export const GatorCollection = () => {
     // clear url query params
     routerReplace(`/gator/${collectionAddress}`, undefined, { shallow: true });
     setShowMintModal(false)
-  }
-  const handleSuccessfulMint = () => {
-    setIsLoading(true)
-    handleCloseMintModal()
   }
 
   useEffect(() => {
@@ -358,6 +357,7 @@ export const GatorCollection = () => {
 
   useEffect(() => {
     if (!inviteCode) return
+    if (!inviteMaxUse) return
     if (!inviteSig) return
     if (account) {
       // Need to make sure the connect modal is closed
@@ -365,14 +365,12 @@ export const GatorCollection = () => {
     } else {
       openConnectWalletModal()
     }
-  }, [inviteCode, inviteSig, account, openConnectWalletModal])
-
-  console.log(collectionTokens)
+  }, [inviteCode, inviteMaxUse, inviteSig, account, openConnectWalletModal])
 
   return (
     <div className="flex justify-center px-8 lg:px-0">
       <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} collectionAddress={collectionAddress} />
-      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteSig={inviteSig} onSuccessfulMint={handleSuccessfulMint} />
+      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteMaxUse={inviteMaxUse} inviteSig={inviteSig} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between">

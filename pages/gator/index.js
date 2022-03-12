@@ -15,7 +15,7 @@ import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
 import { CollectionIcon } from "@heroicons/react/solid";
 
-const COLLECION_CREATOR_CONTRACT = "0x01a2fdf22abdd94c909048a345ee26e5425452ab"
+const COLLECION_CREATOR_CONTRACT = "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
 
 const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
@@ -49,7 +49,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
     const signer = provider.getSigner(account)
     const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, signer)
     const metadataUri = await uploadMetaData(name, image)
-    return await contract.createCollection(name, symbol, metadataUri)
+    return await contract.createCollection(name, symbol, metadataUri, 0, 0)
   }
 
 
