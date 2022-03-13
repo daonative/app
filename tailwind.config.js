@@ -14,14 +14,19 @@ module.exports = {
         "daonative-dark-100": "#222235",
         "daonative-dark-200": "#161624",
         "daonative-dark-300": "#10101C",
-        // == DAOnative grey in figma
         "daonative-gray-100": "#F5EFFF",
         "daonative-gray-200": "#D6D7E3",
         "daonative-gray-300": "#B9B9B9",
         "daonative-gray-400": "#70708A",
         "daonative-gray-900": "#40405F",
-        /* DAOnative primary blue */
-        "daonative-primary-blue": "#214ADC"
+        /* DAOnative primary blue new color format @hotkartoffel is currently
+           updating figma to make it easier to implement
+        */
+        "daonative-primary-blue": "#214ADC",
+        "daonative-white": "#F5EFFF",
+        "daonative-placeholder": "rgba(214, 215, 227, 0.5)",
+        "daonative-subtitle": "#B9B9B9",
+        "daonative-text": "#D6D7E3"
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',

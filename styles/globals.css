@@ -17,9 +17,13 @@ textarea {
   border: transparent;
 }
 
-input[type=file]::-webkit-file-upload-button,
-input[type=file]::file-selector-button {
-    @apply text-daonative-gray-100 bg-daonative-dark-100  hover:bg-daonative-dark-200 font-medium text-sm cursor-pointer border-0 py-2 pl-8 pr-4;
-    margin-inline-start: -1rem;
-    margin-inline-end: 1rem;
+label {
+  color: #b9b9b9;
+}
+
+input[type="file"]::-webkit-file-upload-button,
+input[type="file"]::file-selector-button {
+  @apply text-daonative-gray-100 bg-daonative-dark-100  hover:bg-daonative-dark-200 font-medium text-sm cursor-pointer border-0 py-2 pl-8 pr-4;
+  margin-inline-start: -1rem;
+  margin-inline-end: 1rem;
 }
