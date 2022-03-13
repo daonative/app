@@ -103,7 +103,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Collection Name
                 </label>
-                <input type="text" rows="8" {...register("name", { required: true })} placeholder="School DAO Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+                <input type="text" rows="8" {...register("name", { required: true })} placeholder="School DAO Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
                 {errors.name && (
                   <span className="text-xs text-red-400">You need to set a name</span>
                 )}
@@ -112,7 +112,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Symbol
                 </label>
-                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="SDM" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="SDM" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent " />
                 {errors.symbol && (
                   <span className="text-xs text-red-400">You need to set a symbol</span>
                 )}
@@ -121,7 +121,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Image
                 </label>
-                <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300 pr-4" />
+                <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent " />
                 {errors.image && (
                   <span className="text-xs text-red-400">You need to set an image</span>
                 )}

@@ -5,7 +5,7 @@ export const ModalTitle = ({ children }) => (
   <h3 style={{
     borderBottom: '1px solid rgba(49, 49, 74, 0.4)',
   }}
-    className="font-space text-xl p-4 border-bottom border-b-2" > {children}</h3 >
+    className="font-space text-xl p-4 border-bottom border-b-2 text-daonative-white" > {children}</h3 >
 )
 
 export const ModalBody = ({ children }) => (

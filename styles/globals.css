@@ -15,6 +15,7 @@ body,
 input,
 textarea {
   border: transparent;
+  color: #f5efff;
 }
 
 label {
