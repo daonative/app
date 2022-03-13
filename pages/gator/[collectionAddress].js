@@ -219,11 +219,10 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
 
 const EmptyTokenList = ({ onInviteToMint, canInvite }) => (
   <div className="w-full p-8 text-center flex flex-col items-center">
-    <CubeTransparentIcon className="h-24 w-24 m-8" />
-    <h3 className="mt-2 text-lg font-medium text-daonative-gray-100">{"No NFTs have been minted in this collection"}</h3>
+    <h3 className="mt-2 text-lg font-medium text-daonative-white">{"No NFTs have been minted in this collection"}</h3>
     {canInvite && (
       <>
-        <p className="mt-1 text-sm text-daonative-gray-300 mb-6">Create an invitation link and mint your first NFT</p>
+        <p className="mt-1 text-sm text-daonative-subtitle mb-6">Create an invitation link and mint your first NFT</p>
         <PrimaryButton onClick={onInviteToMint}>Create an invitation link</PrimaryButton>
       </>
     )}
@@ -238,12 +237,19 @@ const TokenList = ({ address, tokens }) => (
   </>
 )
 
+const CollectionTitle = ({ children }) => {
+
+
+  return <h2 className="text-2xl text-daonative-white">{children}</h2>
+}
+
 export const GatorCollection = () => {
   const [isLoading, setIsLoading] = useState(false)
   // Collection
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
+  const [collectionURI, setCollectionURI] = useState('')
   // Modals
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
@@ -311,6 +317,14 @@ export const GatorCollection = () => {
       setCollectionOwner(owner)
     }
 
+    const retrieveCollectionURI = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const uri = await contract.collectionURI()
+      const res = await axios.get(uri)
+      setCollectionURI(res?.data?.image)
+    }
+
+
     const getTokenURI = async (address, tokenId) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.tokenURI(tokenId)
@@ -353,6 +367,7 @@ export const GatorCollection = () => {
     retrieveCollectionName(collectionAddress)
     retrieveCollectionTokens(collectionAddress)
     retrieveCollectionOwner(collectionAddress)
+    retrieveCollectionURI(collectionAddress)
   }, [collectionAddress])
 
   useEffect(() => {
@@ -368,13 +383,28 @@ export const GatorCollection = () => {
   }, [inviteCode, inviteMaxUse, inviteSig, account, openConnectWalletModal])
 
   return (
-    <div className="flex justify-center px-8 lg:px-0">
+    <div className="flex justify-center px-8 lg:px-0 ">
       <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} collectionAddress={collectionAddress} />
       <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteMaxUse={inviteMaxUse} inviteSig={inviteSig} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
-        <div className="flex justify-between">
-          <h2 className="text-2xl">{collectionName}</h2>
+        <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
+            <span className="inline-block relative">
+              {!collectionURI && <Spinner className='absolute top-0'/>}
+              <img
+                className="h-12 w-12 rounded-md"
+                src={collectionURI || 'https://bafybeigtj3oifb2ldb2a7rwskkcqnl43pqreqtodubkgbomxu263p7kiga.ipfs.infura-ipfs.io/'}
+                alt=""
+              />
+              <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
+            </span>
+
+            <CollectionTitle>
+              {collectionName}
+            </CollectionTitle>
+          </div>
+
           <div className={classNames(
             "flex gap-4",
             (isLoading || collectionTokens.length === 0) && "invisible"
