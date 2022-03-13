@@ -14,6 +14,7 @@ import { LayoutWrapper } from "../../components/LayoutWrapper"
 import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
 import { CollectionIcon } from "@heroicons/react/solid";
+import ConnectWalletButton from "../../components/ConnectWalletButton";
 
 const COLLECION_CREATOR_CONTRACT = "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
 
@@ -150,8 +151,8 @@ const CreateCollectionModal = ({ show, onClose }) => {
 
 const EmptyCollectionList = ({ onCreateCollection }) => (
   <div className="w-full p-8 text-center flex flex-col items-center">
-    <CollectionIcon className="h-24 w-24 m-8" />
-    <h3 className="mt-2 text-lg font-medium text-daonative-gray-100 pb-6">{"Looks like you don't have any collections"}</h3>
+    <CollectionIcon className="h-12 w-12 " />
+    <h3 className="mt-2 text-md font-medium text-daonative-gray-100 pb-6">{"Looks like you don't have any NFT collections"}</h3>
     <PrimaryButton onClick={onCreateCollection}>Create a collection</PrimaryButton>
   </div>
 )
@@ -236,12 +237,15 @@ export const Gator = ({ roomId }) => {
   }, [])
 
   return (
-    <div>
+    <div className="text-daonative-white">
       <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
       <div className="flex justify-center px-8 lg:px-0">
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
           <div className="flex justify-between items-center w-full">
-            <h2 className="text-2xl">My NFT collections</h2>
+            <div>
+              <h2 className="text-2xl">NFT Collection Creator</h2>
+              <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
+            </div>
             <PrimaryButton onClick={handleShowCreateModal} className={!collectionsLoading && myCollections.length === 0 && "invisible"}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
@@ -254,10 +258,16 @@ export const Gator = ({ roomId }) => {
               </div>
             )}
 
-            {!collectionsLoading && myCollections.length === 0 && (
+            {!account &&
+              <ConnectWalletButton >
+                <PrimaryButton >
+                  Connect your wallet
+                </PrimaryButton>
+              </ConnectWalletButton>
+            }
+            {!collectionsLoading && myCollections.length === 0 && account && (
               <EmptyCollectionList onCreateCollection={handleShowCreateModal} />
             )}
-
             {!collectionsLoading && myCollections.length > 0 && (
               <CollectionList collections={myCollections} />
             )}

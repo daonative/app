@@ -5,7 +5,7 @@ import useIsConnected from '../lib/useIsConnected'
 import PFP from './PFP'
 import useUser from '../lib/useUser'
 
-const ConnectWalletButton = () => {
+const ConnectWalletButton = ({ children }) => {
   const { account } = useWallet()
   const isConnected = useIsConnected()
   const user = useUser()
@@ -31,7 +31,7 @@ const ConnectWalletButton = () => {
           </div>
         </>
       ) : (
-        <div className="justify-center w-full">Connect</div>
+        <div className="justify-center w-full">{children ? children : 'Connect'} </div>
       )}
     </button>
   )
