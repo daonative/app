@@ -249,7 +249,7 @@ export const GatorCollection = () => {
   const [collectionName, setCollectionName] = useState("")
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
-  const [collectionURI, setCollectionURI] = useState('')
+  const [collectionImageURI, setCollectionImageURI] = useState('')
   // Modals
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
@@ -317,11 +317,11 @@ export const GatorCollection = () => {
       setCollectionOwner(owner)
     }
 
-    const retrieveCollectionURI = async (address) => {
+    const retrieveCollectionImageURI = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.collectionURI()
       const res = await axios.get(uri)
-      setCollectionURI(res?.data?.image)
+      setCollectionImageURI(res?.data?.image)
     }
 
 
@@ -367,7 +367,7 @@ export const GatorCollection = () => {
     retrieveCollectionName(collectionAddress)
     retrieveCollectionTokens(collectionAddress)
     retrieveCollectionOwner(collectionAddress)
-    retrieveCollectionURI(collectionAddress)
+    retrieveCollectionImageURI(collectionAddress)
   }, [collectionAddress])
 
   useEffect(() => {
@@ -391,10 +391,10 @@ export const GatorCollection = () => {
         <div className="flex justify-between items-center">
           <div className="flex justify-between items-center gap-3">
             <span className="inline-block relative">
-              {!collectionURI && <Spinner className='absolute top-0'/>}
+              {!collectionImageURI && <Spinner className='absolute top-0'/>}
               <img
                 className="h-12 w-12 rounded-md"
-                src={collectionURI || 'https://bafybeigtj3oifb2ldb2a7rwskkcqnl43pqreqtodubkgbomxu263p7kiga.ipfs.infura-ipfs.io/'}
+                src={collectionImageURI || 'https://bafybeigtj3oifb2ldb2a7rwskkcqnl43pqreqtodubkgbomxu263p7kiga.ipfs.infura-ipfs.io/'}
                 alt=""
               />
               <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />

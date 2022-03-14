@@ -21,7 +21,7 @@ const COLLECION_CREATOR_CONTRACT = "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
 const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
   const provider = useProvider()
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const { register, handleSubmit, reset, getValues, formState: { errors, isSubmitting } } = useForm()
   const router = useRouter()
   const isPolygon = chainId === 137
 
@@ -36,7 +36,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
     return `https://ipfs.infura.io/ipfs/${response.data.Hash}`
   }
 
-  const uploadMetaData = async (name, image) => {
+  const uploadImageAndMetadata = async (name, image) => {
     const imageUri = await uploadToIPFS(image[0])
     const metadata = {
       image: imageUri,
@@ -46,10 +46,23 @@ const CreateCollectionModal = ({ show, onClose }) => {
     return metadataUri
   }
 
-  const createCollection = async (name, symbol, image) => {
+  const uploadOnlyMetadata = async (metadata) => {
+    const metadataUri = await uploadToIPFS(metadata)
+    return metadataUri
+  }
+
+  const createCollection = async (name, symbol, image, metadata) => {
+    if (image?.length > 0 && metadata){
+      throw Error("Cannot create a collection when both an image is uploaded and metadata is provided.")
+    }
+
     const signer = provider.getSigner(account)
     const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, signer)
-    const metadataUri = await uploadMetaData(name, image)
+    const metadataUri = metadata ? (
+      await uploadOnlyMetadata(metadata)
+    ) : (
+      await uploadImageAndMetadata(name, image)
+    )
     return await contract.createCollection(name, symbol, metadataUri, 0, 0)
   }
 
@@ -79,10 +92,9 @@ const CreateCollectionModal = ({ show, onClose }) => {
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
     try {
-      const newCollectionTx = await createCollection(data.name, data.symbol, data.image)
+      const newCollectionTx = await createCollection(data.name, data.symbol, data.image, data.metadata)
       const newCollectionReceipt = await newCollectionTx.wait()
       const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
-      console.log(newCollectionAddress)
       toast.success("NFT collection created", { id: toastId })
       router.push(`${router.asPath}/${newCollectionAddress}`)
       onClose()
@@ -92,6 +104,23 @@ const CreateCollectionModal = ({ show, onClose }) => {
       toast.error(e.message)
     }
   }
+
+
+  const checkMetaDataOrImage = (image, metadata) => {
+    if (image.length > 0 && !metadata) return true
+    if (image.length === 0 && metadata) return true
+    return false
+  }
+
+  const isValidJSON = (str) => {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>Create your collection</ModalTitle>
@@ -103,7 +132,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Collection Name
                 </label>
-                <input type="text" rows="8" {...register("name", { required: true })} placeholder="School DAO Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
+                <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
                 {errors.name && (
                   <span className="text-xs text-red-400">You need to set a name</span>
                 )}
@@ -112,18 +141,34 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Symbol
                 </label>
-                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="SDM" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent " />
+                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="NATIV" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent " />
                 {errors.symbol && (
                   <span className="text-xs text-red-400">You need to set a symbol</span>
                 )}
               </div>
               <div>
                 <label className="block text-sm font-medium pb-2">
-                  Image
+                  Image or Metadata
                 </label>
-                <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent " />
-                {errors.image && (
-                  <span className="text-xs text-red-400">You need to set an image</span>
+                <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent " />
+                <div className="p-2"></div>
+                <textarea 
+                  {...register("metadata", {
+                    required: false,
+                    validate: {
+                      metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
+                      json: value => !value || isValidJSON(value) }
+                    })
+                  }
+                  rows={8}
+                  placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
+                />
+                {(errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
+                  <span className="block text-xs text-red-400">You need to set either metadata or an image</span>
+                )}
+                {errors?.metadata?.type === "json" && (
+                  <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
                 )}
               </div>
             </div>
