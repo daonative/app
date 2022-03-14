@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../components/Button"
-import PolygonWarning from "../../components/PolygonWarning"
+import PolygonWarning from "../../components/ChainWarning"
 import { ethers, providers } from 'ethers';
 import { useEffect, useState } from "react"
 import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
@@ -16,14 +16,35 @@ import { useRouter } from "next/router"
 import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 
-const COLLECION_CREATOR_CONTRACT = "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
+const isSupportedChain = (chainId) => [1, 137].includes(chainId)
+
+const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
+  if (chainId === 137)
+    return "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
+
+  if (chainId === 1)
+    return "0x03a73053d2c34c4629d821c6f3369f58a05dfef7"
+
+  if (defaultChainId)
+    return getCollectionCreatorAddress(defaultChainId)
+
+  return null
+}
+
+
+const getReadonlyProvider = (chainId) => {
+  if (chainId === 137)
+    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
+
+  return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+}
+
 
 const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
   const provider = useProvider()
   const { register, handleSubmit, reset, getValues, formState: { errors, isSubmitting } } = useForm()
   const router = useRouter()
-  const isPolygon = chainId === 137
 
   const uploadToIPFS = async (data) => {
     const formData = new FormData()
@@ -52,12 +73,17 @@ const CreateCollectionModal = ({ show, onClose }) => {
   }
 
   const createCollection = async (name, symbol, image, metadata) => {
-    if (image?.length > 0 && metadata){
+    if (image?.length > 0 && metadata) {
       throw Error("Cannot create a collection when both an image is uploaded and metadata is provided.")
     }
 
+    if (!isSupportedChain(chainId)) {
+      throw Error("Unsupported chain")
+    }
+
     const signer = provider.getSigner(account)
-    const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, signer)
+    const contractAddress = getCollectionCreatorAddress(chainId)
+    const contract = new ethers.Contract(contractAddress, collectionCreatorAbi, signer)
     const metadataUri = metadata ? (
       await uploadOnlyMetadata(metadata)
     ) : (
@@ -105,7 +131,6 @@ const CreateCollectionModal = ({ show, onClose }) => {
     }
   }
 
-
   const checkMetaDataOrImage = (image, metadata) => {
     if (image.length > 0 && !metadata) return true
     if (image.length === 0 && metadata) return true
@@ -124,7 +149,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>Create your collection</ModalTitle>
-      {isPolygon && (
+      {isSupportedChain(chainId) ? (
         <form onSubmit={handleSubmit(handleCreateCollection)}>
           <ModalBody>
             <div className="flex flex-col gap-4">
@@ -182,8 +207,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
             </PrimaryButton>
           </ModalActionFooter>
         </form>
-      )}
-      {!isPolygon && (
+      ) : (
         <ModalBody>
           <div className="p-12">
             <PolygonWarning />
@@ -225,8 +249,8 @@ const CollectionList = ({ collections }) => {
   )
 }
 
-export const Gator = ({ roomId }) => {
-  const { account } = useWallet()
+export const Gator = () => {
+  const { account, chainId } = useWallet()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [collections, setCollections] = useState([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
@@ -237,10 +261,7 @@ export const Gator = ({ roomId }) => {
   const handleCloseCreateModal = () => setShowCreateModal(false)
 
   useEffect(() => {
-    const readonlyProvider = new providers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_RPC_POLYGON
-    )
-
+    const readonlyProvider = getReadonlyProvider(chainId)
     const getCollectionName = (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       return contract.name()
@@ -257,7 +278,9 @@ export const Gator = ({ roomId }) => {
     }
 
     const retrieveCollections = async () => {
-      const contract = new ethers.Contract(COLLECION_CREATOR_CONTRACT, collectionCreatorAbi, readonlyProvider)
+      setCollectionsLoading(true)
+      const contractAddress = getCollectionCreatorAddress(chainId)
+      const contract = new ethers.Contract(contractAddress, collectionCreatorAbi, readonlyProvider)
       const collectionAddresses = await contract.getCollections()
       const collections = await Promise.all(
         collectionAddresses.map(async address => {
@@ -279,7 +302,7 @@ export const Gator = ({ roomId }) => {
     }
 
     retrieveCollections()
-  }, [])
+  }, [chainId])
 
   return (
     <div className="text-daonative-white">
@@ -294,7 +317,6 @@ export const Gator = ({ roomId }) => {
             <PrimaryButton onClick={handleShowCreateModal} className={!collectionsLoading && myCollections.length === 0 && "invisible w-max h-max "}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
-
             {collectionsLoading && (
               <div className="flex w-full justify-center p-8">
                 <div className="w-8 h-8">
