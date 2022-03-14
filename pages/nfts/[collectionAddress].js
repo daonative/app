@@ -241,26 +241,9 @@ const CollectionTitle = ({ children }) => {
   return <h2 className="text-2xl text-daonative-white">{children}</h2>
 }
 
-const PauseUnpauseButton = ({ address }) => {
+const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
   const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
-  const [collectionPaused, setCollectionPaused] = useState(null)
   const injectedProvider = useProvider()
-
-  useEffect(() => {
-    const readonlyProvider = new providers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_RPC_POLYGON
-    )
-
-    const retrieveCollectionPaused = async (address) => {
-      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-      const paused = await contract.paused()
-      setCollectionPaused(paused)
-    }
-
-    if (!address) return
-
-    retrieveCollectionPaused(address)
-  }, [address])
 
   const handlePauseCollection = async () => {
     setIsPausingOrUnpausing(true)
@@ -271,7 +254,7 @@ const PauseUnpauseButton = ({ address }) => {
       const contract = new ethers.Contract(address, collectionAbi, signer)
       const tx = await contract.pause()
       await tx.wait()
-      setCollectionPaused(true)
+      setIsPaused(true)
       toast.success("Successfully paused the contract", { id: toastId })
     } catch (e) {
       console.log(e)
@@ -292,7 +275,7 @@ const PauseUnpauseButton = ({ address }) => {
       const contract = new ethers.Contract(address, collectionAbi, signer)
       const tx = await contract.unpause()
       await tx.wait()
-      setCollectionPaused(true)
+      setIsPaused(false)
       toast.success("Successfully unpaused the contract", { id: toastId })
     } catch (e) {
       console.log(e)
@@ -304,8 +287,8 @@ const PauseUnpauseButton = ({ address }) => {
     setIsPausingOrUnpausing(false)
   }
 
-  const ActionButton = ({ children, onClick, isLoading }) => (
-    <SecondaryButton onClick={onClick} disabled={isLoading}>
+  const ActionButton = ({ children, onClick, isLoading, className }) => (
+    <SecondaryButton onClick={onClick} disabled={isLoading} className={className}>
       {isLoading && (
         <span className="w-4 h-4 mr-2"><Spinner /></span>
       )}
@@ -313,11 +296,11 @@ const PauseUnpauseButton = ({ address }) => {
     </SecondaryButton>
   )
 
-  if (collectionPaused === true)
-    return <ActionButton onClick={handleUnpauseCollection} isLoading={isPausingOrUnpausing}>Unpause collection</ActionButton>
+  if (isPaused === true)
+    return <ActionButton onClick={handleUnpauseCollection} isLoading={isPausingOrUnpausing} className={className}>Unpause collection</ActionButton>
 
-  if (collectionPaused === false)
-    return <ActionButton onClick={handlePauseCollection} isLoading={isPausingOrUnpausing}>Pause collection</ActionButton>
+  if (isPaused === false)
+    return <ActionButton onClick={handlePauseCollection} isLoading={isPausingOrUnpausing} className={className}>Pause collection</ActionButton>
 
   return <></>
 }
@@ -329,6 +312,7 @@ export const GatorCollection = () => {
   const [collectionOwner, setCollectionOwner] = useState("")
   const [collectionTokens, setCollectionTokens] = useState([])
   const [collectionImageURI, setCollectionImageURI] = useState('')
+  const [collectionPaused, setCollectionPaused] = useState(null)
   // Modals
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
@@ -403,6 +387,12 @@ export const GatorCollection = () => {
       setCollectionImageURI(res?.data?.image)
     }
 
+    const retrieveCollectionPaused = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const paused = await contract.paused()
+      setCollectionPaused(paused)
+    }
+
     const getTokenURI = async (address, tokenId) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.tokenURI(tokenId)
@@ -446,6 +436,7 @@ export const GatorCollection = () => {
     retrieveCollectionTokens(collectionAddress)
     retrieveCollectionOwner(collectionAddress)
     retrieveCollectionImageURI(collectionAddress)
+    retrieveCollectionPaused(collectionAddress)
   }, [collectionAddress])
 
   useEffect(() => {
@@ -488,13 +479,8 @@ export const GatorCollection = () => {
             (isLoading || collectionTokens.length === 0) && "invisible"
           )}>
             <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
-            <div className={classNames(
-              "flex gap-4",
-              !isOwner && "invisible"
-            )}>
-              <PauseUnpauseButton address={collectionAddress} />
-              <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>
-            </div>
+            <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
+            {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
           </div>
         </div>
         {collectionTokens.length > 0 && (
