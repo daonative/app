@@ -107,7 +107,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 
 
 
-const Challenges = ({ }) => {
+const Challenges = () => {
   const roomId = useRoomId()
   const { account } = useWallet()
   const [showChallengeModal, setShowChallengeModal] = useState(false)

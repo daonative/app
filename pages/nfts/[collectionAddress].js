@@ -188,7 +188,7 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
         const response = await axios.get(uri)
         const metadata = response.data
         setMetadata(metadata)
-      } catch (e) { }
+      } catch (e) { console.error(e) }
     }
 
     retrieveMetadata(metadataUri)
@@ -257,7 +257,7 @@ const PauseUnpauseButton = ({ address }) => {
       setCollectionPaused(paused)
     }
 
-    if(!address) return
+    if (!address) return
 
     retrieveCollectionPaused(address)
   }, [address])
@@ -272,12 +272,12 @@ const PauseUnpauseButton = ({ address }) => {
       const tx = await contract.pause()
       await tx.wait()
       setCollectionPaused(true)
-      toast.success("Successfully paused the contract", {id: toastId})
+      toast.success("Successfully paused the contract", { id: toastId })
     } catch (e) {
       console.log(e)
       const message = e?.data?.message || e.message
       toast.error("Failed to pause the collection", { id: toastId })
-      toast.error(message, {id: toastId})
+      toast.error(message, { id: toastId })
     }
 
     setIsPausingOrUnpausing(false)
@@ -293,12 +293,12 @@ const PauseUnpauseButton = ({ address }) => {
       const tx = await contract.unpause()
       await tx.wait()
       setCollectionPaused(true)
-      toast.success("Successfully unpaused the contract", {id: toastId})
+      toast.success("Successfully unpaused the contract", { id: toastId })
     } catch (e) {
       console.log(e)
       const message = e?.data?.message || e.message
       toast.error("Failed to unpause the collection", { id: toastId })
-      toast.error(message, {id: toastId})
+      toast.error(message, { id: toastId })
     }
 
     setIsPausingOrUnpausing(false)

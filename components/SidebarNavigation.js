@@ -97,6 +97,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                   {navigation.map((item) => {
                     const current = !item.disabled && !!asPath.match(item.match)
                     return (
+                      // eslint-disable-next-line jsx-a11y/anchor-is-valid
                       <Link key={item.name} href={item.disabled ? "" : item.href}>
                         <a
                           className={classNames(
@@ -150,6 +151,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               {navigation.map((item) => {
                 const current = !item.disabled && !!asPath.match(item.match)
                 return (
+                  // eslint-disable-next-line jsx-a11y/anchor-is-valid
                   <Link key={item.name} href={item.disabled ? "" : item.href}>
                     <a
                       key={item.name}
