@@ -238,9 +238,88 @@ const TokenList = ({ address, tokens }) => (
 )
 
 const CollectionTitle = ({ children }) => {
-
-
   return <h2 className="text-2xl text-daonative-white">{children}</h2>
+}
+
+const PauseUnpauseButton = ({ address }) => {
+  const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
+  const [collectionPaused, setCollectionPaused] = useState(null)
+  const injectedProvider = useProvider()
+
+  useEffect(() => {
+    const readonlyProvider = new providers.JsonRpcProvider(
+      process.env.NEXT_PUBLIC_RPC_POLYGON
+    )
+
+    const retrieveCollectionPaused = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const paused = await contract.paused()
+      setCollectionPaused(paused)
+    }
+
+    if(!address) return
+
+    retrieveCollectionPaused(address)
+  }, [address])
+
+  const handlePauseCollection = async () => {
+    setIsPausingOrUnpausing(true)
+    const toastId = toast.loading("Pausing the collection")
+
+    try {
+      const signer = injectedProvider.getSigner()
+      const contract = new ethers.Contract(address, collectionAbi, signer)
+      const tx = await contract.pause()
+      await tx.wait()
+      setCollectionPaused(true)
+      toast.success("Successfully paused the contract", {id: toastId})
+    } catch (e) {
+      console.log(e)
+      const message = e?.data?.message || e.message
+      toast.error("Failed to pause the collection", { id: toastId })
+      toast.error(message, {id: toastId})
+    }
+
+    setIsPausingOrUnpausing(false)
+  }
+
+  const handleUnpauseCollection = async () => {
+    setIsPausingOrUnpausing(true)
+    const toastId = toast.loading("Unpausing the collection")
+
+    try {
+      const signer = injectedProvider.getSigner()
+      const contract = new ethers.Contract(address, collectionAbi, signer)
+      const tx = await contract.unpause()
+      await tx.wait()
+      setCollectionPaused(true)
+      toast.success("Successfully unpaused the contract", {id: toastId})
+    } catch (e) {
+      console.log(e)
+      const message = e?.data?.message || e.message
+      toast.error("Failed to unpause the collection", { id: toastId })
+      toast.error(message, {id: toastId})
+    }
+
+    setIsPausingOrUnpausing(false)
+  }
+
+  const ActionButton = ({ children, onClick, isLoading }) => (
+    <SecondaryButton onClick={onClick} disabled={isLoading}>
+      {isLoading && (
+        <span className="w-4 h-4 mr-2"><Spinner /></span>
+      )}
+      {children}
+    </SecondaryButton>
+  )
+
+  if (collectionPaused === true)
+    return <ActionButton onClick={handleUnpauseCollection} isLoading={isPausingOrUnpausing}>Unpause collection</ActionButton>
+
+  if (collectionPaused === false)
+    return <ActionButton onClick={handlePauseCollection} isLoading={isPausingOrUnpausing}>Pause collection</ActionButton>
+
+  return <></>
 }
 
 export const GatorCollection = () => {
@@ -324,7 +403,6 @@ export const GatorCollection = () => {
       setCollectionImageURI(res?.data?.image)
     }
 
-
     const getTokenURI = async (address, tokenId) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.tokenURI(tokenId)
@@ -391,7 +469,7 @@ export const GatorCollection = () => {
         <div className="flex justify-between items-center">
           <div className="flex justify-between items-center gap-3">
             <span className="inline-block relative">
-              {!collectionImageURI && <Spinner className='absolute top-0'/>}
+              {!collectionImageURI && <Spinner className='absolute top-0' />}
               <img
                 className="h-12 w-12 rounded-md"
                 src={collectionImageURI || 'https://bafybeigtj3oifb2ldb2a7rwskkcqnl43pqreqtodubkgbomxu263p7kiga.ipfs.infura-ipfs.io/'}
@@ -410,7 +488,13 @@ export const GatorCollection = () => {
             (isLoading || collectionTokens.length === 0) && "invisible"
           )}>
             <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
-            <PrimaryButton onClick={handleOpenInviteModal} className={!isOwner && "invisible"}>Invite to mint</PrimaryButton>
+            <div className={classNames(
+              "flex gap-4",
+              !isOwner && "invisible"
+            )}>
+              <PauseUnpauseButton address={collectionAddress} />
+              <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>
+            </div>
           </div>
         </div>
         {collectionTokens.length > 0 && (
