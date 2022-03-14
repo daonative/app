@@ -1,17 +1,13 @@
-import { collection, getDocs, getFirestore, doc, collectionGroup } from "firebase/firestore"
 import { useWallet } from "use-wallet"
 import ConnectWalletButton from "../components/ConnectWalletButton"
 import Link from "next/link"
 import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"
 import { LayoutWrapper } from '../components/LayoutWrapper'
 
-import { query, where, documentId } from 'firebase/firestore'
 import { useEffect, useState } from "react"
 import Spinner from "../components/Spinner"
-import { UserGroupIcon } from "@heroicons/react/solid"
 import { getUserRooms } from "../lib/useMembership"
 
-const db = getFirestore()
 
 const DAOList = ({ rooms, isLoading }) => {
   if (isLoading) {
