@@ -199,9 +199,10 @@ const MintModal = ({ show, onClose, chainId, collectionAddress, inviteCode, invi
   )
 }
 
-const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
+const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   const [metadata, setMetadata] = useState({})
   const date = new Date(timestamp * 1000)
+  const openseaUrl = `https://opensea.io/assets/${Number(chainId) === 137 ? 'matic/' : ''}${tokenAddress}/${tokenId}`
 
   useEffect(() => {
     const retrieveMetadata = async (uri) => {
@@ -216,7 +217,7 @@ const Token = ({ tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   }, [metadataUri])
 
   return (
-    <a href={`https://opensea.io/assets/matic/${tokenAddress}/${tokenId}`}>
+    <a href={openseaUrl}>
       <div className="relative w-64 rounded-lg overflow-hidden">
         <img className="object-cover w-full" src={metadata.image} />
         <div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
@@ -434,7 +435,8 @@ export const GatorCollection = () => {
           tokenId: tokenId?.toNumber(),
           owner: to,
           metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
-          timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
+          timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp,
+          chainId
         }
         setCollectionTokens(tokens => [...tokens, token])
         setIsLoading(false)
@@ -450,7 +452,8 @@ export const GatorCollection = () => {
         tokenId: event.args?.tokenId.toNumber(),
         owner: event.args?.to,
         metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
-        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp
+        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp,
+        chainId
       })))
       setCollectionTokens(tokens)
       setIsLoading(false)
