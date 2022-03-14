@@ -14,9 +14,9 @@ import Spinner from '../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import useMembership from '../../../../lib/useMembership'
 
-const db = getFirestore()
 
 const VerifyModal = ({ show, onClose, workproof }) => {
+  const db = getFirestore()
   const [isLoading, setIsLoading] = useState(false)
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
@@ -84,6 +84,8 @@ const ProofModal = ({ show, onClose, challenge }) => {
   const { account } = useWallet()
 
   const submitProof = async (description, imageUrl) => {
+
+    const db = getFirestore()
     const proof = {
       description,
       author: account,
@@ -143,6 +145,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
 const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
   const { account } = useWallet()
   const { query: { daoId: roomId } } = useRouter()
+  const db = getFirestore()
   const [usersSnap] = useCollection(
     query(collection(db, 'users'), where('rooms', 'array-contains', roomId || 'x'))
   )
@@ -201,6 +204,7 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
   const [proofToVerify, setProofToVerify] = useState(null)
+  const db = getFirestore()
   const { query: params } = useRouter()
   const challengeId = params.challengeId || ''
   const [challenge] = useDocumentData(
