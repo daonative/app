@@ -87,7 +87,7 @@ const Step = ({ status, children, id }) => (
 )
 
 const StepTitle = ({ children }) => (
-  <span className="ml-4 text-sm font-medium text-gray-900 text-daonative-gray-300 font-medium uppercase tracking-wider font-bold">{children}</span>
+  <span className="ml-4 text-sm font-medium text-daonative-white font-medium uppercase tracking-wider font-bold">{children}</span>
 )
 
 const StepDescription = ({ children }) => (
@@ -368,7 +368,7 @@ const Onboarding = () => {
   }
 
   return (
-    <div className="overflow-hidden w-full h-screen">
+    <div className="overflow-hidden w-full h-screen daonative-white">
       <Steps>
         <Step id={1} status={stepStatus(1)}>
           <StepTitle>Create</StepTitle>
@@ -388,7 +388,11 @@ const Onboarding = () => {
             <>
               <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create your DAO</p>
               <div className="w-36 h-16">
-                <ConnectWalletButton />
+                <ConnectWalletButton >
+                  <PrimaryButton className='h-min'>
+                    Connect
+                  </PrimaryButton>
+                </ConnectWalletButton>
               </div>
             </>
           )}

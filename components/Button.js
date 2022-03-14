@@ -8,7 +8,7 @@ export const Button = ({ children, onClick, type = "button", className = "" }) =
     }}
     className={
       classNames(
-        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-daonative-border bg-daonative-dark-100 text-daonative-gray-100 h-max",
+        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md hover:opacity-75 focus:outline-none bg-daonative-dark-100 text-daonative-gray-100 h-max",
         className
       )
     }
