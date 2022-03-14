@@ -36,7 +36,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Challenges', disabled: !roomId, href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9]*)?$" },
     { name: 'Leaderboard', disabled: !roomId, href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
     //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
-    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[a-zA-Z0-9]*)?$" },
+    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*)?$" },
     { name: 'Rewards', disabled: true, comingSoon: true, href: '#', icon: HeartIcon },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
     { name: 'Members', disabled: true, comingSoon: true, href: '#', icon: UsersIcon },

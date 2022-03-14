@@ -1,22 +1,29 @@
 import { ethers, providers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { collectionAbi } from '../../lib/abi'
-import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../components/Modal'
-import { PrimaryButton, SecondaryButton } from '../../components/Button'
-import useProvider from '../../lib/useProvider'
+import { collectionAbi } from '../../../lib/abi'
+import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal'
+import { PrimaryButton, SecondaryButton } from '../../../components/Button'
+import useProvider from '../../../lib/useProvider'
 import toast from 'react-hot-toast'
 import { useWallet } from 'use-wallet'
-import PolygonWarning from '../../components/ChainWarning'
-import { useConnectWalletModal } from '../../components/ConnectWalletModal'
-import Spinner from '../../components/Spinner'
+import { SwitchToMainnetButton, SwitchToPolygonButton } from '../../../components/ChainWarning'
+import { useConnectWalletModal } from '../../../components/ConnectWalletModal'
+import Spinner from '../../../components/Spinner'
 import axios from 'axios'
-import ShortAddress from '../../components/ShortAddress'
-import { LayoutWrapper } from '../../components/LayoutWrapper'
+import ShortAddress from '../../../components/ShortAddress'
+import { LayoutWrapper } from '../../../components/LayoutWrapper'
 import { useForm } from 'react-hook-form'
-import { getUserRooms } from '../../lib/useMembership'
-import { useRequireAuthentication } from '../../lib/authenticate'
-import { classNames } from '../../lib/utils'
+import { getUserRooms } from '../../../lib/useMembership'
+import { useRequireAuthentication } from '../../../lib/authenticate'
+import { classNames } from '../../../lib/utils'
+
+const getReadonlyProvider = (chainId) => {
+  if (Number(chainId) === 137)
+    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
+
+  return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+}
 
 const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
   const [rooms, setRooms] = useState([])
@@ -134,10 +141,12 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
   )
 }
 
-const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteMaxUse, inviteSig }) => {
-  const { account, chainId } = useWallet()
+const MintModal = ({ show, onClose, chainId, collectionAddress, inviteCode, inviteMaxUse, inviteSig }) => {
+  const { account, chainId: injectedChainId } = useWallet()
   const injectedProvider = useProvider()
-  const isPolygon = chainId === 137
+  const isMainnetNFT = Number(chainId) === 1
+  const isPolygonNFT = Number(chainId) === 137
+  const isCorrectChain = Number(chainId) === injectedChainId
 
   const mintNFT = async (collectionAddress, inviteCode, inviteMaxUse, inviteSig) => {
     const signer = injectedProvider.getSigner()
@@ -165,11 +174,24 @@ const MintModal = ({ show, onClose, collectionAddress, inviteCode, inviteMaxUse,
       <ModalTitle>Invitation to mint</ModalTitle>
       <ModalBody>
         <div className="flex flex-col gap-4 items-center p-8">
-          {account && isPolygon && (
+          {account && isCorrectChain && (
             <SecondaryButton onClick={handleMintNFT}>Mint your NFT</SecondaryButton>
           )}
-          {account && !isPolygon && (
-            <PolygonWarning />
+          {account && !isCorrectChain && (
+            <>
+              {isPolygonNFT && (
+                <>
+                  <span>This is a Polygon NFT</span>
+                  <SwitchToPolygonButton />
+                </>
+              )}
+              {isMainnetNFT && (
+                <>
+                  <span>This is a Ethereum mainnet NFT</span>
+                  <SwitchToMainnetButton />
+                </>
+              )}
+            </>
           )}
         </div>
       </ModalBody>
@@ -225,6 +247,12 @@ const EmptyTokenList = ({ onInviteToMint, canInvite }) => (
         <PrimaryButton onClick={onInviteToMint}>Create an invitation link</PrimaryButton>
       </>
     )}
+  </div>
+)
+
+const CollectionNotFound = () => (
+  <div className="w-full p-8 text-center flex flex-col items-center">
+    <h3 className="mt-2 text-lg font-medium text-daonative-white">{"We couldn't find this NFT collection."}</h3>
   </div>
 )
 
@@ -312,13 +340,14 @@ export const GatorCollection = () => {
   const [collectionTokens, setCollectionTokens] = useState([])
   const [collectionImageURI, setCollectionImageURI] = useState('')
   const [collectionPaused, setCollectionPaused] = useState(null)
+  const [collectionHasError, setCollectionHasError] = useState(false)
   // Modals
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [showMintModal, setShowMintModal] = useState(false)
   const [inviteLink, setInviteLink] = useState("")
 
-  const { replace: routerReplace, query: { collectionAddress, inviteCode, inviteMaxUse, inviteSig } } = useRouter()
+  const { replace: routerReplace, query: { chainId, collectionAddress, inviteCode, inviteMaxUse, inviteSig } } = useRouter()
   const { account } = useWallet()
   const { openConnectWalletModal } = useConnectWalletModal()
   const injectedProvider = useProvider()
@@ -338,7 +367,7 @@ export const GatorCollection = () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
       const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
-      const inviteLink = `${window?.origin}/nfts/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
+      const inviteLink = `${window?.origin}/nfts/${chainId}/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
       toast.success("Invite link generated", { id: toastId })
@@ -359,14 +388,13 @@ export const GatorCollection = () => {
   const handleOpenMintModal = () => setShowMintModal(true)
   const handleCloseMintModal = () => {
     // clear url query params
-    routerReplace(`/nfts/${collectionAddress}`, undefined, { shallow: true });
+    routerReplace(`/nfts/${chainId}/${collectionAddress}`, undefined, { shallow: true });
     setShowMintModal(false)
   }
 
   useEffect(() => {
-    const readonlyProvider = new providers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_RPC_POLYGON
-    )
+    const readonlyProvider = getReadonlyProvider(chainId)
+
     const retrieveCollectionName = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const collectionName = await contract.name()
@@ -429,15 +457,27 @@ export const GatorCollection = () => {
       listenForNewCollectionTokens(address)
     }
 
+    const retrieveCollectionData = async (collectionAddress) => {
+      try {
+        await Promise.all([
+          retrieveCollectionName(collectionAddress),
+          retrieveCollectionTokens(collectionAddress),
+          retrieveCollectionOwner(collectionAddress),
+          retrieveCollectionImageURI(collectionAddress),
+          retrieveCollectionPaused(collectionAddress)
+        ])
+      } catch (e) {
+        setCollectionHasError(true)
+      }
+    }
+
+    if (!chainId) return
     if (!collectionAddress) return
     if (!ethers.utils.isAddress(collectionAddress)) return
 
-    retrieveCollectionName(collectionAddress)
-    retrieveCollectionTokens(collectionAddress)
-    retrieveCollectionOwner(collectionAddress)
-    retrieveCollectionImageURI(collectionAddress)
-    retrieveCollectionPaused(collectionAddress)
-  }, [collectionAddress])
+    retrieveCollectionData(collectionAddress)
+
+  }, [collectionAddress, chainId])
 
   useEffect(() => {
     if (!inviteCode) return
@@ -453,20 +493,20 @@ export const GatorCollection = () => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0 ">
-      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} collectionAddress={collectionAddress} />
-      <MintModal show={showMintModal} onClose={handleCloseMintModal} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteMaxUse={inviteMaxUse} inviteSig={inviteSig} />
+      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
+      <MintModal show={showMintModal} onClose={handleCloseMintModal} chainId={chainId} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteMaxUse={inviteMaxUse} inviteSig={inviteSig} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between items-center">
           <div className="flex justify-between items-center gap-3">
-            <span className="inline-block relative">
-              {!collectionImageURI && <Spinner className='absolute top-0' />}
-              <img
-                className="h-12 w-12 rounded-md"
-                src={collectionImageURI || 'https://bafybeigtj3oifb2ldb2a7rwskkcqnl43pqreqtodubkgbomxu263p7kiga.ipfs.infura-ipfs.io/'}
-                alt=""
-              />
-              <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
+            <span className="inline-block relative h-12 w-12">
+              {!collectionHasError && !collectionImageURI && <Spinner className='absolute top-0' />}
+              {!collectionHasError && collectionImageURI && (
+                <>
+                  <img className="h-12 w-12 rounded-md" src={collectionImageURI} alt="" />
+                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
+                </>
+              )}
             </span>
 
             <CollectionTitle>
@@ -488,15 +528,18 @@ export const GatorCollection = () => {
             <TokenList address={collectionAddress} tokens={collectionTokens} />
           </div>
         )}
-        {!isLoading && collectionTokens.length === 0 && (
+        {!collectionHasError && !isLoading && collectionTokens.length === 0 && (
           <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} />
         )}
-        {isLoading && (
+        {!collectionHasError && isLoading && (
           <div className="flex w-full justify-center">
             <div className="w-8 h-8">
               <Spinner />
             </div>
           </div>
+        )}
+        {collectionHasError && (
+          <CollectionNotFound />
         )}
       </div>
     </div >

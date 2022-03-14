@@ -31,14 +31,12 @@ const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
   return null
 }
 
-
 const getReadonlyProvider = (chainId) => {
   if (chainId === 137)
     return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
 
   return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
 }
-
 
 const CreateCollectionModal = ({ show, onClose }) => {
   const { account, chainId } = useWallet()
@@ -226,14 +224,14 @@ const EmptyCollectionList = ({ onCreateCollection }) => (
   </div>
 )
 
-const CollectionList = ({ collections }) => {
+const CollectionList = ({ chainId, collections }) => {
   const { asPath: path } = useRouter()
 
   return (
     <ul role="list" className="flex flex-col gap-3">
       {collections?.map(collection => (
         <li key={collection.address}>
-          <Link href={`${path}/${collection.address}`}>
+          <Link href={`${path}/${chainId}/${collection.address}`}>
             <a>
               <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
                 <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
@@ -301,8 +299,11 @@ export const Gator = () => {
       setCollectionsLoading(false)
     }
 
+    if (!chainId) return
+    if (!account) return
+
     retrieveCollections()
-  }, [chainId])
+  }, [chainId, account])
 
   return (
     <div className="text-daonative-white">
@@ -324,7 +325,6 @@ export const Gator = () => {
                 </div>
               </div>
             )}
-
             {!account &&
               <ConnectWalletButton >
                 <PrimaryButton >
@@ -336,7 +336,7 @@ export const Gator = () => {
               <EmptyCollectionList onCreateCollection={handleShowCreateModal} />
             )}
             {!collectionsLoading && myCollections.length > 0 && (
-              <CollectionList collections={myCollections} />
+              <CollectionList chainId={chainId} collections={myCollections} />
             )}
           </div>
         </div>
