@@ -1,6 +1,6 @@
 import { LayoutWrapper } from "../../../../components/LayoutWrapper";
 import useRoomId from "../../../../lib/useRoomId";
-import { Gator } from "../../../gator"; 
+import { Gator } from "../../../nfts"; 
 
 const NFTSPage = () => {
   const roomId = useRoomId()

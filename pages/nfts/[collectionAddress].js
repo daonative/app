@@ -276,7 +276,7 @@ export const GatorCollection = () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
       const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
-      const inviteLink = `${window?.origin}/gator/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
+      const inviteLink = `${window?.origin}/nfts/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
       toast.success("Invite link generated", { id: toastId })
@@ -297,7 +297,7 @@ export const GatorCollection = () => {
   const handleOpenMintModal = () => setShowMintModal(true)
   const handleCloseMintModal = () => {
     // clear url query params
-    routerReplace(`/gator/${collectionAddress}`, undefined, { shallow: true });
+    routerReplace(`/nfts/${collectionAddress}`, undefined, { shallow: true });
     setShowMintModal(false)
   }
 

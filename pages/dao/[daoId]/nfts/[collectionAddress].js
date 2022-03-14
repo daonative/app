@@ -1,5 +1,5 @@
 import { LayoutWrapper } from "../../../../components/LayoutWrapper";
-import { GatorCollection } from "../../../gator/[collectionAddress]";
+import { GatorCollection } from "../../../nfts/[collectionAddress]";
 
 const CollectionPage = () => {
   return (
