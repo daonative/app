@@ -10,7 +10,7 @@ import { useWallet } from 'use-wallet'
 import toast from 'react-hot-toast'
 import useProvider from '../../../lib/useProvider'
 import { useRouter } from 'next/router'
-import PolygonWarning from '../../../components/PolygonWarning'
+import PolygonWarning from '../../../components/ChainWarning'
 import { useRequireAuthentication } from '../../../lib/authenticate'
 
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'

@@ -7,7 +7,7 @@ import { PrimaryButton, SecondaryButton } from '../../components/Button'
 import useProvider from '../../lib/useProvider'
 import toast from 'react-hot-toast'
 import { useWallet } from 'use-wallet'
-import PolygonWarning from '../../components/PolygonWarning'
+import PolygonWarning from '../../components/ChainWarning'
 import { useConnectWalletModal } from '../../components/ConnectWalletModal'
 import Spinner from '../../components/Spinner'
 import axios from 'axios'
@@ -16,7 +16,6 @@ import { LayoutWrapper } from '../../components/LayoutWrapper'
 import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../lib/useMembership'
 import { useRequireAuthentication } from '../../lib/authenticate'
-import { CubeTransparentIcon } from '@heroicons/react/solid'
 import { classNames } from '../../lib/utils'
 
 const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
@@ -429,6 +428,7 @@ export const GatorCollection = () => {
       setIsLoading(false)
       listenForNewCollectionTokens(address)
     }
+
     if (!collectionAddress) return
     if (!ethers.utils.isAddress(collectionAddress)) return
 

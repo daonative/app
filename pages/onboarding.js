@@ -18,7 +18,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
 import { CheckIcon } from '@heroicons/react/solid'
-import PolygonWarning from '../components/PolygonWarning'
+import PolygonWarning from '../components/ChainWarning'
 import { useRequireAuthentication } from '../lib/authenticate'
 import { PrimaryButton } from '../components/Button'
 
