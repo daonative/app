@@ -2,7 +2,7 @@ import { useWallet } from "use-wallet"
 import PolygonLogo from "../public/PolygonLogo.svg"
 import EthereumLogo from "../public/EthereumLogo.svg"
 
-const PolygonWarning = () => {
+const ChainWarning = () => {
   const { ethereum } = useWallet()
 
   const handleSwitchToPolygon = async () => {
@@ -41,4 +41,4 @@ const PolygonWarning = () => {
   )
 }
 
-export default PolygonWarning
+export default ChainWarning

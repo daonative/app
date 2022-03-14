@@ -16,7 +16,7 @@ import ConnectWalletButton from '../components/ConnectWalletButton'
 import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import PolygonWarning from './PolygonWarning'
+import PolygonWarning from './ChainWarning'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
