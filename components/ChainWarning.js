@@ -1,8 +1,9 @@
 import { useWallet } from "use-wallet"
 import PolygonLogo from "../public/PolygonLogo.svg"
 import EthereumLogo from "../public/EthereumLogo.svg"
+import { classNames } from "../lib/utils"
 
-export const SwitchToPolygonButton = () => {
+export const SwitchToPolygonButton = ({ className }) => {
   const { ethereum } = useWallet()
 
   const handleSwitchToPolygon = async () => {
@@ -21,14 +22,20 @@ export const SwitchToPolygonButton = () => {
   }
 
   return (
-    <button className="flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 p-2 w-full hover:bg-daonative-dark-300 hover:text-daonative-gray-200 " onClick={handleSwitchToPolygon}>
+    <button
+      className={classNames(
+        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
+        className
+      )}
+      onClick={handleSwitchToPolygon}
+    >
       <PolygonLogo className="h-4 w-4" />
       Switch to Polygon
     </button>
   )
 }
 
-export const SwitchToMainnetButton = () => {
+export const SwitchToMainnetButton = ({ className }) => {
   const { ethereum } = useWallet()
 
   const handleSwitchToMainnet = async () => {
@@ -36,7 +43,13 @@ export const SwitchToMainnetButton = () => {
   }
 
   return (
-    <button className="flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 p-2 w-full hover:bg-daonative-dark-300 hover:text-daonative-gray-200 " onClick={handleSwitchToMainnet}>
+    <button
+      className={classNames(
+        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
+        className
+      )}
+      onClick={handleSwitchToMainnet}
+    >
       <EthereumLogo className="h-4 w-4" />
       Switch to Ethereum mainnet
     </button>

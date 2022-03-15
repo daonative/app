@@ -251,7 +251,7 @@ const EmptyTokenList = ({ onInviteToMint, canInvite }) => (
   </div>
 )
 
-const CollectionNotFound = () => (
+export const CollectionNotFound = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
     <h3 className="mt-2 text-lg font-medium text-daonative-white">{"We couldn't find this NFT collection."}</h3>
   </div>
@@ -368,7 +368,7 @@ export const GatorCollection = () => {
     const toastId = toast.loading("Sign to create invite link")
     try {
       const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
-      const inviteLink = `${window?.origin}/nfts/${chainId}/${collectionAddress}?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
+      const inviteLink = `${window?.origin}/nfts/${chainId}/${collectionAddress}/mint?inviteCode=${inviteCode}&inviteMaxUse=${inviteMaxUse}&inviteSig=${inviteSig}`
       setInviteLink(inviteLink)
       setShowInviteModal(true)
       toast.success("Invite link generated", { id: toastId })
@@ -461,6 +461,11 @@ export const GatorCollection = () => {
     }
 
     const retrieveCollectionData = async (collectionAddress) => {
+      if (!ethers.utils.isAddress(collectionAddress)) {
+        setCollectionHasError(true)
+        return
+      }
+
       try {
         await Promise.all([
           retrieveCollectionName(collectionAddress),
@@ -476,10 +481,8 @@ export const GatorCollection = () => {
 
     if (!chainId) return
     if (!collectionAddress) return
-    if (!ethers.utils.isAddress(collectionAddress)) return
 
     retrieveCollectionData(collectionAddress)
-
   }, [collectionAddress, chainId])
 
   useEffect(() => {
