@@ -315,10 +315,10 @@ export const Gator = () => {
               <h2 className="text-2xl">NFT Collection Creator</h2>
               <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
             </div>
-            <PrimaryButton onClick={handleShowCreateModal} className={!collectionsLoading && myCollections.length === 0 && "invisible w-max h-max "}>Create Collection</PrimaryButton>
+            <PrimaryButton onClick={handleShowCreateModal} className={(!account || (!collectionsLoading && myCollections.length === 0)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
           </div>
           <div className="w-full">
-            {collectionsLoading && (
+            {account && collectionsLoading && (
               <div className="flex w-full justify-center p-8">
                 <div className="w-8 h-8">
                   <Spinner />
