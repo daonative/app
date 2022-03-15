@@ -225,7 +225,7 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
             <ShortAddress>{owner}</ShortAddress>
           </span>
           <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-            {date.getFullYear()}-{date.getMonth()}-{date.getDay()}
+            {date.getFullYear()}-{date.getMonth() + 1}-{date.getDay() + 1}
           </span>
         </div>
         <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
