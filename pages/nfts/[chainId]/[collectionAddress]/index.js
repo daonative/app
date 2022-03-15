@@ -8,7 +8,6 @@ import useProvider from '../../../../lib/useProvider'
 import toast from 'react-hot-toast'
 import { useWallet } from 'use-wallet'
 import { SwitchToMainnetButton, SwitchToPolygonButton } from '../../../../components/ChainWarning'
-import { useConnectWalletModal } from '../../../../components/ConnectWalletModal'
 import Spinner from '../../../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../../../components/ShortAddress'
@@ -137,64 +136,6 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
           Close
         </SecondaryButton>
       </ModalActionFooter>
-    </Modal>
-  )
-}
-
-const MintModal = ({ show, onClose, chainId, collectionAddress, inviteCode, inviteMaxUse, inviteSig }) => {
-  const { account, chainId: injectedChainId } = useWallet()
-  const injectedProvider = useProvider()
-  const isMainnetNFT = Number(chainId) === 1
-  const isPolygonNFT = Number(chainId) === 137
-  const isCorrectChain = Number(chainId) === injectedChainId
-
-  const mintNFT = async (collectionAddress, inviteCode, inviteMaxUse, inviteSig) => {
-    const signer = injectedProvider.getSigner()
-    const contract = new ethers.Contract(collectionAddress, collectionAbi, signer)
-    return await contract.safeMint(inviteCode, inviteMaxUse, inviteSig)
-  }
-
-  const handleMintNFT = async () => {
-    const toastId = toast.loading("Minting your NFT...")
-    try {
-      const tx = await mintNFT(collectionAddress, inviteCode, inviteMaxUse, inviteSig)
-      await tx.wait()
-      toast.success("Successfully minted your NFT", { id: toastId })
-      onClose()
-    } catch (e) {
-      console.log(e)
-      toast.error("Failed to mint your NFT", { id: toastId })
-      const message = e?.data?.message || e.message
-      toast.error(message)
-    }
-  }
-
-  return (
-    <Modal show={show} onClose={onClose}>
-      <ModalTitle>Invitation to mint</ModalTitle>
-      <ModalBody>
-        <div className="flex flex-col gap-4 items-center p-8">
-          {account && isCorrectChain && (
-            <SecondaryButton onClick={handleMintNFT}>Mint your NFT</SecondaryButton>
-          )}
-          {account && !isCorrectChain && (
-            <>
-              {isPolygonNFT && (
-                <>
-                  <span>This is a Polygon NFT</span>
-                  <SwitchToPolygonButton />
-                </>
-              )}
-              {isMainnetNFT && (
-                <>
-                  <span>This is a Ethereum mainnet NFT</span>
-                  <SwitchToMainnetButton />
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </ModalBody>
     </Modal>
   )
 }
@@ -364,12 +305,10 @@ export const GatorCollection = () => {
   // Modals
   const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
-  const [showMintModal, setShowMintModal] = useState(false)
   const [inviteLink, setInviteLink] = useState("")
 
-  const { replace: routerReplace, query: { chainId, collectionAddress, inviteCode, inviteMaxUse, inviteSig } } = useRouter()
+  const { query: { chainId, collectionAddress } } = useRouter()
   const { account } = useWallet()
-  const { openConnectWalletModal } = useConnectWalletModal()
   const injectedProvider = useProvider()
 
   const isOwner = collectionOwner === account
@@ -404,13 +343,6 @@ export const GatorCollection = () => {
 
   const handleOpenCreateDAOModal = () => setShowLinkDAOModal(true)
   const handleCloseLinkDAOModal = () => setShowLinkDAOModal(false)
-
-  const handleOpenMintModal = () => setShowMintModal(true)
-  const handleCloseMintModal = () => {
-    // clear url query params
-    routerReplace(`/nfts/${chainId}/${collectionAddress}`, undefined, { shallow: true });
-    setShowMintModal(false)
-  }
 
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(chainId)
@@ -504,22 +436,9 @@ export const GatorCollection = () => {
     retrieveCollectionData(collectionAddress)
   }, [collectionAddress, chainId])
 
-  useEffect(() => {
-    if (!inviteCode) return
-    if (!inviteMaxUse) return
-    if (!inviteSig) return
-    if (account) {
-      // Need to make sure the connect modal is closed
-      setTimeout(handleOpenMintModal, 1000)
-    } else {
-      openConnectWalletModal()
-    }
-  }, [inviteCode, inviteMaxUse, inviteSig, account, openConnectWalletModal])
-
   return (
     <div className="flex justify-center px-8 lg:px-0 ">
       <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
-      <MintModal show={showMintModal} onClose={handleCloseMintModal} chainId={chainId} collectionAddress={collectionAddress} inviteCode={inviteCode} inviteMaxUse={inviteMaxUse} inviteSig={inviteSig} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between items-center">
