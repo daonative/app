@@ -1,16 +1,14 @@
 import axios from "axios";
 import { ethers, providers } from "ethers";
-import Image from "next/image";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useWallet } from "use-wallet";
-import { CollectionNotFound } from ".";
+import { CollectionNotFound, CollectionHeader } from ".";
 import { PrimaryButton, SecondaryButton } from "../../../../components/Button";
 import { SwitchToMainnetButton, SwitchToPolygonButton } from "../../../../components/ChainWarning";
 import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { LayoutWrapper } from "../../../../components/LayoutWrapper";
-import Spinner from "../../../../components/Spinner";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
 
@@ -21,29 +19,6 @@ const getReadonlyProvider = (chainId) => {
 
   return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
 }
-
-const CollectionHeader = ({ isLoading, imageUri, children }) => (
-  <div className="flex justify-between items-center gap-3">
-    <CollectionImage imageUri={imageUri} isLoading={isLoading} />
-    <CollectionTitle>{children}</CollectionTitle>
-  </div>
-)
-
-const CollectionTitle = ({ children }) => (
-  <h2 className="text-2xl text-daonative-white">{children}</h2>
-)
-
-const CollectionImage = ({ imageUri, isLoading }) => (
-  <span className="inline-block relative h-12 w-12">
-    {isLoading && <Spinner className='absolute top-0' />}
-    {!isLoading && imageUri && (
-      <>
-        <img className="h-12 w-12 rounded-md" src={imageUri} alt="" />
-        <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
-      </>
-    )}
-  </span>
-)
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">

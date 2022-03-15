@@ -265,9 +265,28 @@ const TokenList = ({ address, tokens }) => (
   </>
 )
 
-const CollectionTitle = ({ children }) => {
-  return <h2 className="text-2xl text-daonative-white">{children}</h2>
-}
+export const CollectionHeader = ({ isLoading, imageUri, children }) => (
+  <div className="flex justify-between items-center gap-3">
+    <CollectionImage imageUri={imageUri} isLoading={isLoading} />
+    <CollectionTitle>{children}</CollectionTitle>
+  </div>
+)
+
+const CollectionTitle = ({ children }) => (
+  <h2 className="text-2xl text-daonative-white">{children}</h2>
+)
+
+const CollectionImage = ({ imageUri, isLoading }) => (
+  <span className="inline-block relative h-12 w-12">
+    {isLoading && <Spinner className='absolute top-0' />}
+    {!isLoading && imageUri && (
+      <>
+        <img className="h-12 w-12 rounded-md" src={imageUri} alt="" />
+        <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
+      </>
+    )}
+  </span>
+)
 
 const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
   const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
@@ -504,21 +523,7 @@ export const GatorCollection = () => {
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between items-center">
-          <div className="flex justify-between items-center gap-3">
-            <span className="inline-block relative h-12 w-12">
-              {!collectionHasError && !collectionImageURI && <Spinner className='absolute top-0' />}
-              {!collectionHasError && collectionImageURI && (
-                <>
-                  <img className="h-12 w-12 rounded-md" src={collectionImageURI} alt="" />
-                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
-                </>
-              )}
-            </span>
-
-            <CollectionTitle>
-              {collectionName}
-            </CollectionTitle>
-          </div>
+          {!collectionHasError && <CollectionHeader imageUri={collectionImageURI} isLoading={isLoading}>{collectionName}</CollectionHeader>}
 
           <div className={classNames(
             "flex gap-4",
