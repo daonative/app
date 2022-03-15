@@ -25,6 +25,7 @@ function classNames(...classes) {
 const SidebarNavigation = ({ showMobile, onClose }) => {
   const { query, asPath } = useRouter()
   const roomId = query.daoId
+  const path = asPath?.split('?')[0] || ''
 
   const dashboardUrl = roomId ? `/dao/${roomId}` : '/'
   const challengesUrl = roomId ? `/dao/${roomId}/challenges` : '/'
@@ -36,11 +37,37 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Challenges', disabled: !roomId, href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9]*)?$" },
     { name: 'Leaderboard', disabled: !roomId, href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
     //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
-    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*)?$" },
+    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
     { name: 'Rewards', disabled: true, comingSoon: true, href: '#', icon: HeartIcon },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
     { name: 'Members', disabled: true, comingSoon: true, href: '#', icon: UsersIcon },
   ]
+
+  const NavLink = ({ disabled = false, href, current, children }) => (
+    <>
+      {disabled ? (
+        <a
+          className={classNames(
+            current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+            'group flex justify-between px-2 py-2 text-sm font-medium rounded-md opacity-50'
+          )}
+        >
+          {children}
+        </a>
+      ) : (
+        <Link href={href} >
+          <a
+            className={classNames(
+              current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+              'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
+            )}
+          >
+            {children}
+          </a>
+        </Link>
+      )}
+    </>
+  )
 
   return (
     <>
@@ -95,32 +122,23 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
                   {navigation.map((item) => {
-                    const current = !item.disabled && !!asPath.match(item.match)
+                    const current = !item.disabled && !!path.match(item.match)
                     return (
-                      // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                      <Link key={item.name} href={item.disabled ? "" : item.href}>
-                        <a
-                          className={classNames(
-                            current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-                            'group flex justify-between px-2 py-2 text-sm font-medium rounded-md',
-                            item.disabled && 'opacity-50'
-                          )}
-                        >
-                          <div className="flex items-center">
-                            <item.icon
-                              className={classNames(
-                                current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                                'mr-3 flex-shrink-0 h-6 w-6'
-                              )}
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </div>
-                          <div>
-                            {item.comingSoon && <ComingSoonBadge />}
-                          </div>
-                        </a>
-                      </Link>
+                      <NavLink key={item.name} current={current} disabled={item.disabled} href={item.href}>
+                        <div className="flex items-center">
+                          <item.icon
+                            className={classNames(
+                              current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                              'mr-3 flex-shrink-0 h-6 w-6'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </div>
+                        <div>
+                          {item.comingSoon && <ComingSoonBadge />}
+                        </div>
+                      </NavLink>
                     )
                   })}
                 </nav>
@@ -149,33 +167,23 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => {
-                const current = !item.disabled && !!asPath.match(item.match)
+                const current = !item.disabled && !!path.match(item.match)
                 return (
-                  // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                  <Link key={item.name} href={item.disabled ? "" : item.href}>
-                    <a
-                      key={item.name}
-                      className={classNames(
-                        current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-                        'group flex justify-between px-2 py-2 text-sm font-medium rounded-md',
-                        item.disabled && 'opacity-50'
-                      )}
-                    >
-                      <div className="flex items-center">
-                        <item.icon
-                          className={classNames(
-                            current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                            'mr-3 flex-shrink-0 h-6 w-6'
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </div>
-                      <div>
-                        {item.comingSoon && <ComingSoonBadge />}
-                      </div>
-                    </a>
-                  </Link>
+                  <NavLink key={item.name} current={current} disabled={item.disabled} href={item.href}>
+                    <div className="flex items-center">
+                      <item.icon
+                        className={classNames(
+                          current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                          'mr-3 flex-shrink-0 h-6 w-6'
+                        )}
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </div>
+                    <div>
+                      {item.comingSoon && <ComingSoonBadge />}
+                    </div>
+                  </NavLink>
                 )
               })}
             </nav>
