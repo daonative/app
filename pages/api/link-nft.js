@@ -54,10 +54,17 @@ const isRoomAdmin = async (roomId, uid) => {
   }
 }
 
-const getCollectionTokens = async (collectionAddress) => {
-  const readonlyProvider = new providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_POLYGON
-  )
+const getReadonlyProvider = (chainId) => {
+  if (chainId === 137)
+    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
+  if (chainId === 1)
+    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+
+  throw Error("Unknown chain id")
+}
+
+const getCollectionTokens = async (chainId, collectionAddress) => {
+  const readonlyProvider = getReadonlyProvider(chainId)
   const contract = new ethers.Contract(collectionAddress, collectionAbi, readonlyProvider)
   const mintFilter = contract.filters.Transfer(null)
   const mintEvents = await contract.queryFilter(mintFilter)
@@ -69,7 +76,7 @@ const getCollectionTokens = async (collectionAddress) => {
 }
 
 const setMembership = async (account, roomId, roles) => {
-  const rolesData = roles?.length > 0 ? {roles: admin.firestore.FieldValue.arrayUnion(...roles)} : {}
+  const rolesData = roles?.length > 0 ? { roles: admin.firestore.FieldValue.arrayUnion(...roles) } : {}
 
   // Set membership
   await db.collection('rooms').doc(roomId).collection('members').doc(account).set({
@@ -83,12 +90,23 @@ const setMembership = async (account, roomId, roles) => {
   }, { merge: true })
 }
 
+const setRoomNFTGate = async (roomId, chainId, collectionAdress, roles) => {
+  await db.collection('rooms').doc(roomId).set({
+    nftGates: admin.firestore.FieldValue.arrayUnion({
+      chainId,
+      collectionAdress,
+      roles,
+    })
+  }, { merge: true })
+}
+
 async function handler(req, res) {
   await checkAuth(req, res)
 
   if (!req.uid) return
 
   const { collectionAddress, roomId, admin } = req.body
+  const chainId = 137 // fixed for now
 
   if (!collectionAddress || !roomId || admin === undefined) {
     return res.status(400).json({ error: 'Missing one of the required parameters' })
@@ -98,12 +116,11 @@ async function handler(req, res) {
     return res.status(401).json({ error: "You're not an admin of this DAO" })
   }
 
-  const tokens = await getCollectionTokens(collectionAddress)
   const roles = admin ? ['admin'] : []
+  await setRoomNFTGate(roomId, chainId, collectionAddress, roles)
 
-  tokens.map(token => {
-    setMembership(token.owner, roomId, roles)
-  })
+  const tokens = await getCollectionTokens(chainId, collectionAddress)
+  await Promise.all(tokens.map(token => setMembership(token.owner, roomId, roles)))
 
   res.status(200).json({ roomId, roles, tokens });
 }
