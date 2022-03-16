@@ -6,10 +6,7 @@ import { useWallet } from 'use-wallet';
 import useIsConnected from '../lib/useIsConnected';
 import ShortAddress from './ShortAddress';
 import { useForm } from 'react-hook-form';
-import { getAuth } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import authenticate, { useRequireAuthentication } from '../lib/authenticate';
-import useProvider from '../lib/useProvider';
+import { useRequireAuthentication } from '../lib/authenticate';
 import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
@@ -17,14 +14,24 @@ import useMembership from '../lib/useMembership';
 import PFP from './PFP';
 import useUser from '../lib/useUser';
 
-const auth = getAuth()
+import PolygonLogo from '../public/PolygonLogo.svg'
+import EthereumLogo from '../public/EthereumLogo.svg'
 
-const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true }) => {
+const ChainLogo = ({chainId, className}) => {
+  if (chainId === 137)
+    return <PolygonLogo className={className} />
+
+  if (chainId === 1)
+    return <EthereumLogo className={className} />
+  console.log(chainId)
+  return <></>
+}
+
+const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
-  const { account, reset: disconnect } = useWallet()
+  const { chainId, account, reset: disconnect } = useWallet()
   const isConnected = useIsConnected()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
-  const provider = useProvider()
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const requireAuthentication = useRequireAuthentication()
@@ -109,7 +116,7 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
             {isConnected && (
               <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="font-sans flex items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
+                  <Menu.Button className="font-sans flex gap-2 pr-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
                     <span className="sr-only">Open user menu</span>
                     {/*<img
                       className="h-8 w-8 rounded-full"
@@ -117,7 +124,10 @@ const HeaderNavigation = ({ onShowSidebar, onToggleDarkMode, showLogWork = true 
                       alt="" />
                     */}
                     <PFP address={account} size={32} />
-                    <div className="px-2">
+                    <div>
+                        <ChainLogo chainId={chainId} className="w-4 h-4"/>
+                    </div>
+                    <div>
                       {user ? (
                         <>{user.name}</>
                       ) : (
