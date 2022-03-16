@@ -1,15 +1,14 @@
-import { collection, getFirestore, query, where } from "firebase/firestore"
+import { CheckCircleIcon } from "@heroicons/react/solid"
 import { useEffect, useState } from "react"
-import { useCollection } from "react-firebase-hooks/firestore"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../../components/Button"
 import { InviteMemberModal } from "../../../components/InviteMemberModal"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
 import PFP from "../../../components/PFP"
+import ShortAddress from "../../../components/ShortAddress"
+import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
-
-const db = getFirestore()
 
 const MemberList = ({ members }) => {
   return (
@@ -19,8 +18,14 @@ const MemberList = ({ members }) => {
           <li key={idx}>
             <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
               <div className="flex items-center gap-3">
-                <PFP address={member?.account} size={38} />
-                <p className="text-sm font-medium text-daonative-gray-100">{member?.name}</p>
+                {/* Avatar */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {member.ensAvatar && <img src={member.ensAvatar} alt="Member avatar" className="rounded-full h-10 w-10" />}
+                {!member.ensAvatar && <PFP address={member?.account} size={40} />}
+                {/* Name */}
+                {member.ensName && <div className="flex gap-1 items-center">{member.ensName}<CheckCircleIcon className="h-3 w-3 text-daonative-primary-blue" /></div>}
+                {!member.ensName && member.name && <>{member.name}</>}
+                {!member.ensName && !member.name && <ShortAddress>{member.account}</ShortAddress>}
               </div>
               <div className="mt-2 sm:flex flex-col items-end gap-0.5">
                 {member?.roles?.map((role, idx) => (
@@ -42,12 +47,7 @@ export const Members = () => {
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.roles?.includes('admin')
-  const [membersSnapshot] = useCollection(
-    query(collection(db, 'rooms', roomId || 'x', 'members'))
-  )
-  const [usersSnapshot] = useCollection(
-    query(collection(db, 'users'), where('rooms', 'array-contains', roomId || ''))
-  )
+  const [members] = useNewMembers()
 
 
   const openModal = () => setOpen(true)
@@ -57,15 +57,6 @@ export const Members = () => {
     setInviteLink(`${window?.origin}/dao/${roomId}/join`)
   }, [roomId])
 
-  const users = usersSnapshot?.docs.map(doc => ({ account: doc.id, ...doc.data() }))
-  const members = membersSnapshot?.docs.map((doc) => {
-    const member = doc.data()
-    const user = users?.find(user => user.account === doc.id)
-    return {
-      name: user?.name,
-      ...member
-    }
-  })
   return (
     <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
