@@ -116,15 +116,9 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
             {isConnected && (
               <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="font-sans flex gap-2 pr-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-full">
+                  <Menu.Button className="font-sans flex gap-2 px-2 h-8 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-md">
                     <span className="sr-only">Open user menu</span>
-                    {/*<img
-                      className="h-8 w-8 rounded-full"
-                      src="https://ipfs.io/ipfs/Qmc1DJWoEsVkjbJsMCnceFH1roF8QSnwK7iEhRKiBDqy9d"
-                      alt="" />
-                    */}
-                    <PFP address={account} size={32} />
-                    <div>
+                    <div className="border-r border-daonative-dark-300 h-full flex items-center pr-2">
                         <ChainLogo chainId={chainId} className="w-4 h-4"/>
                     </div>
                     <div>
@@ -134,6 +128,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                         <ShortAddress>{account}</ShortAddress>
                       )}
                     </div>
+                    <PFP address={account} size={24} />
                   </Menu.Button>
                 </div>
                 <Transition
