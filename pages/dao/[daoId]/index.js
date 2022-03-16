@@ -273,6 +273,7 @@ const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
           <Members />
         </div>
       </LayoutWrapper>
+      {/*
       <aside className="w-full md:max-w-xs md:py-6">
         <div className="px-4">
           <UpcomingEvents />
@@ -281,6 +282,7 @@ const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
           <Treasury address={dao.treasury} enabled={false} />
         </div>
       </aside>
+      */}
     </>
   )
 }
