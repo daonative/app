@@ -145,7 +145,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                       <ChainLogo chainId={chainId} className="w-4 h-4" />
                     </div>
                     <div>
-                      {ensName && <div className="flex gap-1 items-center">{ensName}<CheckCircleIcon className="h-3 w-3 text-daonative-primary-blue"/></div>}
+                      {ensName && <div className="flex gap-1 items-center">{ensName}<CheckCircleIcon className="h-4 w-4 text-daonative-white"/></div>}
                       {!ensName && user && <>{user.name}</>}
                       {!ensName && !user && <ShortAddress>{account}</ShortAddress>}
                     </div>

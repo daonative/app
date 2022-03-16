@@ -38,7 +38,6 @@ export const SecondaryButton = ({ children, onClick, type = "button", className 
     onClick={onClick}
     type={type}
     className={classNames(
-      "border-2 border-daonative-gray-100",
       className,
       disabled && "bg-opacity-50"
     )}
