@@ -120,7 +120,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
       const newCollectionReceipt = await newCollectionTx.wait()
       const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
       toast.success("NFT collection created", { id: toastId })
-      router.push(`${router.asPath}/${newCollectionAddress}`)
+      router.push(`${router.asPath}/${chainId}/${newCollectionAddress}`)
       onClose()
       reset()
     } catch (e) {
