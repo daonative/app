@@ -1,6 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuAlt2Icon, MoonIcon, SunIcon } from '@heroicons/react/solid';
+import { BellIcon, CheckCircleIcon, MenuAlt2Icon } from '@heroicons/react/solid';
 import { useConnectWalletModal } from './ConnectWalletModal';
 import { useWallet } from 'use-wallet';
 import useIsConnected from '../lib/useIsConnected';
@@ -16,8 +16,9 @@ import useUser from '../lib/useUser';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
+import { providers } from 'ethers';
 
-const ChainLogo = ({chainId, className}) => {
+const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
     return <PolygonLogo className={className} />
 
@@ -30,6 +31,8 @@ const ChainLogo = ({chainId, className}) => {
 const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
   const { chainId, account, reset: disconnect } = useWallet()
+  const [ensName, setEnsName] = useState("")
+  const [ensAvatar, setEnsAvatar] = useState("")
   const isConnected = useIsConnected()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
   const { query: params } = useRouter()
@@ -56,6 +59,26 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
 
     reset()
   }
+
+  useEffect(() => {
+    const retrieveEnsName = async () => {
+      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+      const ensName = await provider.lookupAddress(account)
+      setEnsName(ensName)
+
+      if (!ensName) return
+
+      const ensAvatar = await provider.getAvatar(ensName)
+      setEnsAvatar(ensAvatar)
+    }
+
+    setEnsName("")
+    setEnsAvatar("")
+
+    if (!account) return
+
+    retrieveEnsName()
+  }, [account])
 
   return (
     <div className="md:pl-64 flex flex-col ">
@@ -119,16 +142,16 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                   <Menu.Button className="font-sans flex gap-2 px-2 h-8 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-md">
                     <span className="sr-only">Open user menu</span>
                     <div className="border-r border-daonative-dark-300 h-full flex items-center pr-2">
-                        <ChainLogo chainId={chainId} className="w-4 h-4"/>
+                      <ChainLogo chainId={chainId} className="w-4 h-4" />
                     </div>
                     <div>
-                      {user ? (
-                        <>{user.name}</>
-                      ) : (
-                        <ShortAddress>{account}</ShortAddress>
-                      )}
+                      {ensName && <div className="flex gap-1 items-center">{ensName}<CheckCircleIcon className="h-3 w-3 text-daonative-primary-blue"/></div>}
+                      {!ensName && user && <>{user.name}</>}
+                      {!ensName && !user && <ShortAddress>{account}</ShortAddress>}
                     </div>
-                    <PFP address={account} size={24} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {ensAvatar && <img src={ensAvatar} className="rounded-full h-6 w-6" alt="User profile" />}
+                    {!ensAvatar && <PFP address={account} size={24} />}
                   </Menu.Button>
                 </div>
                 <Transition
