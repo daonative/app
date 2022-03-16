@@ -175,13 +175,14 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 </label>
                 <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent " />
                 <div className="p-2"></div>
-                <textarea 
+                <textarea
                   {...register("metadata", {
                     required: false,
                     validate: {
                       metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
-                      json: value => !value || isValidJSON(value) }
-                    })
+                      json: value => !value || isValidJSON(value)
+                    }
+                  })
                   }
                   rows={8}
                   placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
@@ -197,12 +198,15 @@ const CreateCollectionModal = ({ show, onClose }) => {
             </div>
           </ModalBody>
           <ModalActionFooter>
-            <PrimaryButton type="sumbit" disabled={isSubmitting}>
-              {isSubmitting && (
-                <span className="w-4 h-4 mr-2"><Spinner /></span>
-              )}
-              Create collection
-            </PrimaryButton>
+            <div className="flex justify-between items-center w-full">
+              <Link href="/nfts/faq"><a className="underline text-sm">How does this work?</a></Link>
+              <PrimaryButton type="sumbit" disabled={isSubmitting}>
+                {isSubmitting && (
+                  <span className="w-4 h-4 mr-2"><Spinner /></span>
+                )}
+                Create collection
+              </PrimaryButton>
+            </div>
           </ModalActionFooter>
         </form>
       ) : (
