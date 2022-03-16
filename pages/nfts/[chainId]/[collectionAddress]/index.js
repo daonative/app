@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../../../lib/useMembership'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { classNames } from '../../../../lib/utils'
+import { ClipboardCopyIcon } from '@heroicons/react/solid'
 
 const getReadonlyProvider = (chainId) => {
   if (Number(chainId) === 137)
@@ -113,6 +114,11 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
 }
 
 const InviteModal = ({ show, onClose, inviteLink }) => {
+  const handleCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(inviteLink)
+    toast.success('Copied invite link to clipboard', {icon: <ClipboardCopyIcon className="h-6 w-6 text-green"/>})
+  }
+
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>Invite to mint</ModalTitle>
@@ -132,9 +138,15 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
         </div>
       </ModalBody>
       <ModalActionFooter>
+        <div className="flex gap-2">
         <SecondaryButton onClick={onClose}>
           Close
         </SecondaryButton>
+        <PrimaryButton onClick={handleCopyToClipboard}>
+          <ClipboardCopyIcon className="h-4 w-4 mr-1"/>
+          Copy to clipboard
+        </PrimaryButton>
+        </div>
       </ModalActionFooter>
     </Modal>
   )
