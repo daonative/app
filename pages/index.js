@@ -36,7 +36,7 @@ const DAOList = ({ rooms, isLoading }) => {
             <li key={room.roomId}>
               <Link href={`/dao/${room.roomId}`}>
                 <a>
-                  <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
+                  <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex gap-4 justify-between">
                     <p className="text-sm font-medium text-daonative-gray-100">{room.name}</p>
                     <div className="flex gap-2">
                       {room?.membership?.roles?.map((role, idx) =>

@@ -64,7 +64,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
       <div className="sticky top-0 z-10 flex-shrink-0 flex h-16  shadow bg-daonative-dark-200">
         <button
           type="button"
-          className="px-4 border-r border-daonative-dark-100 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+          className="px-4 border-r border-daonative-component-bg text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
           onClick={onShowSidebar}
         >
           <span className="sr-only">Open sidebar</span>
@@ -77,19 +77,19 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                 <input
                   {...register("work")}
                   type="text"
-                  className="md:w-96 border-none shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
+                  className="md:w-96 border-none shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
                   placeholder="What did you do today?"
                 />
                 {isSubmitting ? (
                   <div
-                    className="mx-2 inline-flex items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 w-24"
+                    className="mx-2 inline-flex items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-component-bg text-daonative-gray-100 w-24"
                   >
                     <span className="w-4 h-4 mx-auto"><Spinner /></span>
                   </div>
                 ) : (
                   <button
                     type="submit"
-                    className="mx-2 w-max font-sans items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 "
+                    className="mx-2 w-max font-sans items-center px-4 py-2 border border-2 border-daonative-gray-100 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-component-bg text-daonative-gray-100 "
                   >
                     Log work
                   </button>
@@ -100,7 +100,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
           <div className="ml-4 flex items-center md:ml-6">
             <button
               type="button"
-              className="mx-2 bg-daonative-dark-100  p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="mx-2 bg-daonative-component-bg  p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -108,7 +108,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
 
             {!isConnected && (
               <button
-                className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-dark-100 text-daonative-gray-100 rounded-full"
+                className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-component-bg text-daonative-gray-100 rounded-full"
                 onClick={openConnectWalletModal}
               >
                 Connect
@@ -118,7 +118,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
             {isConnected && (
               <Menu as="div" className="ml-2">
                 <div>
-                  <Menu.Button className="font-sans flex gap-2 px-2 h-8 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100 rounded-md">
+                  <Menu.Button className="font-sans flex gap-2 px-2 h-8 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-component-bg text-daonative-gray-100 rounded-md">
                     <span className="sr-only">Open user menu</span>
                     <div className="border-r border-daonative-dark-300 h-full flex items-center pr-2">
                       <ChainLogo chainId={chainId} className="w-4 h-4" />

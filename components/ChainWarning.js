@@ -24,7 +24,7 @@ export const SwitchToPolygonButton = ({ className }) => {
   return (
     <button
       className={classNames(
-        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
+        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-component-bg py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
         className
       )}
       onClick={handleSwitchToPolygon}
@@ -45,7 +45,7 @@ export const SwitchToMainnetButton = ({ className }) => {
   return (
     <button
       className={classNames(
-        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-dark-100 py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
+        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-component-bg py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
         className
       )}
       onClick={handleSwitchToMainnet}

@@ -11,7 +11,6 @@ module.exports = {
       colors: {
         // use this for most borders
         "daonative-border": "rgba(49, 49, 74, 0.4)",
-        "daonative-dark-100": "#222235",
         "daonative-dark-200": "#161624",
         "daonative-dark-300": "#10101C",
         "daonative-gray-100": "#F5EFFF",

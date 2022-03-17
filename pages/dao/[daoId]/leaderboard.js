@@ -22,7 +22,7 @@ const LeaderboardList = ({ leaders }) => {
       {
         leaders?.map((leader, idx) => (
           <li key={idx}>
-            <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
+            <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex justify-between">
               <div className="flex items-center gap-3">
                 <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
                   #{String(idx + 1).padStart(3, '0')}

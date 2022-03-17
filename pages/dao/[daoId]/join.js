@@ -164,7 +164,7 @@ const Join = ({ dao }) => {
                   <input
                     {...register("memberName")}
                     type="text"
-                    className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-dark-100 text-daonative-gray-300"
+                    className="my-2 md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
                     placeholder="How should we call you?"
                   />
                   <button

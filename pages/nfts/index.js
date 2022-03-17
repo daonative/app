@@ -160,7 +160,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Collection Name
                 </label>
-                <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
+                <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-white" />
                 {errors.name && (
                   <span className="text-xs text-red-400">You need to set a name</span>
                 )}
@@ -169,7 +169,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                 <label className="block text-sm font-medium pb-2">
                   Symbol
                 </label>
-                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="NATIV" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent " />
+                <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="NATIV" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
                 {errors.symbol && (
                   <span className="text-xs text-red-400">You need to set a symbol</span>
                 )}
@@ -181,7 +181,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                       <label className="block text-sm font-medium pb-2">
                         Image
                       </label>
-                      <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent" />
+                      <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
                       {!open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
                         <span className="block text-xs text-red-400 pt-2">You need to set an image</span>
                       )}
@@ -220,7 +220,7 @@ const CreateCollectionModal = ({ show, onClose }) => {
                             }
                             rows={8}
                             placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
-                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent"
                           />
                           {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
                             <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
@@ -276,7 +276,7 @@ const CollectionList = ({ chainId, collections }) => {
         <li key={collection.address}>
           <Link href={`${path}/${chainId}/${collection.address}`}>
             <a>
-              <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex gap-4 justify-between">
+              <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex gap-4 justify-between">
                 <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
                 <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
                   {collection.symbol}

@@ -22,7 +22,7 @@ const Members = ({ members }) => {
   return (
     <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
-      <div className="bg-daonative-dark-100 p-4 shadow rounded-lg">
+      <div className="bg-daonative-component-bg p-4 shadow rounded-lg">
         <h3 className="text-daonative-gray-200">Members</h3>
         <p className="text-sm font-medium text-gray-500 text-daonative-gray-400">{members.length}</p>
         <ul role="list" className="divide-y divide-gray-200 w-full">

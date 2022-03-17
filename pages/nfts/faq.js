@@ -2,7 +2,7 @@ import { LayoutWrapper } from "../../components/LayoutWrapper"
 
 const FAQItem = ({ children }) => (
   <li>
-    <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex flex-col gap-2">
+    <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex flex-col gap-2">
       {children}
     </div>
   </li>

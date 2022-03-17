@@ -39,7 +39,7 @@ export const InviteMemberModal = ({ open, onClose, inviteLink }) => (
               <input
                 type="text"
                 value={inviteLink}
-                className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300"
+                className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300"
                 disabled />
             </div>
             <div className="flex justify-end px-4 pb-4 pt-6">

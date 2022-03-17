@@ -58,7 +58,7 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
     <li className="w-full py-1">
       <label className="text-sm">
         <input className="sr-only peer" type="radio" value={roomId} {...register('room', { required: true })} />
-        <div className="peer-checked:bg-daonative-dark-100 bg-daonative-dark-200 hover:cursor-pointer hover:bg-daonative-dark-200 hover:bg-opacity-50 px-2 py-1.5 rounded-md">
+        <div className="peer-checked:bg-daonative-component-bg bg-daonative-dark-200 hover:cursor-pointer hover:bg-daonative-dark-200 hover:bg-opacity-50 px-2 py-1.5 rounded-md">
           {name}
         </div>
       </label>
@@ -77,7 +77,7 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
                 Membership Roles
               </label>
               <div className="flex gap-2 items-center">
-                <input type="checkbox" {...register("admin")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" id="admin-roles" />
+                <input type="checkbox" {...register("admin")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" id="admin-roles" />
                 <label className="text-sm font-medium" htmlFor="admin-roles">
                   Admin
                 </label>
@@ -89,7 +89,7 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
               </label>
               <ul className="justify-center w-full">
                 {rooms.map((room) => <RoomOption key={room.roomId} name={room.name} roomId={room.roomId} />)}
-                {rooms.length > 0 && <div className="flex-grow border-t border-daonative-dark-100 my-2"></div>}
+                {rooms.length > 0 && <div className="flex-grow border-t border-daonative-component-bg my-2"></div>}
                 <RoomOption name="Create a new DAO" roomId="" />
               </ul>
               {errors.room && (
@@ -131,7 +131,7 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
             <input
               type="text"
               value={inviteLink}
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300"
+              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300"
               disabled
             />
           </div>

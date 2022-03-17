@@ -57,7 +57,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
               <label className="block text-sm font-medium pb-2">
                 Title
               </label>
-              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
               {errors.title && (
                 <span className="text-xs text-red-400">You need to set a title</span>
               )}
@@ -66,7 +66,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
               <label className="block text-sm font-medium pb-2">
                 Description
               </label>
-              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
@@ -75,7 +75,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
               <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
                 <input
                   type="text"
-                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 border-gray-300 rounded-md dark:bg-daonative-dark-100 dark:border-transparent dark:text-daonative-gray-300"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 border-gray-300 rounded-md dark:bg-daonative-component-bg dark:border-transparent dark:text-daonative-gray-300"
                   placeholder="100"
                   aria-describedby="xp-amount"
                   {...register('weight', { required: true })}

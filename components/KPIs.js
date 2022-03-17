@@ -52,16 +52,16 @@ const MetricModal = ({ show, onClose, onSave, defaultValues }) => {
           <label htmlFor="name" className="block text-sm font-medium pb-2">
             KPI Name
           </label>
-          <input type="text" {...register("name")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+          <input type="text" {...register("name")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
           <label htmlFor="name" className="block text-sm font-medium pb-2 pt-4">
             What{"'"}s the latest indicator?
           </label>
-          <input type="text" {...register("indicator")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-gray-300" />
+          <input type="text" {...register("indicator")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
         </ModalBody>
         <ModalActionFooter>
           <button
             type="submit"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md daonative-gray-100 bg-daonative-primary-blue hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-dark-100 text-daonative-gray-100"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md daonative-gray-100 bg-daonative-primary-blue hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-daonative-component-bg text-daonative-gray-100"
           >
             Set KPI
           </button>
@@ -90,7 +90,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
   return (
     <div
       className={classNames(
-        "relative  pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden bg-daonative-dark-100 shadow-lg shadow-daonative-gray-400/10",
+        "relative  pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden bg-daonative-component-bg shadow-lg shadow-daonative-gray-400/10",
         isEditable && "hover:cursor-pointer"
       )}
       onClick={() => { isEditable && handleOpenMetricModal() }}

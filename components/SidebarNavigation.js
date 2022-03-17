@@ -48,7 +48,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
       {disabled ? (
         <a
           className={classNames(
-            current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+            current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
             'group flex justify-between px-2 py-2 text-sm font-medium rounded-md opacity-50'
           )}
         >
@@ -58,7 +58,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         <Link href={href} >
           <a
             className={classNames(
-              current ? 'bg-daonative-dark-100 text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+              current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
               'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
             )}
           >
@@ -114,7 +114,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                   </button>
                 </div>
               </Transition.Child>
-              <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-dark-100">
+              <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-component-bg">
                 <div className="h-8 w-8">
                   <DAOnativeLogo />
                 </div>
@@ -159,7 +159,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex-1 flex flex-col min-h-0 bg-daonative-dark-200">
-          <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-dark-100">
+          <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-component-bg">
             <div className="h-8 w-8">
               <DAOnativeLogo />
             </div>

@@ -53,7 +53,7 @@ const TasksTable = ({ title = "Tasks", showAssignee = false, showWeight = false,
               <tbody>
                 {tasks.map((task) => {
                   return (
-                    <tr key={task.taskId} className=" bg-daonative-dark-100 text-gray-900 text-daonative-gray-200">
+                    <tr key={task.taskId} className=" bg-daonative-component-bg text-gray-900 text-daonative-gray-200">
                       <td
                         className={classNames(
                           "px-6 py-4 whitespace-nowrap text-sm font-medium",
