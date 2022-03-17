@@ -4,7 +4,7 @@ import { PrimaryButton } from "../../components/Button"
 import PolygonWarning from "../../components/ChainWarning"
 import { ethers, providers } from 'ethers';
 import { useEffect, useState } from "react"
-import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
+import { collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
 import Link from "next/link"
@@ -16,7 +16,7 @@ import { HeartIcon } from "@heroicons/react/outline";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 
 import { Disclosure, Transition } from '@headlessui/react'
-import { ChevronRightIcon, ChevronUpIcon, PhotographIcon } from '@heroicons/react/solid'
+import { ChevronRightIcon, PhotographIcon } from '@heroicons/react/solid'
 
 import { classNames } from '../../lib/utils'
 
@@ -165,7 +165,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
           <label className="block text-sm font-medium pb-2">
             Collection Name
           </label>
-          <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Core" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
+          <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Core" className="shadow-sm focus:ring-indigo-500 focus:border-daonative-border block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-white" />
           {errors.name && (
             <span className="text-xs text-red-400">You need to set a name</span>
           )}
@@ -174,7 +174,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
           <label className="block text-sm font-medium pb-2">
             Symbol
           </label>
-          <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="NATIV" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent " />
+          <input type="text" rows="8" {...register("symbol", { required: true })} placeholder="NATIV" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
           {errors.symbol && (
             <span className="text-xs text-red-400">You need to set a symbol</span>
           )}
@@ -186,7 +186,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                 <label className="block text-sm font-medium pb-2">
                   Image
                 </label>
-                <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent" />
+                <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
                 {!open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
                   <span className="block text-xs text-red-400 pt-2">You need to set an image</span>
                 )}
@@ -225,7 +225,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                       }
                       rows={8}
                       placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
-                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
+                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent"
                     />
                     {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
                       <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
@@ -277,7 +277,7 @@ const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
       </div>
       <div>
         <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center">{collectionName || "DAOnative Core"}</div>
-        <div className="text-lg text-daonative-subtitle">{tokenName || "DAOnative Core"}</div>
+        <div className="text-lg text-daonative-subtitle">{tokenName || "DAOnative Core"} #1</div>
         <div className="text-xs text-daonative-subtitle">
           owned by{" "}
           <span className="text-daonative-primary-purple">{displayName}</span>
