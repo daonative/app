@@ -71,26 +71,29 @@ const MemberItem = ({ member }) => {
   }
 
 
-  return (<li >
-    <Card>
-      <div className="flex items-center gap-3">
-        {/* Avatar */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {profile.avatar && <img src={profile.avatar} alt="Member avatar" className="rounded-full h-10 w-10" />}
-        {!profile.avatar && <PFP address={account} size={40} />}
-        {/* Name */}
-        {profile.displayNameVerified && <div className="flex gap-1 items-center">{profile.displayName}<CheckCircleIcon className="h-4 w-4 text-daonative-white" /></div>}
-        {!profile.displayNameVerified && profile.displayName}
-      </div>
-      <div className="mt-2 sm:flex flex-col items-end gap-0.5">
-        {profile?.roles?.map((role, idx) => (
-          <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-            {role}
-          </span>
-        ))}
-      </div>
-    </Card>
-  </li >)
+  return (
+    <li >
+      <Card>
+        <div className="flex justify-between">
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {profile.avatar && <img src={profile.avatar} alt="Member avatar" className="rounded-full h-10 w-10" />}
+            {!profile.avatar && <PFP address={account} size={40} />}
+            {/* Name */}
+            {profile.displayNameVerified && <div className="flex gap-1 items-center">{profile.displayName}<CheckCircleIcon className="h-4 w-4 text-daonative-white" /></div>}
+            {!profile.displayNameVerified && profile.displayName}
+          </div>
+          <div className="mt-2 sm:flex flex-col items-end gap-0.5">
+            {profile?.roles?.map((role, idx) => (
+              <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
+                {role}
+              </span>
+            ))}
+          </div>
+        </div>
+      </Card>
+    </li >)
 
 }
 

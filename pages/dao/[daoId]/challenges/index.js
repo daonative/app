@@ -16,6 +16,7 @@ import Link from 'next/link'
 import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
 import { useWallet } from 'use-wallet'
 import useMembership from '../../../../lib/useMembership'
+import { Card } from '../../../../components/Card'
 
 const db = getFirestore()
 
@@ -138,7 +139,7 @@ const Challenges = () => {
               {challenges?.map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`}>
                   <li>
-                    <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded hover:cursor-pointer hover:bg-daonative-dark-200">
+                    <Card>
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -155,7 +156,7 @@ const Challenges = () => {
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   </li>
                 </Link>
               ))}
