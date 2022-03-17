@@ -11,8 +11,7 @@ export const ProfileProvider = ({ children }) => {
   const [ensAvatar, setEnsAvatar] = useState(null)
   const [ensNameLoading, setEnsNameLoading] = useState(true)
   const [user, setUser] = useState({})
-  const [membership, setMembership] = useState({})
-  const {account, chainId} = useWallet()
+  const {account} = useWallet()
 
   const shortAddress = (address, length = 6) => `${address.substring(0, (length / 2) + 2)}...${address.substring(address.length - length / 2)}`
   const getDisplayName = () => {

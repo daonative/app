@@ -69,9 +69,7 @@ export const Feedback = () => {
     setShowModal(false);
   };
 
-
-
-  if (!isMember)
+  if (roomId && !isMember)
     return <></>;
 
   return (
