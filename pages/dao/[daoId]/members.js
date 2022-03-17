@@ -7,10 +7,10 @@ import { PrimaryButton } from "../../../components/Button"
 import { InviteMemberModal } from "../../../components/InviteMemberModal"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
 import PFP from "../../../components/PFP"
-import ShortAddress from "../../../components/ShortAddress"
 import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
+import { Card } from "../../../components/Card"
 
 
 const MemberItem = ({ member }) => {
@@ -72,7 +72,7 @@ const MemberItem = ({ member }) => {
 
 
   return (<li >
-    <div className="px-4 py-4 sm:px-6 bg-daonative-dark-100 rounded flex justify-between">
+    <Card>
       <div className="flex items-center gap-3">
         {/* Avatar */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -89,7 +89,7 @@ const MemberItem = ({ member }) => {
           </span>
         ))}
       </div>
-    </div>
+    </Card>
   </li >)
 
 }

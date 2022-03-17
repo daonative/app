@@ -28,6 +28,9 @@ module.exports = {
         "daonative-subtitle": "#B9B9B9",
         "daonative-text": "#D6D7E3"
       },
+      dropShadow: {
+        'daonative': '0px 0px 5px rgba(160, 163, 189, 0.1)',
+      },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
       },
