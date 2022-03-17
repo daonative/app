@@ -16,6 +16,11 @@ import { useRouter } from "next/router"
 import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/solid'
+
+import { classNames } from '../../lib/utils'
+
 const isSupportedChain = (chainId) => [1, 137].includes(chainId)
 
 const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
@@ -169,32 +174,56 @@ const CreateCollectionModal = ({ show, onClose }) => {
                   <span className="text-xs text-red-400">You need to set a symbol</span>
                 )}
               </div>
-              <div>
-                <label className="block text-sm font-medium pb-2">
-                  Image or Metadata
-                </label>
-                <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent " />
-                <div className="p-2"></div>
-                <textarea
-                  {...register("metadata", {
-                    required: false,
-                    validate: {
-                      metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
-                      json: value => !value || isValidJSON(value)
-                    }
-                  })
-                  }
-                  rows={8}
-                  placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
-                />
-                {(errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
-                  <span className="block text-xs text-red-400">You need to set either metadata or an image</span>
+              <Disclosure>
+                {({ open }) => (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium pb-2">
+                        Image or Metadata
+                      </label>
+                      <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-dark-100 border-transparent" />
+                      {!open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
+                        <span className="block text-xs text-red-400 pt-2">You need to set an image</span>
+                      )}
+                    </div>
+                    <Disclosure.Button className="flex w-full justify-end text-sm text-daonative-subtitle">
+                      <div className="flex items-center">
+                        <ChevronUpIcon className={classNames('w-5 h-5', open && 'transform rotate-180')} />
+                        <span>Show advanced settings</span>
+                      </div>
+                    </Disclosure.Button>
+                    <Disclosure.Panel>
+                      <div>
+                        <label className="block text-sm font-medium pb-2">
+                          Metadata
+                        </label>
+                        <textarea
+                          {...register("metadata", {
+                            required: false,
+                            validate: {
+                              metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
+                              json: value => !value || isValidJSON(value)
+                            }
+                          })
+                          }
+                          rows={8}
+                          placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
+                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
+                        />
+                      {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
+                        <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
+                      )}
+                        {errors?.metadata?.type === "json" && (
+                          <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
+                        )}
+                        <span className="text-xs text-daonative-subtitle py-4">
+                          💡 When setting metadata the image field will be ignored.
+                        </span>
+                      </div>
+                    </Disclosure.Panel>
+                  </>
                 )}
-                {errors?.metadata?.type === "json" && (
-                  <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
-                )}
-              </div>
+              </Disclosure>
             </div>
           </ModalBody>
           <ModalActionFooter>
