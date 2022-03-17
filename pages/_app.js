@@ -2,10 +2,11 @@ import '../styles/globals.css'
 
 import { UseWalletProvider } from 'use-wallet'
 import { Toaster } from 'react-hot-toast'
-import { initializeApp} from 'firebase/app'
+import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
+import { ProfileProvider } from '../components/ProfileProvider';
 import { useEffect } from 'react'
 
 const firebaseConfig = {
@@ -46,8 +47,10 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <ConnectWalletModalProvider>
-          <Toaster position="bottom-center" />
-          <Component {...pageProps} />
+          <ProfileProvider>
+            <Toaster position="bottom-center" />
+            <Component {...pageProps} />
+          </ProfileProvider>
         </ConnectWalletModalProvider>
       </UseWalletProvider>
     </>

@@ -17,6 +17,7 @@ import useUser from '../lib/useUser';
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
 import { providers } from 'ethers';
+import { useProfile } from './ProfileProvider';
 
 const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
@@ -31,16 +32,14 @@ const ChainLogo = ({ chainId, className }) => {
 const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
   const { openConnectWalletModal } = useConnectWalletModal()
   const { chainId, account, reset: disconnect } = useWallet()
-  const [ensName, setEnsName] = useState("")
-  const [ensAvatar, setEnsAvatar] = useState("")
   const isConnected = useIsConnected()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const requireAuthentication = useRequireAuthentication()
   const membership = useMembership(account, roomId)
-  const user = useUser()
   const isMember = !!membership
+  const { displayName, displayNameVerified, avatar } = useProfile()
 
   const logWork = async (data) => {
     await requireAuthentication()
@@ -59,26 +58,6 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
 
     reset()
   }
-
-  useEffect(() => {
-    const retrieveEnsName = async () => {
-      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
-      const ensName = await provider.lookupAddress(account)
-      setEnsName(ensName)
-
-      if (!ensName) return
-
-      const ensAvatar = await provider.getAvatar(ensName)
-      setEnsAvatar(ensAvatar)
-    }
-
-    setEnsName("")
-    setEnsAvatar("")
-
-    if (!account) return
-
-    retrieveEnsName()
-  }, [account])
 
   return (
     <div className="md:pl-64 flex flex-col ">
@@ -145,13 +124,18 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                       <ChainLogo chainId={chainId} className="w-4 h-4" />
                     </div>
                     <div>
-                      {ensName && <div className="flex gap-1 items-center">{ensName}<CheckCircleIcon className="h-4 w-4 text-daonative-white"/></div>}
-                      {!ensName && user && <>{user.name}</>}
-                      {!ensName && !user && <ShortAddress>{account}</ShortAddress>}
+                      <div className="flex gap-1 items-center">
+                        { displayName }
+                        { displayNameVerified && <CheckCircleIcon className="h-3 w-3 text-daonative-white"/>}
+                      </div>
                     </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {ensAvatar && <img src={ensAvatar} className="rounded-full h-6 w-6" alt="User profile" />}
-                    {!ensAvatar && <PFP address={account} size={24} />}
+                    {/* eslint-disable @next/next/no-img-element */}
+                    {avatar ? (
+                      <img src={avatar} className="rounded-full h-6 w-6" alt="User profile" />
+                    ) : (
+                      <PFP address={account} size={24} />
+                    )}
+                    {/* eslint-enable @next/next/no-img-element */}
                   </Menu.Button>
                 </div>
                 <Transition
