@@ -22,6 +22,7 @@ module.exports = {
            updating figma to make it easier to implement
         */
         "daonative-primary-blue": "#214ADC",
+        "daonative-primary-purple": "#8248E5",
         "daonative-white": "#F5EFFF",
         "daonative-placeholder": "rgba(214, 215, 227, 0.5)",
         "daonative-subtitle": "#B9B9B9",

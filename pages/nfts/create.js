@@ -15,8 +15,8 @@ import { useRouter } from "next/router"
 import { HeartIcon } from "@heroicons/react/outline";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 
-import { Disclosure } from '@headlessui/react'
-import { ChevronUpIcon, PhotographIcon } from '@heroicons/react/solid'
+import { Disclosure, Transition } from '@headlessui/react'
+import { ChevronRightIcon, ChevronUpIcon, PhotographIcon } from '@heroicons/react/solid'
 
 import { classNames } from '../../lib/utils'
 
@@ -39,11 +39,25 @@ const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
   return null
 }
 
-const CollectionForm = ({ onImage }) => {
+const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()
   const provider = useProvider()
-  const { register, handleSubmit, reset, getValues, formState: { errors, isSubmitting } } = useForm()
+  const { register, handleSubmit, watch, reset, getValues, formState: { errors, isSubmitting } } = useForm()
   const router = useRouter()
+
+  const [watchMetadata, watchImage, watchName] = watch(["metadata", "image", "name"])
+
+  useEffect(() => {
+    onMetadata(watchMetadata)
+  }, [onMetadata, watchMetadata])
+
+  useEffect(() => {
+    onImage(watchImage)
+  }, [onImage, watchImage])
+
+  useEffect(() => {
+    onName(watchName)
+  }, [onName, watchName])
 
   const uploadToIPFS = async (data) => {
     const formData = new FormData()
@@ -151,7 +165,7 @@ const CollectionForm = ({ onImage }) => {
           <label className="block text-sm font-medium pb-2">
             Collection Name
           </label>
-          <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Membership" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
+          <input type="text" rows="8" {...register("name", { required: true })} placeholder="DAOnative Core" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent text-daonative-white" />
           {errors.name && (
             <span className="text-xs text-red-400">You need to set a name</span>
           )}
@@ -179,39 +193,49 @@ const CollectionForm = ({ onImage }) => {
               </div>
               <Disclosure.Button className="flex w-full justify-end text-sm text-daonative-subtitle">
                 <div className="flex items-center">
-                  <ChevronUpIcon className={classNames('w-5 h-5', open && 'transform rotate-180')} />
+                  <ChevronRightIcon className={classNames('w-5 h-5', open && 'transform rotate-90')} />
+
                   <span>Show advanced settings</span>
                 </div>
               </Disclosure.Button>
-              <Disclosure.Panel>
-                <div>
-                  <label className="block text-sm font-medium pb-2">
-                    Metadata
-                  </label>
-                  <textarea
-                    {...register("metadata", {
-                      required: false,
-                      validate: {
-                        metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
-                        json: value => !value || isValidJSON(value)
+              <Transition
+                enter="transition duration-100 ease-out"
+                enterFrom="transform scale-95 opacity-0"
+                enterTo="transform scale-100 opacity-100"
+                leave="transition duration-75 ease-out"
+                leaveFrom="transform scale-100 opacity-100"
+                leaveTo="transform scale-95 opacity-0"
+              >
+                <Disclosure.Panel>
+                  <div>
+                    <span className="text-xs text-daonative-subtitle py-4 ">
+                      💡 When setting metadata the image field will be ignored.
+                    </span>
+                    <label className="block text-sm font-medium py-2">
+                      Metadata
+                    </label>
+                    <textarea
+                      {...register("metadata", {
+                        required: false,
+                        validate: {
+                          metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
+                          json: value => !value || isValidJSON(value)
+                        }
+                      })
                       }
-                    })
-                    }
-                    rows={8}
-                    placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
-                  />
-                  {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
-                    <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
-                  )}
-                  {errors?.metadata?.type === "json" && (
-                    <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
-                  )}
-                  <span className="text-xs text-daonative-subtitle py-4">
-                    💡 When setting metadata the image field will be ignored.
-                  </span>
-                </div>
-              </Disclosure.Panel>
+                      rows={8}
+                      placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
+                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-dark-100 border-transparent"
+                    />
+                    {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
+                      <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
+                    )}
+                    {errors?.metadata?.type === "json" && (
+                      <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
+                    )}
+                  </div>
+                </Disclosure.Panel>
+              </Transition>
             </>
           )}
         </Disclosure>
@@ -230,8 +254,7 @@ const CollectionForm = ({ onImage }) => {
 }
 
 const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
-  //const imageUri = metadata.image
-  const imageUri = undefined
+  const imageUri = metadata.image
   const tokenName = metadata.name
   const { displayName } = useProfile()
 
@@ -253,8 +276,8 @@ const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
         </div>
       </div>
       <div>
-        <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center">{collectionName}</div>
-        <div className="text-lg text-daonative-subtitle">{tokenName}</div>
+        <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center">{collectionName || "DAOnative Core"}</div>
+        <div className="text-lg text-daonative-subtitle">{tokenName || "DAOnative Core"}</div>
         <div className="text-xs text-daonative-subtitle">
           owned by{" "}
           <span className="text-daonative-primary-purple">{displayName}</span>
@@ -266,7 +289,33 @@ const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
 
 export const CreateNFT = () => {
   const { account, chainId } = useWallet()
-  const [previewImageURI, setPreviewImageURI] = useState("https://bafybeigwyhtpxji3llu6d3q2fjk7x3h2gz6micqvkycvjnlsmh3bvuw6ni.ipfs.infura-ipfs.io/")
+  const [formImage, setFormImage] = useState(null)
+  const [formName, setFormName] = useState("")
+  const [formMetadata, setFormMetadata] = useState({})
+  const [previewMetadata, setPreviewMetadata] = useState({})
+
+  useEffect(() => {
+    setPreviewMetadata({})
+
+    if ((formImage?.length > 0 || formName) && formMetadata) return
+
+    if (formImage?.length > 0 || formName) {
+      const imageURI = formImage.length > 0 ? URL.createObjectURL(formImage[0]) : ""
+      setPreviewMetadata({
+        image: imageURI,
+        name: formName
+      })
+      return
+    }
+
+    if (formMetadata) {
+      try {
+        setPreviewMetadata(JSON.parse(formMetadata))
+      } catch (e) {
+        setPreviewMetadata({})
+      }
+    }
+  }, [formImage, formName, formMetadata])
 
   return (
     <div className="text-daonative-white">
@@ -288,11 +337,11 @@ export const CreateNFT = () => {
               <div className="flex gap-8 flex-col lg:flex-row">
                 <div className="grow max-w-md">
                   <span className="text-daonative-subtitle inline-block px-4 py-1 mb-8 border-b border-daonative-subtitle">Creator</span>
-                  <CollectionForm onImage={setPreviewImageURI} />
+                  <CollectionForm onImage={setFormImage} onMetadata={setFormMetadata} onName={setFormName} />
                 </div>
                 <div className="flex-none">
                   <span className="text-daonative-subtitle inline-block px-4 py-1 mb-8 border-b border-daonative-subtitle">Preview</span>
-                  <OpenSeaPreview metadata={{ image: previewImageURI, name: "NewShades Gen 1 Test" }} collectionName="NewShades Gen 1 Test" chainId={chainId} />
+                  <OpenSeaPreview metadata={previewMetadata} collectionName={formName} chainId={chainId} />
                 </div>
               </div>
             )}
