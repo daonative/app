@@ -19,11 +19,9 @@ export const PrimaryButton = ({ children, onClick, type = "button", className = 
   <Button
     onClick={onClick}
     type={type}
-    style={{
-      boxShadow: '0px 0px 14px rgba(47, 73, 209, 0.6)'
-    }}
     className={classNames(
       "bg-daonative-primary-blue",
+      "shadow-daonative-blue",
       className,
       disabled && "bg-opacity-50"
     )}

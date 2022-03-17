@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-import { Dialog, Transition } from '@headlessui/react';
 import { PrimaryButton, SecondaryButton } from "./Button";
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "./Modal";
 import toast from "react-hot-toast";

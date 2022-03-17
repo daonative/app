@@ -32,6 +32,9 @@ module.exports = {
       dropShadow: {
         'daonative': '0px 0px 5px rgba(160, 163, 189, 0.1)',
       },
+      boxShadow: {
+        'daonative-blue': '0px 0px 15px rgba(47, 73, 209, 0.6)',
+      },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
       },
