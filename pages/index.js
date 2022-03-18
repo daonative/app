@@ -3,6 +3,7 @@ import ConnectWalletButton from "../components/ConnectWalletButton"
 import Link from "next/link"
 import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"
 import { LayoutWrapper } from '../components/LayoutWrapper'
+import { Card } from '../components/Card'
 
 import { useEffect, useState } from "react"
 import Spinner from "../components/Spinner"
@@ -36,16 +37,18 @@ const DAOList = ({ rooms, isLoading }) => {
             <li key={room.roomId}>
               <Link href={`/dao/${room.roomId}`}>
                 <a>
-                  <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex gap-4 justify-between">
-                    <p className="text-sm font-medium text-daonative-gray-100">{room.name}</p>
-                    <div className="flex gap-2">
-                      {room?.membership?.roles?.map((role, idx) =>
-                        <span key={idx} className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                          {role}
-                        </span>
-                      )}
+                  <Card >
+                    <div className="flex gap-4 justify-between">
+                      <p className="text-sm font-medium text-daonative-gray-100">{room.name}</p>
+                      <div className="flex gap-2">
+                        {room?.membership?.roles?.map((role, idx) =>
+                          <span key={idx} className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+                            {role}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </Card>
                 </a>
               </Link>
             </li>
