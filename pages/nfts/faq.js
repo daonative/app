@@ -28,7 +28,7 @@ const FAQItem = ({ children, question }) => (
           </Disclosure.Button>
         </dt>
         <Disclosure.Panel as="dd" className="mt-2 pr-12">
-          <p className="text-base">{children}</p>
+          <div className="text-base">{children}</div>
         </Disclosure.Panel>
       </Card>
     )}
@@ -40,15 +40,21 @@ const NftFaq = () => (
     <div className="flex flex-col gap-8 w-full lg:w-3/4">
       <h2 className="text-2xl text-daonative-white">NFTs FAQ</h2>
       <div className="w-full">
-        <dl className="mt-6">
+        <dl className="">
+          <FAQItem question="Which network is it available on?">
+            {"We're currently available on Ethereum mainnet & Polygon mainnet"}
+          </FAQItem>
+          <FAQItem question="Do I need to pay for minting?">
+            No, your community members will pay for minting
+          </FAQItem>
           <FAQItem question="Who is the collection owner?">
-            The wallet that created the collection is the owner of the collection.
+            Contrary to open sea, you own the contract.
           </FAQItem>
           <FAQItem question="Can the token be transfered?">
             Yes! As long as the recipient {"doesn't"} own an NFT from the same collection.
           </FAQItem>
           <FAQItem question="Can it be sold?">
-            Yes. But the buyer needs to be sure to not own an NFT from the same collection.
+            Yes.
           </FAQItem>
           <FAQItem question="How can my community claim or mint my token?">
             The collection creator will have the ability to create a invite link. Everyone with who has this link can mint their token.

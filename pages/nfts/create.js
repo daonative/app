@@ -276,8 +276,8 @@ const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
         </div>
       </div>
       <div>
-        <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center">{collectionName || "DAOnative Core"}</div>
-        <div className="text-lg text-daonative-subtitle">{tokenName || "DAOnative Core"} #1</div>
+        <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center font-bold">{collectionName || "DAOnative Core"}</div>
+        <div className="text-lg text-daonative-white">{tokenName || "DAOnative Core"} #1</div>
         <div className="text-xs text-daonative-subtitle">
           owned by{" "}
           <span className="text-daonative-primary-purple">{displayName}</span>
@@ -323,7 +323,7 @@ export const CreateNFT = () => {
         <div className="flex flex-col gap-8 w-full">
           <div className="flex flex-col items-center w-full">
             <h2 className="text-2xl">NFT Collection Creator</h2>
-            <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
+            <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create an NFT collection and share a minting link to your community. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
           </div>
           <div className="w-full">
             {!account &&
@@ -336,11 +336,9 @@ export const CreateNFT = () => {
             {account && (
               <div className="flex gap-8 flex-col lg:flex-row">
                 <div className="grow max-w-md">
-                  <span className="text-daonative-subtitle inline-block px-4 py-1 mb-8 border-b border-daonative-subtitle">Creator</span>
                   <CollectionForm onImage={setFormImage} onMetadata={setFormMetadata} onName={setFormName} />
                 </div>
                 <div className="flex-none">
-                  <span className="text-daonative-subtitle inline-block px-4 py-1 mb-8 border-b border-daonative-subtitle">Preview</span>
                   <OpenSeaPreview metadata={previewMetadata} collectionName={formName} chainId={chainId} />
                 </div>
               </div>
