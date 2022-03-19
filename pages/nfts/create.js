@@ -135,7 +135,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
       const newCollectionReceipt = await newCollectionTx.wait()
       const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
       toast.success("NFT collection created", { id: toastId })
-      router.push(`${router.asPath}/${chainId}/${newCollectionAddress}`)
+      router.push(`${router.asPath.replace('/create', '')}/${chainId}/${newCollectionAddress}`)
       reset()
     } catch (e) {
       toast.error("Failed to create NFT collection", { id: toastId })
