@@ -11,14 +11,15 @@ export const ProfileProvider = ({ children }) => {
   const [ensAvatar, setEnsAvatar] = useState(null)
   const [ensNameLoading, setEnsNameLoading] = useState(true)
   const [user, setUser] = useState({})
-  const {account} = useWallet()
+  const { account } = useWallet()
 
   const shortAddress = (address, length = 6) => `${address.substring(0, (length / 2) + 2)}...${address.substring(address.length - length / 2)}`
   const getDisplayName = () => {
     if (!account) return ""
     if (ensNameLoading) return shortAddress(account)
     if (!ensNameLoading && ensName) return ensName
-    if (!ensNameLoading && user.name) return user.name
+    if (!ensNameLoading && user?.name) return user.name
+    return shortAddress(account)
   }
 
   useEffect(() => {
