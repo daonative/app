@@ -20,6 +20,7 @@ import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/solid'
 
 import { classNames } from '../../lib/utils'
+import { Card } from "../../components/Card";
 
 const isSupportedChain = (chainId) => [1, 137].includes(chainId)
 
@@ -275,12 +276,15 @@ const CollectionList = ({ chainId, collections }) => {
         <li key={collection.address}>
           <Link href={`${path}/${chainId}/${collection.address}`}>
             <a>
-              <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded flex gap-4 justify-between">
-                <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
-                <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-                  {collection.symbol}
-                </span>
-              </div>
+              <Card>
+
+                <div className="flex justify-between">
+                  <p className="text-sm font-medium text-daonative-gray-100">{collection.name}</p>
+                  <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+                    {collection.symbol}
+                  </span>
+                </div>
+              </Card>
             </a>
           </Link>
         </li>
