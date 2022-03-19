@@ -17,6 +17,8 @@ import { getUserRooms } from '../../../../lib/useMembership'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { classNames } from '../../../../lib/utils'
 import { ClipboardCopyIcon } from '@heroicons/react/solid'
+import { OpenSeaPreview } from '../../create'
+import Link from 'next/link'
 
 const getReadonlyProvider = (chainId) => {
   if (Number(chainId) === 137)
@@ -116,7 +118,7 @@ const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
 const InviteModal = ({ show, onClose, inviteLink }) => {
   const handleCopyToClipboard = async () => {
     await navigator.clipboard.writeText(inviteLink)
-    toast.success('Copied invite link to clipboard', {icon: <ClipboardCopyIcon className="h-6 w-6 text-green"/>})
+    toast.success('Copied invite link to clipboard', { icon: <ClipboardCopyIcon className="h-6 w-6 text-green" /> })
   }
 
   return (
@@ -139,13 +141,13 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
       </ModalBody>
       <ModalActionFooter>
         <div className="flex gap-2">
-        <SecondaryButton onClick={onClose}>
-          Close
-        </SecondaryButton>
-        <PrimaryButton onClick={handleCopyToClipboard}>
-          <ClipboardCopyIcon className="h-4 w-4 mr-1"/>
-          Copy to clipboard
-        </PrimaryButton>
+          <SecondaryButton onClick={onClose}>
+            Close
+          </SecondaryButton>
+          <PrimaryButton onClick={handleCopyToClipboard}>
+            <ClipboardCopyIcon className="h-4 w-4 mr-1" />
+            Copy to clipboard
+          </PrimaryButton>
         </div>
       </ModalActionFooter>
     </Modal>
@@ -191,12 +193,12 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
   )
 }
 
-const EmptyTokenList = ({ onInviteToMint, canInvite }) => (
-  <div className="w-full p-8 text-center flex flex-col items-center">
-    <h3 className="mt-2 text-lg font-medium text-daonative-white">{"No NFTs have been minted in this collection"}</h3>
+const EmptyTokenList = ({ onInviteToMint, canInvite, children }) => (
+  <div className="w-full text-center flex flex-col items-center">
+    <h3 className="text-lg font-medium text-daonative-white">{"No NFTs have been minted in this collection"}</h3>
     {canInvite && (
       <>
-        <p className="mt-1 text-sm text-daonative-subtitle mb-6">Create an invitation link and mint your first NFT</p>
+        <p className="mt-1 text-sm text-daonative-subtitle my-6">Create an invitation and share it with people to mint!</p>
         <PrimaryButton onClick={onInviteToMint}>Create an invitation link</PrimaryButton>
       </>
     )}
@@ -219,8 +221,6 @@ const TokenList = ({ address, tokens }) => (
 
 export const CollectionHeader = ({ isLoading, imageUri, children }) => (
   <div className="flex justify-between items-center gap-3">
-    <CollectionImage imageUri={imageUri} isLoading={isLoading} />
-    <CollectionTitle>{children}</CollectionTitle>
   </div>
 )
 
@@ -453,8 +453,6 @@ export const GatorCollection = () => {
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between items-center">
-          {!collectionHasError && <CollectionHeader imageUri={collectionImageURI} isLoading={isLoading}>{collectionName}</CollectionHeader>}
-
           <div className={classNames(
             "flex gap-4",
             (isLoading || collectionTokens.length === 0) && "invisible"
@@ -469,18 +467,28 @@ export const GatorCollection = () => {
             <TokenList address={collectionAddress} tokens={collectionTokens} />
           </div>
         )}
-        {!collectionHasError && !isLoading && collectionTokens.length === 0 && (
-          <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} />
-        )}
         {!collectionHasError && isLoading && (
           <div className="flex w-full justify-center">
             <div className="w-8 h-8">
-              <Spinner />
+              Loading
             </div>
           </div>
         )}
         {collectionHasError && (
           <CollectionNotFound />
+        )}
+
+        {!collectionHasError && !isLoading && collectionTokens.length === 0 && (
+          <div className="flex gap-4">
+            <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} >
+            </EmptyTokenList>
+            <div>
+              <div>Preview</div>
+              <div className='text-daonative-subtitle text-xs'>This is what you can expect after when minting!</div>
+              <Link href="/nfts/faq"><a className="underline text-sm">How does this work?</a></Link>
+              <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
+            </div>
+          </div>
         )}
       </div>
     </div >

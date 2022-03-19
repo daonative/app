@@ -253,7 +253,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
   )
 }
 
-const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
+export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
   const imageUri = metadata.image
   const tokenName = metadata.name
   const { displayName } = useProfile()
@@ -271,8 +271,8 @@ const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
             <span className="text-xs">0</span>
           </div>
         </div>
-        <div className="flex items-center justify-center h-full">
-          {imageUri ? <img src={imageUri} className="w-96" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
+        <div className="flex items-center justify-center h-full" style={{ maxHeight: 350, maxWidth: 350 }}>
+          {imageUri ? <img src={imageUri} className="h-full w-auto" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
         </div>
       </div>
       <div>
