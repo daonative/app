@@ -11,6 +11,7 @@ import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { LayoutWrapper } from "../../../../components/LayoutWrapper";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
+import { OpenSeaPreview } from "../../create";
 
 
 const getReadonlyProvider = (chainId) => {
@@ -117,10 +118,11 @@ const Mint = () => {
           {!collectionHasError && <CollectionHeader imageUri={collectionImageURI} isLoading={isLoading}>{collectionName}</CollectionHeader>}
         </div>
 
+        <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
         {!collectionHasError && isValidInvite && account && (
           <div className="flex flex-col items-center gap-4">
             {isCorrectChain && (
-              <SecondaryButton onClick={handleMintNFT}>Mint your NFT</SecondaryButton>
+              <PrimaryButton onClick={handleMintNFT}>Mint your NFT</PrimaryButton>
             )}
             {!isCorrectChain && isPolygonNFT && (
               <>

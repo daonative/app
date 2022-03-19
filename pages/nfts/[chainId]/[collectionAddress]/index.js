@@ -128,7 +128,7 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
         <div className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium pb-2">
-              Invite Link
+              Share this link to give minting access (only share it people you want to mint)
             </label>
             <input
               type="text"
