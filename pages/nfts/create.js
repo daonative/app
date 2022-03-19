@@ -322,7 +322,7 @@ export const CreateNFT = () => {
       <div className="flex justify-center px-8">
         <div className="flex flex-col gap-8 w-full">
           <div className="flex flex-col items-center w-full">
-            <h2 className="text-2xl">NFT Collection Creator</h2>
+            <h2 className="text-2xl font-space">NFT Collection Creator</h2>
             <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create an NFT collection and share a minting link to your community. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
           </div>
           <div className="w-full">
