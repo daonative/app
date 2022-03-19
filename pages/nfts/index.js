@@ -263,7 +263,6 @@ const EmptyCollectionList = ({ onCreateCollection }) => (
   <div className="w-full p-8 text-center flex flex-col items-center">
     <CollectionIcon className="h-12 w-12 " />
     <h3 className="mt-2 text-md font-medium text-daonative-gray-100 pb-6">{"Looks like you don't have any NFT collections"}</h3>
-    <PrimaryButton onClick={onCreateCollection} >Create collection</PrimaryButton>
   </div>
 )
 
@@ -350,7 +349,6 @@ export const Gator = () => {
 
   return (
     <div className="text-daonative-white">
-      <CreateCollectionModal show={showCreateModal} onClose={handleCloseCreateModal} />
       <div className="flex justify-center px-8 lg:px-0">
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
           <div className="flex justify-between w-full">
@@ -358,7 +356,11 @@ export const Gator = () => {
               <h2 className="text-2xl">NFT Collection Creator</h2>
               <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
             </div>
-            <PrimaryButton onClick={handleShowCreateModal} className={(!account || (!collectionsLoading && myCollections.length === 0)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
+            <Link href="/nfts/create">
+              <a>
+                <PrimaryButton className={(!account || (!collectionsLoading && myCollections.length === 0)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
+              </a>
+            </Link>
           </div>
           <div className="w-full">
             {account && collectionsLoading && (
