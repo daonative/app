@@ -13,6 +13,10 @@ import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
 import { OpenSeaPreview } from "../../create";
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 
 const getReadonlyProvider = (chainId) => {
   if (Number(chainId) === 137)
@@ -113,17 +117,20 @@ const Mint = () => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0">
-      <div className="flex flex-col gap-8 w-full lg:w-3/4">
-        <div className="flex justify-between items-center">
-          {!collectionHasError && <CollectionHeader imageUri={collectionImageURI} isLoading={isLoading}>{collectionName}</CollectionHeader>}
-        </div>
-
-        <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
+      <div className="flex flex-col gap-6 w-full lg:w-3/4">
+        {!collectionHasError && !account && (
+          <ConnectWalletButton >
+            <PrimaryButton >
+              Connect your wallet
+            </PrimaryButton>
+          </ConnectWalletButton>
+        )}
         {!collectionHasError && isValidInvite && account && (
           <div className="flex flex-col items-center gap-4">
             {isCorrectChain && (
               <PrimaryButton onClick={handleMintNFT}>Mint your NFT</PrimaryButton>
             )}
+
             {!isCorrectChain && isPolygonNFT && (
               <>
                 <span>Switch to Polygon to mint your NFT</span>
@@ -139,6 +146,12 @@ const Mint = () => {
           </div>
         )}
 
+        <div>
+          <div className="mb-3">Preview</div>
+          <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
+        </div>
+
+
         {!collectionHasError && !isValidInvite && (
           <InvalidInviteCode />
         )}
@@ -147,13 +160,7 @@ const Mint = () => {
           <CollectionNotFound />
         )}
 
-        {!collectionHasError && !account && (
-          <ConnectWalletButton >
-            <PrimaryButton >
-              Connect your wallet
-            </PrimaryButton>
-          </ConnectWalletButton>
-        )}
+
       </div>
     </div>
   )
@@ -161,9 +168,23 @@ const Mint = () => {
 
 const MintPage = () => {
   return (
-    <LayoutWrapper>
-      <Mint />
-    </LayoutWrapper>
+    <div>
+      <div className="overflow-hidden w-full h-screen">
+        <main className="flex justify-center items-center h-screen">
+          <div className="flex flex-col items-center">
+            <div className="flex justify-center items-center">
+              <img src="/DAOnativeLogo.svg" className={classNames("w-16 h-16 m-6")} />
+              <div>
+                DAOnative
+              </div>
+            </div>
+            <h1 className="text-xl text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
+
+            < Mint />
+          </div>
+        </main>
+      </div>
+    </div>
   )
 }
 
