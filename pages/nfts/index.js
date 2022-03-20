@@ -295,14 +295,10 @@ const CollectionList = ({ chainId, collections }) => {
 
 export const Gator = () => {
   const { account, chainId } = useWallet()
-  const [showCreateModal, setShowCreateModal] = useState(false)
   const [collections, setCollections] = useState([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
 
   const myCollections = collections.filter(collection => collection.owner === account)
-
-  const handleShowCreateModal = () => setShowCreateModal(true)
-  const handleCloseCreateModal = () => setShowCreateModal(false)
 
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(chainId)
@@ -362,7 +358,7 @@ export const Gator = () => {
             </div>
             <Link href="/nfts/create">
               <a>
-                <PrimaryButton className={(!account || (!collectionsLoading && myCollections.length === 0)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
+                <PrimaryButton className={(!account || (collectionsLoading)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
               </a>
             </Link>
           </div>
@@ -382,7 +378,7 @@ export const Gator = () => {
               </ConnectWalletButton>
             }
             {!collectionsLoading && myCollections.length === 0 && account && (
-              <EmptyCollectionList onCreateCollection={handleShowCreateModal} />
+              <EmptyCollectionList />
             )}
             {!collectionsLoading && myCollections.length > 0 && (
               <CollectionList chainId={chainId} collections={myCollections} />
