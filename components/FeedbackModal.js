@@ -16,9 +16,10 @@ const FeedbackModal = ({ show, onClose }) => {
   const membership = useMembership(account, roomId);
 
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm();
+  const name = membership?.name || account
 
   const submitFeedback = async (data) => {
-    await axios.post('/api/feedback', { content: data.content, user: membership.name });
+    await axios.post('/api/feedback', { content: data.content, user: name });
     toast.success('Feedback Submitted');
   };
   const handleSubmitFeedback = async (data) => {
