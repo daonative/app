@@ -1,8 +1,7 @@
 import { useForm } from "react-hook-form"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../components/Button"
-import PolygonWarning from "../../components/ChainWarning"
-import { ethers, providers } from 'ethers';
+import { ethers } from 'ethers';
 import { useEffect, useState } from "react"
 import { collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
