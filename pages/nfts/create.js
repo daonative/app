@@ -19,6 +19,7 @@ import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronRightIcon, PhotographIcon } from '@heroicons/react/solid'
 
 import { classNames } from '../../lib/utils'
+import { translateURI } from '../../lib/translateURI'
 
 
 import PolygonLogo from '../../public/PolygonLogo.svg'
@@ -250,7 +251,7 @@ export const ImagePreview = ({ uri }) => {
 
 
 export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
-  const imageUri = metadata.image
+  const imageUri = translateURI(metadata.image)
   const tokenName = metadata.name
   const { displayName } = useProfile()
 
