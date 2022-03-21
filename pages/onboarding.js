@@ -45,7 +45,7 @@ const Step = ({ status, children, id }) => (
   <li key={id} className={
     classNames(
       "relative md:flex-none md:flex md:w-1/4 md:border-y border-y-gray-300",
-      status === 'current' && "border-b-indigo-600 md:border-b-2"
+      status === 'current' && "border-b-daonative-primary-blue md:border-b-2"
     )}
   >
     <div className="hidden md:block absolute top-0 left-0 h-full w-5" aria-hidden="true">
@@ -67,9 +67,9 @@ const Step = ({ status, children, id }) => (
       <span className="px-6 py-4 flex items-center text-sm font-medium">
         <span className={classNames(
           "flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full",
-          status === 'complete' && "bg-indigo-600",
-          status === 'upcoming' && "border-2 border-indigo-600",
-          status === 'current' && "border-2 border-indigo-600 bg-indigo-600/30"
+          status === 'complete' && "bg-daonative-primary-blue",
+          status === 'upcoming' && "border-2 border-daonative-primary-blue",
+          status === 'current' && "border-2 border-daonative-primary-blue bg-daonative-primary-blue/30"
         )}
         >
           {status === 'complete' ? (
