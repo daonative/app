@@ -1,17 +1,16 @@
 import axios from "axios";
-import { ethers, providers } from "ethers";
+import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useWallet } from "use-wallet";
-import { CollectionNotFound, CollectionHeader } from ".";
-import { PrimaryButton, SecondaryButton } from "../../../../components/Button";
+import { CollectionNotFound } from ".";
+import { PrimaryButton } from "../../../../components/Button";
 import { SwitchToMainnetButton, SwitchToPolygonButton } from "../../../../components/ChainWarning";
 import ConnectWalletButton from "../../../../components/ConnectWalletButton";
-import { LayoutWrapper } from "../../../../components/LayoutWrapper";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
-import { ImagePreview, OpenSeaPreview } from "../../create";
+import { ImagePreview } from "../../create";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')

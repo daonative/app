@@ -1,25 +1,14 @@
-import { useForm } from "react-hook-form"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../components/Button"
-import PolygonWarning from "../../components/ChainWarning"
 import { ethers, providers } from 'ethers';
 import { useEffect, useState } from "react"
 import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
-import useProvider from "../../lib/useProvider"
-import toast from "react-hot-toast"
 import Link from "next/link"
-import axios from "axios"
-import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "../../components/Modal"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
 import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
-import { ChevronRightIcon, CollectionIcon } from "@heroicons/react/solid";
+import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
-
-import { Disclosure, Transition } from '@headlessui/react'
-import { ChevronUpIcon } from '@heroicons/react/solid'
-
-import { classNames } from '../../lib/utils'
 import { Card } from "../../components/Card";
 
 const isSupportedChain = (chainId) => [1, 137].includes(chainId)
