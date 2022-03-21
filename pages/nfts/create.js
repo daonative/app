@@ -252,6 +252,16 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
     </form>
   )
 }
+export const ImagePreview = ({ uri }) => {
+
+  return (
+    <div className="flex items-center justify-center h-full p-2" style={{ maxWidth: 350, }}>
+      {uri ? <img src={uri} className="h-auto w-full" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
+    </div>
+
+  )
+}
+
 
 export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
   const imageUri = metadata.image
@@ -260,7 +270,7 @@ export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
 
   return (
     <div className="flex gap-6 flex-col lg:flex-row">
-      <div className="flex flex-col border border-daonative-border rounded w-96 min-h-[18em] overflow-hidden">
+      <div className="flex flex-col border border-daonative-border  rounded w-96 min-h-[18em] overflow-hidden">
         <div className="flex justify-between items-center p-4">
           <div>
             {chainId === 1 && <EthereumLogo className="w-4 h-4" />}
@@ -271,9 +281,7 @@ export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
             <span className="text-xs">0</span>
           </div>
         </div>
-        <div className="flex items-center justify-center h-full" style={{ maxHeight: 350, maxWidth: 350 }}>
-          {imageUri ? <img src={imageUri} className="h-full w-auto" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
-        </div>
+        <ImagePreview uri={imageUri} />
       </div>
       <div>
         <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center font-bold">{collectionName || "DAOnative Core"}</div>

@@ -11,7 +11,7 @@ import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { LayoutWrapper } from "../../../../components/LayoutWrapper";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
-import { OpenSeaPreview } from "../../create";
+import { ImagePreview, OpenSeaPreview } from "../../create";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -117,7 +117,7 @@ const Mint = () => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0">
-      <div className="flex flex-col gap-6 w-full lg:w-3/4">
+      <div className="flex flex-col gap-6 w-full ">
         {!collectionHasError && !account && (
           <ConnectWalletButton >
             <PrimaryButton >
@@ -147,8 +147,11 @@ const Mint = () => {
         )}
 
         <div>
-          <div className="mb-3">Preview</div>
-          <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
+
+          <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center font-bold">{collectionName || "DAOnative Core"}</div>
+          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded w-96 min-h-[18em] overflow-hidden p-6">
+            <ImagePreview uri={collectionImageURI} />
+          </div>
         </div>
 
 
@@ -172,13 +175,7 @@ const MintPage = () => {
       <div className="overflow-hidden w-full h-screen">
         <main className="flex justify-center items-center h-screen">
           <div className="flex flex-col items-center">
-            <div className="flex justify-center items-center">
-              <img src="/DAOnativeLogo.svg" className={classNames("w-16 h-16 m-6")} />
-              <div>
-                DAOnative
-              </div>
-            </div>
-            <h1 className="text-xl text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
+            <h1 className="text-xl font-space text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
 
             < Mint />
           </div>
