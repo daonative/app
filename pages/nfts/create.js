@@ -245,7 +245,6 @@ export const ImagePreview = ({ uri }) => {
     <div className="flex items-center justify-center h-full p-2" style={{ maxWidth: 350, }}>
       {uri ? <img src={uri} className="h-auto w-full" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
     </div>
-
   )
 }
 
@@ -272,7 +271,7 @@ export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
       </div>
       <div>
         <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center font-bold">{collectionName || "DAOnative Core"}</div>
-        <div className="text-lg text-daonative-white">{tokenName || "DAOnative Core"} #1</div>
+        <div className="text-lg text-daonative-white">{(!tokenName && !collectionName) ? "DAOnative Core" : (tokenName || "")} #1</div>
         <div className="text-xs text-daonative-subtitle">
           owned by{" "}
           <span className="text-daonative-primary-purple">{displayName}</span>
@@ -292,7 +291,16 @@ export const CreateNFT = () => {
   useEffect(() => {
     setPreviewMetadata({})
 
-    if ((formImage?.length > 0 || formName) && formMetadata) return
+    if (formImage?.length > 0 && formMetadata) return
+
+    if (formMetadata) {
+      try {
+        setPreviewMetadata(JSON.parse(formMetadata))
+      } catch (e) {
+        setPreviewMetadata({})
+      }
+      return
+    }
 
     if (formImage?.length > 0 || formName) {
       const imageURI = formImage.length > 0 ? URL.createObjectURL(formImage[0]) : ""
@@ -301,14 +309,6 @@ export const CreateNFT = () => {
         name: formName
       })
       return
-    }
-
-    if (formMetadata) {
-      try {
-        setPreviewMetadata(JSON.parse(formMetadata))
-      } catch (e) {
-        setPreviewMetadata({})
-      }
     }
   }, [formImage, formName, formMetadata])
 
