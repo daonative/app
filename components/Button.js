@@ -5,7 +5,7 @@ export const Button = ({ children, onClick, type = "button", className = "" }) =
     type={type}
     className={
       classNames(
-        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md hover:opacity-75 focus:outline-none bg-daonative-component-bg text-daonative-gray-100 h-max",
+        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-md hover:opacity-75 focus:outline-none text-daonative-white h-max",
         className
       )
     }
@@ -37,6 +37,7 @@ export const SecondaryButton = ({ children, onClick, type = "button", className 
     type={type}
     className={classNames(
       className,
+      'bg-daonative-component-bg',
       disabled && "bg-opacity-50"
     )}
     disabled={disabled}
