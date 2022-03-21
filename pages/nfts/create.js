@@ -24,20 +24,7 @@ import { classNames } from '../../lib/utils'
 import PolygonLogo from '../../public/PolygonLogo.svg'
 import EthereumLogo from '../../public/EthereumLogo.svg'
 import { useProfile } from "../../components/ProfileProvider";
-
-const isSupportedChain = (chainId) => [1, 137].includes(chainId)
-const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
-  if (chainId === 137)
-    return "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
-
-  if (chainId === 1)
-    return "0x03a73053d2c34c4629d821c6f3369f58a05dfef7"
-
-  if (defaultChainId)
-    return getCollectionCreatorAddress(defaultChainId)
-
-  return null
-}
+import { getCollectionCreatorAddress, isSupportedChain } from ".";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()

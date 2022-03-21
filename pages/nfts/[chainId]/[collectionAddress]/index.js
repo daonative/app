@@ -19,13 +19,7 @@ import { classNames } from '../../../../lib/utils'
 import { ClipboardCopyIcon } from '@heroicons/react/solid'
 import { OpenSeaPreview } from '../../create'
 import Link from 'next/link'
-
-const getReadonlyProvider = (chainId) => {
-  if (Number(chainId) === 137)
-    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
-
-  return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
-}
+import { getReadonlyProvider } from '../..'
 
 const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
   const [rooms, setRooms] = useState([])

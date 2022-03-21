@@ -11,18 +11,7 @@ import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
 import { ImagePreview } from "../../create";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-
-const getReadonlyProvider = (chainId) => {
-  if (Number(chainId) === 137)
-    return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
-
-  return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
-}
+import { getReadonlyProvider } from "../..";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
