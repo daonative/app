@@ -221,6 +221,8 @@ const TokenList = ({ address, tokens }) => (
 
 export const CollectionHeader = ({ isLoading, imageUri, children }) => (
   <div className="flex justify-between items-center gap-3">
+    <CollectionImage imageUri={imageUri} isLoading={isLoading} />
+    <CollectionTitle>{children}</CollectionTitle>
   </div>
 )
 
@@ -453,20 +455,27 @@ export const GatorCollection = () => {
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4">
         <div className="flex justify-between items-center">
-          <div className={classNames(
-            "flex gap-4",
-            (isLoading || collectionTokens.length === 0) && "invisible"
-          )}>
-            <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
-            <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
-            {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
-          </div>
+          {!isLoading && collectionTokens.length > 0 && (
+            <>
+              <CollectionHeader imageUri={collectionImageURI}>{collectionName}</CollectionHeader>
+              <div className={classNames(
+                "flex gap-4",
+                isLoading && "invisible"
+              )}>
+                <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
+                <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
+                {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
+              </div>
+            </>
+          )}
         </div>
+
         {collectionTokens.length > 0 && (
           <div className="flex flex-wrap gap-4 justify-center">
             <TokenList address={collectionAddress} tokens={collectionTokens} />
           </div>
         )}
+
         {!collectionHasError && isLoading && (
           <div className="flex w-full justify-center">
             <div className="w-8 h-8">
@@ -474,14 +483,14 @@ export const GatorCollection = () => {
             </div>
           </div>
         )}
+
         {collectionHasError && (
           <CollectionNotFound />
         )}
 
         {!collectionHasError && !isLoading && collectionTokens.length === 0 && (
           <div className="flex gap-4">
-            <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} >
-            </EmptyTokenList>
+            <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} />
             <div>
               <div>Preview</div>
               <div className='text-daonative-subtitle text-xs'>This is what you can expect after when minting!</div>
