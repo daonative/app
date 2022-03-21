@@ -189,18 +189,22 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
 
   return (
     <>
-      <p className="p-6 text-gray-200 font-bold">What&apos;s the name of your DAO?</p>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
-        <div className="flex flex-col md:flex-row w-full mt-3">
-          <input
-            {...register("daoName")}
-            type="text"
-            className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
-            placeholder="School DAO"
-          />
+        <div className="flex flex-col md:flex-row w-full items-end">
+          <div className='mt-3'>
+            <label className='text-lg font-bold text-daonative-white'>
+              Enter your DAO name
+            </label>
+            <input
+              {...register("daoName")}
+              type="text"
+              className="shadow-sm focus:ring-daonative-primary-blue focus:border-indigo-500 block w-full border-transparent rounded-md bg-daonative-component-bg  text-lg"
+              placeholder="School DAO"
+            />
+          </div>
           <PrimaryButton
             type="submit"
-            className='ml-3'
+            className='ml-3 text-lg'
           >
             Create your DAO
           </PrimaryButton>
