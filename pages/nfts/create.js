@@ -89,7 +89,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
     ) : (
       await uploadImageAndMetadata(name, image)
     )
-    return await contract.createCollection(name, symbol, metadataUri, 0, 0)
+    return await contract.createCollection(name, symbol, metadataUri, false, 0, 0)
   }
 
 

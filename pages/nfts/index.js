@@ -11,21 +11,24 @@ import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 import { Card } from "../../components/Card";
 
-const isSupportedChain = (chainId) => [1, 137].includes(chainId)
+const DEFAULT_CHAIN_ID = 137
 
-const getCollectionCreatorAddress = (chainId, defaultChainId = 1) => {
+export const isSupportedChain = (chainId) => [1, 137].includes(chainId)
+export const getCollectionCreatorAddress = (chainId, defaultChainId = DEFAULT_CHAIN_ID) => {
   if (chainId === 137)
-    return "0xc7c2ed30ba962c0855f41f45ed8212bedd946099"
+    return "0x12CABb27627d5028d213686FF694C57066df56cd"
+
+  if (chainId === 4)
+    return "0x2dc5f315decc758d5deacbf303f6ec5897c40976"
 
   if (chainId === 1)
-    return "0x03a73053d2c34c4629d821c6f3369f58a05dfef7"
+    return "0x5535ae56A2C005AcE1DB0c9Cd67428b25B03983C"
 
   if (defaultChainId)
     return getCollectionCreatorAddress(defaultChainId)
 
   return null
 }
-
 export const getReadonlyProvider = (chainId, defaultChainId = DEFAULT_CHAIN_ID) => {
   if (chainId === 137)
     return new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_POLYGON)
