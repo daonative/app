@@ -48,7 +48,7 @@ const NftFaq = () => (
             No, your community members will pay for minting
           </FAQItem>
           <FAQItem question="Who is the collection owner?">
-            Contrary to open sea, you own the contract.
+            Contrary to OpenSea, you own the contract.
           </FAQItem>
           <FAQItem question="Can the token be transfered?">
             Yes!
@@ -99,6 +99,9 @@ const NftFaq = () => (
 }`}
               </pre>
             </p>
+          </FAQItem>
+          <FAQItem question="My question is not answered">
+            <a className="underline hover:text-daonative-primary-purple" href="https://discord.gg/m3mC5f4jBU" target="_blank" rel="noreferrer">Join our Discord</a>. {"We're more than happy to answer your questions!"}
           </FAQItem>
         </dl>
       </div>
