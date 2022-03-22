@@ -42,7 +42,7 @@ const NftFaq = () => (
       <div className="w-full">
         <dl className="">
           <FAQItem question="Which network is it available on?">
-            {"We're currently available on Ethereum mainnet & Polygon mainnet"}
+            {"We're currently available on Ethereum mainnet, rinkeby & Polygon mainnet"}
           </FAQItem>
           <FAQItem question="Do I need to pay for minting?">
             No, your community members will pay for minting
