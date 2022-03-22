@@ -150,7 +150,20 @@ const InviteModal = ({ show, onClose, inviteLink }) => {
 const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }) => {
   const [metadata, setMetadata] = useState({})
   const date = new Date(timestamp * 1000)
-  const openseaUrl = `https://opensea.io/assets/${Number(chainId) === 137 ? 'matic/' : ''}${tokenAddress}/${tokenId}`
+
+  const getOpenSeaUrl = (chainId, tokenAddress, tokenId) => {
+    if (chainId === 1) {
+      return `https://opensea.io/assets/${tokenAddress}/${tokenId}`
+    }
+
+    if (chainId === 4) {
+      return `https://testnets.opensea.io/assets/rinkeby/${tokenAddress}/${tokenId}`
+    }
+
+    if (chainId === 137) {
+      return `https://opensea.io/assets/matic/${tokenAddress}/${tokenId}`
+    }
+  }
 
   useEffect(() => {
     const retrieveMetadata = async (uri) => {
@@ -165,7 +178,7 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
   }, [metadataUri])
 
   return (
-    <a href={openseaUrl}>
+    <a href={getOpenSeaUrl(Number(chainId), tokenAddress, tokenId)}>
       <div className="relative w-64 rounded-lg overflow-hidden">
         <img className="object-cover w-full" src={metadata.image} />
         <div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">

@@ -261,6 +261,7 @@ export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
         <div className="flex justify-between items-center p-4">
           <div>
             {chainId === 1 && <EthereumLogo className="w-4 h-4" />}
+            {chainId === 4 && <EthereumLogo className="w-4 h-4" />}
             {chainId === 137 && <PolygonLogo className="w-4 h-4" />}
           </div>
           <div className="flex items-center gap-1">
