@@ -51,7 +51,7 @@ const NftFaq = () => (
             Contrary to open sea, you own the contract.
           </FAQItem>
           <FAQItem question="Can the token be transfered?">
-            Yes! As long as the recipient {"doesn't"} own an NFT from the same collection.
+            Yes!
           </FAQItem>
           <FAQItem question="Can it be sold?">
             Yes.
