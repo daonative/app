@@ -414,7 +414,7 @@ export const GatorCollection = () => {
       })))
       setCollectionTokens(tokens)
       setIsLoading(false)
-      listenForNewCollectionTokens(address)
+      //listenForNewCollectionTokens(address)
     }
 
     const retrieveCollectionData = async (collectionAddress) => {
