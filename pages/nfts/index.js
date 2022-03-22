@@ -106,7 +106,10 @@ export const Gator = () => {
           <div className="flex justify-between w-full">
             <div>
               <h2 className="text-2xl">NFT Collection Creator</h2>
-              <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">{"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers."}</p>
+              <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">
+                {"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers. "}
+                <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
+              </p>
             </div>
             <Link href="/nfts/create">
               <a>
