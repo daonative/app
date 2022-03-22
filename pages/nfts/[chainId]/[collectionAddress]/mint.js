@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useWallet } from "use-wallet";
 import { CollectionNotFound } from ".";
 import { PrimaryButton } from "../../../../components/Button";
-import { SwitchToMainnetButton, SwitchToPolygonButton } from "../../../../components/ChainWarning";
+import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../../../components/ChainWarning";
 import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
@@ -35,6 +35,7 @@ const Mint = () => {
   const injectedProvider = useProvider()
   const isMainnetNFT = Number(chainId) === 1
   const isPolygonNFT = Number(chainId) === 137
+  const isRinkebyNFT = Number(chainId) === 4
   const isCorrectChain = Number(chainId) === injectedChainId
 
 
@@ -119,7 +120,6 @@ const Mint = () => {
             {isCorrectChain && (
               <PrimaryButton onClick={handleMintNFT}>Mint your NFT</PrimaryButton>
             )}
-
             {!isCorrectChain && isPolygonNFT && (
               <>
                 <span>Switch to Polygon to mint your NFT</span>
@@ -130,6 +130,12 @@ const Mint = () => {
               <>
                 <span>Switch to mainnet to mint your NFT</span>
                 <SwitchToMainnetButton />
+              </>
+            )}
+            {!isCorrectChain && isRinkebyNFT && (
+              <>
+                <span>Switch to Ethereum Rikeby (testnet) to mint your NFT</span>
+                <SwitchToRinkebyButton />
               </>
             )}
           </div>
