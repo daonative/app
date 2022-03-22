@@ -24,7 +24,8 @@ import { translateURI } from '../../lib/translateURI'
 import PolygonLogo from '../../public/PolygonLogo.svg'
 import EthereumLogo from '../../public/EthereumLogo.svg'
 import { useProfile } from "../../components/ProfileProvider";
-import { getCollectionCreatorAddress, isSupportedChain } from ".";
+import { getCollectionCreatorAddress, isSupportedChain } from "../../lib/chainSupport";
+import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()
@@ -328,7 +329,15 @@ export const CreateNFT = () => {
                 </PrimaryButton>
               </ConnectWalletButton>
             }
-            {account && (
+            {account && !isSupportedChain(chainId) && (
+              <div className="flex flex-col gap-4 mt-8 items-center">
+                <span className="text-daonative-subtitle">Connect to a supported network to create your collection.</span>
+                <SwitchToMainnetButton />
+                <SwitchToRinkebyButton />
+                <SwitchToPolygonButton />
+              </div>
+            )}
+            {account && isSupportedChain(chainId) && (
               <div className="flex gap-8 flex-col lg:flex-row">
                 <div className="grow max-w-md">
                   <CollectionForm onImage={setFormImage} onMetadata={setFormMetadata} onName={setFormName} />

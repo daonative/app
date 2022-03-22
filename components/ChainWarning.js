@@ -56,6 +56,27 @@ export const SwitchToMainnetButton = ({ className }) => {
   )
 }
 
+export const SwitchToRinkebyButton = ({ className }) => {
+  const { ethereum } = useWallet()
+
+  const handleSwitchToMainnet = async () => {
+    await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x4' }] })
+  }
+
+  return (
+    <button
+      className={classNames(
+        "flex items-center justify-center gap-2 rounded-lg text-gray-100 bg-daonative-component-bg py-2 px-4 hover:bg-daonative-dark-300 hover:text-daonative-gray-200",
+        className
+      )}
+      onClick={handleSwitchToMainnet}
+    >
+      <EthereumLogo className="h-4 w-4" />
+      Switch to Ethereum rinkeby
+    </button>
+  )
+}
+
 const ChainWarning = () => (
   <div className="flex flex-col gap-2">
     <div className="text-xs w-full text-center">
