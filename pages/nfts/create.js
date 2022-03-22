@@ -24,7 +24,7 @@ import { translateURI } from '../../lib/translateURI'
 import PolygonLogo from '../../public/PolygonLogo.svg'
 import EthereumLogo from '../../public/EthereumLogo.svg'
 import { useProfile } from "../../components/ProfileProvider";
-import { getCollectionCreatorAddress, isSupportedChain } from "../../lib/chainSupport";
+import { getCollectionCreatorAddress, isSupportedChain, switchToMainnet, switchToPolygon, switchToRinkeby } from "../../lib/chainSupport";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
@@ -230,25 +230,74 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
       </div>
       <div className="flex justify-between items-center w-full pt-8">
         <Link href="/nfts/faq"><a className="underline text-sm">How does this work?</a></Link>
-        <PrimaryButton type="sumbit" disabled={isSubmitting}>
-          {isSubmitting && (
-            <span className="w-4 h-4 mr-2"><Spinner /></span>
+        <div>
+          <PrimaryButton type="sumbit" disabled={isSubmitting}>
+            {isSubmitting && (
+              <span className="w-4 h-4 mr-2"><Spinner /></span>
+            )}
+            Create collection
+          </PrimaryButton>
+        </div>
+      </div>
+      <div className="flex gap-1 text-xs text-daonative-subtitle py-4">
+        <span>💡</span>
+        <div>
+          <div>
+            {"You're connected to "}
+            {chainId === 1 && "Ethereum Mainnet"}
+            {chainId === 4 && "Ethereum Rinkeby (testnet)"}
+            {chainId === 137 && "Polygon mainnet"}.
+          </div>
+          {chainId === 1 && (
+            <>
+              <div>
+                Want to try it out without paying the gas fees? Use {" "}
+                <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToRinkeby}>Rinkeby</span> or{" "}
+                <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToPolygon}>Polygon</span>.
+              </div>
+              <div className="pt-2">
+                Have questions?{" "}
+                <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
+              </div>
+            </>
           )}
-          Create collection
-        </PrimaryButton>
+          {chainId === 4 && (
+            <>
+              <div>
+                Need rinkeby ETH for gas to try it out? Have questions?{" "}
+                <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
+              </div>
+              <div className="pt-2">
+                Ready to deploy on{" "}
+                <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToMainnet}>Mainnet</span>?
+              </div>
+            </>
+          )}
+          {chainId === 137 && (
+            <>
+              <div>
+                Need MATIC for gas to try it out? Have questions?{" "}
+                <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
+              </div>
+              <div className="pt-2">
+                Ready to deploy on{" "}
+                <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToMainnet}>Mainnet</span>?
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </form>
   )
 }
-export const ImagePreview = ({ uri }) => {
 
+export const ImagePreview = ({ uri }) => {
   return (
     <div className="flex items-center justify-center h-full p-2" style={{ maxWidth: 350, }}>
       {uri ? <img src={uri} className="h-auto w-full" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
     </div>
   )
 }
-
 
 export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
   const imageUri = translateURI(metadata.image)
