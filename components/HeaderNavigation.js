@@ -1,10 +1,9 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, CheckCircleIcon, MenuAlt2Icon } from '@heroicons/react/solid';
 import { useConnectWalletModal } from './ConnectWalletModal';
 import { useWallet } from 'use-wallet';
 import useIsConnected from '../lib/useIsConnected';
-import ShortAddress from './ShortAddress';
 import { useForm } from 'react-hook-form';
 import { useRequireAuthentication } from '../lib/authenticate';
 import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
@@ -12,20 +11,26 @@ import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
 import PFP from './PFP';
-import useUser from '../lib/useUser';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
-import { providers } from 'ethers';
 import { useProfile } from './ProfileProvider';
 
 const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
     return <PolygonLogo className={className} />
 
+  if (chainId === 4)
+    return (
+      <>
+        <span className="text-xs text-daonative-subtitle pr-1">Rinkeby</span>
+        <EthereumLogo className={className} />
+      </>
+    )
+
   if (chainId === 1)
     return <EthereumLogo className={className} />
-  console.log(chainId)
+
   return <></>
 }
 
@@ -125,8 +130,8 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                     </div>
                     <div>
                       <div className="flex gap-1 items-center">
-                        { displayName }
-                        { displayNameVerified && <CheckCircleIcon className="h-3 w-3 text-daonative-white"/>}
+                        {displayName}
+                        {displayNameVerified && <CheckCircleIcon className="h-3 w-3 text-daonative-white" />}
                       </div>
                     </div>
                     {/* eslint-disable @next/next/no-img-element */}
