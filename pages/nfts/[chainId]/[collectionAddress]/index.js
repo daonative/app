@@ -18,7 +18,7 @@ import { classNames } from '../../../../lib/utils'
 import { ClipboardCopyIcon } from '@heroicons/react/solid'
 import { OpenSeaPreview } from '../../create'
 import Link from 'next/link'
-import { getReadonlyProvider } from '../..'
+import { getReadonlyProvider } from '../../../../lib/chainSupport'
 
 const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
   const [rooms, setRooms] = useState([])
@@ -351,7 +351,7 @@ export const GatorCollection = () => {
   const handleCloseLinkDAOModal = () => setShowLinkDAOModal(false)
 
   useEffect(() => {
-    const readonlyProvider = getReadonlyProvider(chainId)
+    const readonlyProvider = getReadonlyProvider(Number(chainId))
 
     const retrieveCollectionName = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
@@ -432,6 +432,7 @@ export const GatorCollection = () => {
           retrieveCollectionPaused(collectionAddress)
         ])
       } catch (e) {
+        console.log(e)
         setCollectionHasError(true)
       }
     }

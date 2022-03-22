@@ -11,7 +11,7 @@ import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
 import { ImagePreview } from "../../create";
-import { getReadonlyProvider } from "../..";
+import { getReadonlyProvider } from "../../../../lib/chainSupport";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
@@ -60,7 +60,7 @@ const Mint = () => {
   }
 
   useEffect(() => {
-    const readonlyProvider = getReadonlyProvider(chainId)
+    const readonlyProvider = getReadonlyProvider(Number(chainId))
 
     const retrieveCollectionName = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
@@ -88,6 +88,7 @@ const Mint = () => {
           retrieveCollectionImageURI(collectionAddress),
         ])
       } catch (e) {
+        console.log(e)
         setCollectionHasError(true)
       }
       setIsLoading(false)
