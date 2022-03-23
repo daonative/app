@@ -115,7 +115,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
               <label className="block text-sm font-medium pb-2">
                 Description
               </label>
-              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-component-bg dark:border-transparent dark:text-daonative-gray-300" />
+              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
@@ -124,7 +124,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
               <label className="block text-sm font-medium pb-2">
                 Image URL (optional)
               </label>
-              <input type="text" rows="8" {...register("image", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-daonative-component-bg dark:border-transparent dark:text-daonative-gray-300" />
+              <input type="text" rows="8" {...register("image", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
             </div>
           </div>
         </ModalBody>
@@ -218,7 +218,7 @@ const ChallengeDetails = () => {
   const { account } = useWallet()
   const { query: { daoId: roomId } } = useRouter()
   const membership = useMembership(account, roomId)
-  const isAdmin = membership?.roles.includes('admin')
+  const isAdmin = membership?.roles?.includes('admin')
 
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
