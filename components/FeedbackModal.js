@@ -54,6 +54,7 @@ const FeedbackModal = ({ show, onClose }) => {
     </Modal>);
 };
 export const Feedback = () => {
+  /*
   const { query: params } = useRouter();
   const roomId = params?.daoId;
   const { account } = useWallet();
@@ -73,14 +74,17 @@ export const Feedback = () => {
   if (roomId && !isMember)
     return <></>;
 
-  return (
-    <>
-      <FeedbackModal show={showModal} onClose={handleClose} />
-      <PrimaryButton
-        onClick={handleShowModal}
-      >
-        Feedback
-      </PrimaryButton>
-    </>
-  );
+    return (
+      <>
+        <FeedbackModal show={showModal} onClose={handleClose} />
+        <PrimaryButton
+          onClick={handleShowModal}
+        >
+          Feedback
+        </PrimaryButton>
+      </>
+    );
+  */
+
+  return <PrimaryButton onClick={() => window.open('https://discord.gg/m3mC5f4jBU', '_blank')}>Feedback</PrimaryButton>
 };
