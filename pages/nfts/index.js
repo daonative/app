@@ -13,9 +13,18 @@ import { Card } from "../../components/Card";
 import { getReadonlyProvider, getCollectionCreatorAddress } from "../../lib/chainSupport";
 
 const EmptyCollectionList = () => (
-  <div className="w-full p-8 text-center flex flex-col items-center">
+  <div className="w-full p-8 text-center flex flex-col items-center gap-8">
     <CollectionIcon className="h-12 w-12 " />
-    <h3 className="mt-2 text-md font-medium text-daonative-gray-100 pb-6">{"Looks like you don't have any NFT collections"}</h3>
+    <ul>
+      <li>1. Create your NFT collection</li>
+      <li>2. Send your community the minting invite link</li>
+      <li>3. Community members start minting</li>
+    </ul>
+    <span className="text-daonative-subtitle">The NFT collections {"you've"} created will show up here.</span>
+    <span className="text-daonative-subtitle py-8">
+      {"We'd"} love to talk to you!{" "}
+      <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
+    </span>
   </div>
 )
 
