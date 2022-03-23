@@ -41,6 +41,9 @@ const NftFaq = () => (
       <h2 className="text-2xl text-daonative-white">NFTs FAQ</h2>
       <div className="w-full">
         <dl className="">
+          <FAQItem question="How can I reach out to you?">
+            <a className="underline hover:text-daonative-primary-purple" href="https://discord.gg/m3mC5f4jBU" target="_blank" rel="noreferrer">Join our Discord</a>!
+          </FAQItem>
           <FAQItem question="Which network is it available on?">
             {"We're currently available on Ethereum mainnet, rinkeby & Polygon mainnet"}
           </FAQItem>
@@ -70,6 +73,9 @@ const NftFaq = () => (
           </FAQItem>
           <FAQItem question="Can I set a price to mint a token?">
             No. Let us know if you want this!
+          </FAQItem>
+          <FAQItem question="The token artwork doesn't show up on OpenSea">
+            It takes OpenSea some time to fetch and cache the artwork. This is usually solved within 10 minutes after minting.
           </FAQItem>
           <FAQItem question="Can I add attributes?">
             <p>
