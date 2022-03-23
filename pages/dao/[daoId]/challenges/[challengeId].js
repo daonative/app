@@ -237,7 +237,7 @@ const ChallengeDetails = () => {
         <div className="flex flex-col md:flex-row w-full pt-16 gap-4">
           <div className="w-full">
             <h2 className="text-xl py-4">Description</h2>
-            <div className="whitespace-pre-wrap">
+            <div className="whitespace-pre-wrap text-daonative-white">
               {challenge?.description}
             </div>
           </div>
