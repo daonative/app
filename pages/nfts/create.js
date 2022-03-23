@@ -251,7 +251,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
           {chainId === 1 && (
             <>
               <div>
-                Want to try it out without paying the gas fees? Use {" "}
+                Want to try it out without paying the high gas fees? Use {" "}
                 <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToRinkeby}>Rinkeby</span> or{" "}
                 <span className="underline hover:text-daonative-primary-purple hover:cursor-pointer" onClick={switchToPolygon}>Polygon</span>.
               </div>
@@ -264,7 +264,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
           {chainId === 4 && (
             <>
               <div>
-                Need rinkeby ETH for gas to try it out? Have questions?{" "}
+                Need Rinkeby ETH for gas to try it out? Have questions?{" "}
                 <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
               </div>
               <div className="pt-2">
