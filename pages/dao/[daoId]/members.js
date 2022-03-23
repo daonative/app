@@ -61,7 +61,8 @@ const MemberItem = ({ member }) => {
     if (!account) return ""
     if (ensNameLoading) return shortAddress(account)
     if (!ensNameLoading && ensName) return ensName
-    if (!ensNameLoading && user.name) return user.name
+    if (!ensNameLoading && user?.name) return user.name
+    return shortAddress(account)
   }
   const profile = {
     displayName: getDisplayName(),
