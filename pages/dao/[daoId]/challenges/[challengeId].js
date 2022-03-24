@@ -42,21 +42,21 @@ const VerifyModal = ({ show, onClose, workproof }) => {
       <ModalBody>
         <div className="flex flex-col gap-4">
           <div>
-            <p className="block text-sm font-medium pb-2">
+            <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
               Description
             </p>
-            <div className="whitespace-pre-wrap text-sm font-medium">
+            <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
               {workproof?.description}
             </div>
           </div>
           {workproof?.imageUrls?.length > 0 && (
             <div>
-              <p className="block text-sm font-medium pb-2">
+              <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
                 Image
               </p>
               <div className="whitespace-pre-wrap text-sm font-medium">
                 <a href={workproof.imageUrls[0]}>
-                  <img src={workproof.imageUrls[0]} width={48} />
+                  <img src={workproof.imageUrls[0]} width={64} />
                 </a>
               </div>
             </div>
