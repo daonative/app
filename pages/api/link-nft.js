@@ -56,6 +56,13 @@ const isRoomAdmin = async (roomId, uid) => {
 }
 
 const getERC721TokenHolders = async (chainId, collectionAddress) => {
+  // const events = [{from: 0, to: 1, id: 1}, {from: 0, to: 1, id: 2}, {from: 0, to: 2, id: 2}, {from: 1, to: 3, id: 1}, {from: 1, to: 4, id: 2}]
+  // events.reduce((holders, event) => {
+  //    holders[event.to] = holders[event.to] ? holders[event.to] += 1 : 1
+  //    if (event.from != 0) holders[event.from] -= 1
+  //    return holders
+  //}, {})
+
   const readonlyProvider = getReadonlyProvider(chainId)
   const contract = new ethers.Contract(collectionAddress, collectionAbi, readonlyProvider)
   const mintFilter = contract.filters.Transfer(null)
