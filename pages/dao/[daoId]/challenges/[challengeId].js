@@ -9,7 +9,7 @@ import { useWallet } from 'use-wallet'
 import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
-import PFP from '../../../../components/PFP'
+import PFP, { UserAvatar, UserName } from '../../../../components/PFP'
 import Spinner from '../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import useMembership from '../../../../lib/useMembership'
@@ -144,33 +144,23 @@ const ProofModal = ({ show, onClose, challenge }) => {
 
 const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
   const { account } = useWallet()
-  const { query: { daoId: roomId } } = useRouter()
-  const db = getFirestore()
-  const [usersSnap] = useCollection(
-    query(collection(db, 'users'), where('rooms', 'array-contains', roomId || 'x'))
-  )
-  const users = usersSnap?.docs.map(doc => ({
-    ...doc.data(),
-    account: doc.id
-  }))
 
   return (
     <ul>
       {submissions?.map((submission, idx) => {
         const canVerify = showVerifyButton && !submission?.verifiers?.includes(account) && submission?.author !== account
-        const user = users?.find(user => user.account === submission.author)
         return (
           <li key={idx} className="py-2">
             <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
               <div className="flex items-center justify-between">
                 <div className="flex w-full">
                   <div>
-                    <PFP size={46} address={submission.author} />
+                    <UserAvatar account={submission.author} />
                   </div>
                   <div className="pl-4 w-full flex flex-col gap-1">
                     <div className="flex justify-between w-full">
                       <p className="text-sm">
-                        {user?.name || submission.author}
+                        <UserName account={submission.author} />
                       </p>
                       <p className="text-sm text-gray-500 pr-1">
                         <Moment date={submission?.created?.toMillis()} fromNow={true} />
