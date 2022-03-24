@@ -13,6 +13,7 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../com
 import PFP, { UserAvatar, UserName } from '../../../../components/PFP'
 import Spinner from '../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
+import { uploadToIPFS } from '../../../../lib/uploadToIPFS'
 import useMembership from '../../../../lib/useMembership'
 
 
@@ -84,9 +85,8 @@ const ProofModal = ({ show, onClose, challenge }) => {
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
 
-  const submitProof = async (description, imageUrl) => {
-
-    const db = getFirestore()
+  const submitProof = async (description, image) => {
+    const imageUrl = image?.length === 1 ? await uploadToIPFS(image[0]) : ''
     const proof = {
       description,
       author: account,
@@ -96,6 +96,7 @@ const ProofModal = ({ show, onClose, challenge }) => {
       imageUrls: imageUrl ? [imageUrl] : [],
       created: serverTimestamp(),
     }
+    const db = getFirestore()
     await addDoc(collection(db, 'workproofs'), proof)
   }
 
@@ -123,9 +124,9 @@ const ProofModal = ({ show, onClose, challenge }) => {
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
-                Image URL (optional)
+                Image (optional)
               </label>
-              <input type="text" rows="8" {...register("image", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
             </div>
           </div>
         </ModalBody>

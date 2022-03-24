@@ -137,7 +137,7 @@ const Challenges = () => {
           {challenges?.length > 0 ? (
             <ul role="list" className="flex flex-col gap-3">
               {challenges?.map((challenge) => (
-                <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`}>
+                <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
                     <Card>
                       <div className="flex items-center justify-between">

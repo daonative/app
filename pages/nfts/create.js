@@ -7,7 +7,6 @@ import { collectionCreatorAbi } from "../../lib/abi"
 import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
 import Link from "next/link"
-import axios from "axios"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
 import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
@@ -26,6 +25,7 @@ import EthereumLogo from '../../public/EthereumLogo.svg'
 import { useProfile } from "../../components/ProfileProvider";
 import { getCollectionCreatorAddress, isSupportedChain, switchToMainnet, switchToPolygon, switchToRinkeby } from "../../lib/chainSupport";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
+import { uploadToIPFS } from "../../lib/uploadToIPFS";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()
@@ -46,17 +46,6 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
   useEffect(() => {
     onName(watchName)
   }, [onName, watchName])
-
-  const uploadToIPFS = async (data) => {
-    const formData = new FormData()
-    formData.append('file', data)
-    const response = await axios.post(
-      "https://ipfs.infura.io:5001/api/v0/add",
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    )
-    return `https://ipfs.infura.io/ipfs/${response.data.Hash}`
-  }
 
   const uploadImageAndMetadata = async (name, image) => {
     const imageUri = await uploadToIPFS(image[0])
