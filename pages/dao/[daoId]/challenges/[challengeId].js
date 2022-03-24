@@ -212,6 +212,7 @@ const ChallengeDetails = () => {
   const { account } = useWallet()
   const { query: { daoId: roomId } } = useRouter()
   const membership = useMembership(account, roomId)
+  const isMember = !!membership
   const isAdmin = membership?.roles?.includes('admin')
 
   const handleOpenProofModal = () => setShowProofModal(true)
@@ -241,9 +242,11 @@ const ChallengeDetails = () => {
                 <h2 className="text-xl">Submissions</h2>
               </div>
               <div>
-                <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
-                  <PlusIcon className="w-4 h-4" />
-                </button>
+                {isMember && (
+                  <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
+                    <PlusIcon className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
             <SubmissionsList submissions={submissions} onVerifyClick={(workproof) => handleVerifyProof(workproof)} showVerifyButton={isAdmin} />
