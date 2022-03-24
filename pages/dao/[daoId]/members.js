@@ -132,7 +132,7 @@ export const Members = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Members</h2>
-            {isAdmin && (<PrimaryButton onClick={openModal}>Add member</PrimaryButton>)}
+            {false && isAdmin && (<PrimaryButton onClick={openModal}>Add member</PrimaryButton>)}
           </div>
           <MemberList members={members} />
         </div>
