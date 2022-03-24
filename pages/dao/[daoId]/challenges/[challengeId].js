@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import Moment from 'react-moment'
 import { useWallet } from 'use-wallet'
 import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
+import EmptyStateNoSubmissions from '../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import PFP, { UserAvatar, UserName } from '../../../../components/PFP'
@@ -144,6 +145,8 @@ const ProofModal = ({ show, onClose, challenge }) => {
 
 const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
   const { account } = useWallet()
+
+  if (submissions?.length === 0) return <EmptyStateNoSubmissions />
 
   return (
     <ul>
