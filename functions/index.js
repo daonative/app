@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
+const { firestore } = require("firebase-admin");
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -84,4 +85,10 @@ exports.updateLeaderboardXP = functions.firestore
       console.log(roomId, verifier)
       updateLeaderboardPosition(roomId, verifier)
     })
+  })
+
+exports.setJoinDateForMembers = functions.firestore
+  .document('rooms/{roomId}/members/{account}')
+  .onCreate(async (snap, context) => {
+    snap.ref.set({joinDate: firestore.FieldValue.serverTimestamp()}, {merge: true});
   })
