@@ -28,6 +28,7 @@ service cloud.firestore {
     }
     match /challenges/{challengeId} {
       allow create: if isAdmin(request.resource.data.roomId);
+      allow update: if isAdmin(resource.data.roomId);
     }
     match /workproofs/{workproofId} {
       allow create: if
@@ -43,6 +44,9 @@ service cloud.firestore {
           request.resource.data.verifiers == [request.auth.uid] ||
           request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
         )
+    }
+    match /invites/{inviteId} {
+      allow read: if false;
     }
     match /{document=**} {
       allow write: if false;
