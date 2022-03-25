@@ -1,7 +1,7 @@
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
 import { addDoc, arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
 import Moment from 'react-moment'
@@ -195,8 +195,75 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
   )
 }
 
+const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
+  const requireAuthentication = useRequireAuthentication()
+
+  useEffect(() => reset(challenge), [reset, challenge])
+
+  const updateChallenge = async (title, description, challengeId) => {
+    const db = getFirestore()
+    const challenge = {
+      title: title,
+      description: description,
+      updated: serverTimestamp()
+    }
+    await updateDoc(doc(db, "challenges", challengeId), challenge)
+  }
+
+  const handleCloseModal = () => {
+    onClose()
+  }
+
+  const handleSaveChallenge = async (data) => {
+    await requireAuthentication()
+    await updateChallenge(data.title, data.description, challenge.challengeId)
+    handleCloseModal()
+  }
+
+  return (
+    <Modal show={show} onClose={handleCloseModal}>
+      <form onSubmit={handleSubmit(handleSaveChallenge)}>
+        <ModalTitle>Edit challenge</ModalTitle>
+        <ModalBody>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Title
+              </label>
+              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              {errors.title && (
+                <span className="text-xs text-red-400">You need to set a title</span>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Description
+              </label>
+              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+            </div>
+          </div>
+        </ModalBody>
+        <ModalActionFooter>
+          <PrimaryButton
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="w-4 h-4 mx-auto"><Spinner /></span>
+            ) : (
+              <>Edit Challenge</>
+            )}
+          </PrimaryButton>
+        </ModalActionFooter>
+      </form>
+    </Modal>
+  )
+}
+
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
+  const [showEditChallengeModal, setShowEditChallengeModal] = useState(false)
   const [proofToVerify, setProofToVerify] = useState(null)
   const db = getFirestore()
   const { query: params } = useRouter()
@@ -221,13 +288,20 @@ const ChallengeDetails = () => {
   const handleVerifyProof = (workproof) => setProofToVerify(workproof)
   const handleCloseVerifyProof = () => setProofToVerify(null)
 
+  const handleOpenEditChallengeModal = () => setShowEditChallengeModal(true)
+  const handleCloseEditChallengeModal = () => setShowEditChallengeModal(false)
+
   return (
     <LayoutWrapper>
+      <EditChallengeModal show={showEditChallengeModal} onClose={handleCloseEditChallengeModal} challenge={{ ...challenge, challengeId }} />
       <ProofModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
       <VerifyModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
-        <div className="flex justify-center w-full">
-          <h1 className="text-2xl">{challenge?.title}</h1>
+        <div className="flex">
+          <div className="flex justify-center w-full">
+            <h1 className="text-2xl">{challenge?.title}</h1>
+          </div>
+          {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
         </div>
         <div className="flex flex-col md:flex-row w-full pt-16 gap-4">
           <div className="w-full">
