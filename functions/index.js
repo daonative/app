@@ -50,14 +50,14 @@ const updateLeaderboardPosition = async (roomId, account) => {
   const totalVerifiedXps = totalXpsFromVerifiedSubmissions + totalXpsVerificationsYield
   const totalPendingXps = totalXpsFromSubmissions - totalXpsFromVerifiedSubmissions
 
-  const userRef = db.collection('users').doc(account)
-  const userSnap = await userRef.get()
-  const user = userSnap.data()
+  //const userRef = db.collection('users').doc(account)
+  //const userSnap = await userRef.get()
+  //const user = userSnap.data()
 
   const leaderboardRef = db.collection('rooms').doc(roomId).collection('leaderboard').doc(account)
   await leaderboardRef.set({
     userAccount: account,
-    userName: user.name,
+    //userName: user.name,
     totalExperience: totalXps,
     verifiedExperience: totalVerifiedXps,
     pendingExperience: totalPendingXps,
