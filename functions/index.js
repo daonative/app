@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { firestore } = require("firebase-admin");
+const axios = require("axios");
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -90,5 +91,36 @@ exports.updateLeaderboardXP = functions.firestore
 exports.setJoinDateForMembers = functions.firestore
   .document('rooms/{roomId}/members/{account}')
   .onCreate(async (snap, context) => {
-    snap.ref.set({joinDate: firestore.FieldValue.serverTimestamp()}, {merge: true});
+    snap.ref.set({ joinDate: firestore.FieldValue.serverTimestamp() }, { merge: true });
+  })
+
+exports.logFirstUserInteraction = functions.firestore
+  .document('users/{account}')
+  .onCreate(async (snap, context) => {
+    await db.collection('logs').add({
+      dateTime: firestore.FieldValue.serverTimestamp(),
+      type: "First User Interaction",
+      msg: context.params.account
+    })
+  })
+
+exports.sendLogEntryToDiscord = functions
+  .runWith({ secrets: ["DAONATIVE_DISCORD_WEBHOOK_LOGS"] })
+  .firestore
+  .document('logs/{logId}')
+  .onCreate(async (snap, context) => {
+    if (!process.env.DAONATIVE_DISCORD_WEBHOOK_LOGS) {
+      console.log('No webhook configured')
+      return
+    }
+
+    const log = snap.data()
+    const content = `
+**${log?.type}**
+${log?.dateTime?.toDate()?.toString() || ""}
+${log?.url || ""}
+
+${log.msg}`
+
+    await axios.post(process.env.DAONATIVE_DISCORD_WEBHOOK_LOGS, { content })
   })
