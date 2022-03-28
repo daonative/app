@@ -16,6 +16,7 @@ import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
 import useMembership from '../../../../../lib/useMembership'
 import Linkify from 'linkify-react'
+import Link from 'next/link'
 
 
 const VerifyModal = ({ show, onClose, workproof }) => {
@@ -321,7 +322,14 @@ const ChallengeDetails = () => {
               <div>
                 <h2 className="text-xl text-daonative-subtitle">Submissions</h2>
               </div>
-              <div>
+              <div className="flex gap-4 items-center">
+                {isAdmin && hasWorkToVerify && (
+                  <Link href={`/dao/${roomId}/challenges/${challengeId}/verify`} passHref>
+                    <a>
+                      <PrimaryButton>Verify pending work</PrimaryButton>
+                    </a>
+                  </Link>
+                )}
                 {isMember && (
                   <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
                     <PlusIcon className="w-4 h-4" />

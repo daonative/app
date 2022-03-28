@@ -110,7 +110,7 @@ const SubmissionsList = ({ submissions, currentSubmissionIdx, onCurrentSubmissio
       {submissions?.map((submission, idx) => {
         return (
           <li key={idx} className="py-2">
-            <Card>
+            <Card className={currentSubmissionIdx === idx && "shadow-daonative-blue"}>
               <div className="flex items-center justify-between" onClick={() => onCurrentSubmissionChanged(idx)}>
                 <div className="flex w-full">
                   <div>
@@ -168,7 +168,7 @@ const ChallengeDetails = () => {
         </div>
         <div className="flex gap-8">
           <div className="w-1/2">
-            <SubmissionsList submissions={submissions} onCurrentSubmissionChanged={setCurrentSubmission} />
+            <SubmissionsList submissions={submissions} currentSubmissionIdx={currentSubmission} onCurrentSubmissionChanged={setCurrentSubmission} />
           </div>
           <div className="w-1/2">
             {currentSubmission < submissions?.length && <VerifyWork workproof={submissions[currentSubmission]} onVerified={() => { }} />}
