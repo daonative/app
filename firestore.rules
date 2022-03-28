@@ -39,7 +39,7 @@ service cloud.firestore {
       allow update: if
         isAdmin(request.resource.data.roomId)
         && resource.data.author != request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers'].toSet()
+        && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers', 'verifications'].toSet()
         && (
           request.resource.data.verifiers == [request.auth.uid] ||
           request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
