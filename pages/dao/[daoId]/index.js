@@ -53,11 +53,10 @@ const getRoom = async (roomId) => {
 
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
-  const feed = await getFeed(roomId)
   const room = await getRoom(roomId)
 
   return {
-    props: { feed, dao: room }
+    props: { dao: room }
   }
 }
 
@@ -207,56 +206,15 @@ const OpenTasks = ({ openTasks }) => {
   )
 }
 
-const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
+const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
-  const { account } = useWallet()
-  const [showSidebarMobile, setShowSidebarMobile] = useState(false)
-  const [darkMode, setDarkMode] = useLocalStorage("darkMode", true)
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
-  const [feedSnapshot] = useCollection(
-    query(collection(db, 'feed'), where('roomId', '==', roomId), orderBy('created', 'desc'))
-  )
-  const [membersSnapshot] = useCollection(
-    query(collection(db, 'rooms', roomId, 'members'))
-  )
-  const [usersSnapshot] = useCollection(
-    query(collection(db, 'users'), where('rooms', 'array-contains', roomId))
-  )
-  const [tasksSnapshot] = useCollection(
-    query(
-      collection(db, 'tasks'),
-      where('roomId', '==', roomId),
-      where('assigneeAccount', '==', account),
-      where('status', '!=', 'done'),
-      orderBy('status', 'desc'),
-      orderBy('deadline', 'desc')
-    )
-  )
-
-  const [openTasksSnapshot] = useCollection(
-    query(
-      collection(db, 'tasks'),
-      where('roomId', '==', roomId),
-      where('assigneeAccount', '==', null),
-      where('status', '!=', 'done'),
-      orderBy('status', 'desc'),
-      orderBy('deadline', 'desc')
-    )
-  )
-
-  const membership = useMembership(account, roomId)
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
     roomId: daoSnapshot.id
   } : initialDAO
-
-
-
-  const onShowMobileSidebar = () => setShowSidebarMobile(true)
-  const onToggleDarkMode = () => setDarkMode(!darkMode)
-
 
 
   return (
@@ -285,12 +243,6 @@ const Dashboard = ({ feed: initialFeed, dao: initialDAO }) => {
       */}
     </>
   )
-}
-
-const DisabledDashboard = () => {
-  const { push, query: { daoId } } = useRouter()
-  useEffect(() => push(`/dao/${daoId}/challenges`), [])
-  return <></>
 }
 
 export default Dashboard
