@@ -30,36 +30,41 @@ const updateLeaderboardPosition = async (roomId, account) => {
     return xps + proofWeight
   }, 0)
 
-  const totalXpsFromVerifiedSubmissions = workproofSubmissionsSnap.docs.reduce((xps, doc) => {
-    const workproof = doc.data()
-    const proofWeight = Number(workproof.weight) || 0
-    if (workproof?.verifiers?.length > 0)
-      return xps + proofWeight
-    return xps
-  }, 0)
+  const [totalXpsFromAcceptedSubmissions, totalXpsFromRjectedSubmissions] =
+    workproofSubmissionsSnap.docs.reduce((xps, doc) => {
+      const workproof = doc.data()
+      const hasVerifiers = workproof?.verifications && Object.keys(workproof.verifications).length > 0
+
+      if (!hasVerifiers)
+        return xps
+
+      const proofWeight = Number(workproof.weight) || 0
+      const hasAtLeastOneDissaproval =
+        Object.values(workproof?.verifications)
+          .filter(verification => verification.accepted === false)
+          .length > 0
+
+      if (!hasAtLeastOneDissaproval)
+        return [xps[0] + proofWeight, xps[1]]
+
+      return [xps[0], xps[1] + proofWeight]
+    }, [0, 0])
 
   const workproofVerificationsQuery = db.collection('workproofs').where('roomId', '==', roomId).where('verifiers', 'array-contains', account)
   const workproofVerificationsSnap = await workproofVerificationsQuery.get()
 
   const totalXpsVerificationsYield = workproofVerificationsSnap.docs.reduce((xps, doc) => {
     const proofWeight = Number(doc.data().weight) || 0
-    const xpYield = Math.ceil(proofWeight * 0.1)
+    const xpYield = proofWeight * 0.1
     return xps + xpYield
   }, 0)
 
-  const totalXps = totalXpsFromSubmissions + totalXpsVerificationsYield
-  const totalVerifiedXps = totalXpsFromVerifiedSubmissions + totalXpsVerificationsYield
-  const totalPendingXps = totalXpsFromSubmissions - totalXpsFromVerifiedSubmissions
-
-  //const userRef = db.collection('users').doc(account)
-  //const userSnap = await userRef.get()
-  //const user = userSnap.data()
+  const totalVerifiedXps = totalXpsFromAcceptedSubmissions + Math.ceil(totalXpsVerificationsYield)
+  const totalPendingXps = totalXpsFromSubmissions - totalXpsFromAcceptedSubmissions - totalXpsFromRjectedSubmissions
 
   const leaderboardRef = db.collection('rooms').doc(roomId).collection('leaderboard').doc(account)
   await leaderboardRef.set({
     userAccount: account,
-    //userName: user.name,
-    totalExperience: totalXps,
     verifiedExperience: totalVerifiedXps,
     pendingExperience: totalPendingXps,
     submissionCount: workproofSubmissionsSnap.docs.length
@@ -83,7 +88,6 @@ exports.updateLeaderboardXP = functions.firestore
       .concat(newVerifiers.filter(x => !oldVerifiers.includes(x)));
 
     verifiersDiff.forEach(verifier => {
-      console.log(roomId, verifier)
       updateLeaderboardPosition(roomId, verifier)
     })
   })
