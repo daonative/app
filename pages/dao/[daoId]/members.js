@@ -1,5 +1,4 @@
 import { CheckCircleIcon } from "@heroicons/react/solid"
-import { providers } from "ethers"
 import { doc, getDoc, getFirestore } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useWallet } from "use-wallet"
@@ -11,6 +10,7 @@ import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
 import { Card } from "../../../components/Card"
+import { getReadonlyProvider } from "../../../lib/chainSupport"
 
 
 const MemberItem = ({ member }) => {
@@ -37,7 +37,7 @@ const MemberItem = ({ member }) => {
 
     const retrieveEnsName = async () => {
       setEnsNameLoading(true)
-      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+      const provider = getReadonlyProvider(1)
       const ensName = await provider.lookupAddress(account)
       setEnsName(ensName)
       setEnsNameLoading(false)

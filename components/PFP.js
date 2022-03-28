@@ -2,6 +2,7 @@ import { CheckCircleIcon } from '@heroicons/react/solid'
 import { providers } from 'ethers'
 import { doc, getDoc, getFirestore } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
+import { getReadonlyProvider } from '../lib/chainSupport'
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 
 const PFP = ({ address, size }) => (
@@ -13,7 +14,7 @@ export const UserAvatar = ({ account }) => {
 
   useEffect(() => {
     const retrieveEnsName = async (account) => {
-      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+      const provider = getReadonlyProvider(1)
       const ensName = await provider.lookupAddress(account)
       if (!ensName) return
       const ensAvatar = await provider.getAvatar(ensName)
@@ -50,6 +51,7 @@ export const UserName = ({ account }) => {
   const displayNameVerified = !!ensName
   const displayName = getDisplayName()
 
+
   useEffect(() => {
     const retrieveUser = async () => {
       const db = getFirestore()
@@ -61,7 +63,7 @@ export const UserName = ({ account }) => {
 
     const retrieveEnsName = async () => {
       setEnsNameLoading(true)
-      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+      const provider = getReadonlyProvider(1)
       const ensName = await provider.lookupAddress(account)
       setEnsName(ensName)
       setEnsNameLoading(false)

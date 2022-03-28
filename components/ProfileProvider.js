@@ -1,7 +1,7 @@
-import { providers } from "ethers";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useWallet } from "use-wallet";
+import { getReadonlyProvider } from "../lib/chainSupport";
 
 
 const ProfileContext = createContext()
@@ -39,7 +39,7 @@ export const ProfileProvider = ({ children }) => {
 
     const retrieveEnsName = async () => {
       setEnsNameLoading(true)
-      const provider = new providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_MAINNET)
+      const provider = getReadonlyProvider(1)
       const ensName = await provider.lookupAddress(account)
       setEnsName(ensName)
       setEnsNameLoading(false)
