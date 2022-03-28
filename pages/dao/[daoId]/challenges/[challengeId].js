@@ -10,11 +10,12 @@ import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import EmptyStateNoSubmissions from '../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
-import PFP, { UserAvatar, UserName } from '../../../../components/PFP'
+import { UserAvatar, UserName } from '../../../../components/PFP'
 import Spinner from '../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../lib/uploadToIPFS'
 import useMembership from '../../../../lib/useMembership'
+import Linkify from 'linkify-react'
 
 
 const VerifyModal = ({ show, onClose, workproof }) => {
@@ -305,15 +306,17 @@ const ChallengeDetails = () => {
         </div>
         <div className="flex flex-col md:flex-row w-full pt-16 gap-4">
           <div className="w-full">
-            <h2 className="text-xl py-4">Description</h2>
+            <h2 className="text-xl py-4 text-daonative-subtitle">Description</h2>
             <div className="whitespace-pre-wrap text-daonative-white">
-              {challenge?.description}
+              <Linkify options={{className: 'text-daonative-primary-purple underline'}}>
+                {challenge?.description}
+              </Linkify>
             </div>
           </div>
           <div className="w-full">
             <div className="flex justify-between py-4">
               <div>
-                <h2 className="text-xl">Submissions</h2>
+                <h2 className="text-xl text-daonative-subtitle">Submissions</h2>
               </div>
               <div>
                 {isMember && (
