@@ -152,7 +152,7 @@ const ChallengeDetails = () => {
   )
   const submissions = submissionsSnapshot?.docs
     .map(doc => ({ ...doc.data(), workproofId: doc.id }))
-    .filter(submission => !submission?.verifiers?.includes(account))
+    .filter(submission => !(submission?.verifiers?.length > 0) && submission.author !== account)
 
   const { query: { daoId: roomId } } = useRouter()
   const membership = useMembership(account, roomId)

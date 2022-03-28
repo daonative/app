@@ -1,4 +1,4 @@
-import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
+import { CheckIcon, ClockIcon, PlusIcon } from '@heroicons/react/solid'
 import { addDoc, arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -152,46 +152,42 @@ const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
 
   return (
     <ul>
-      {submissions?.map((submission, idx) => {
-        const canVerify = showVerifyButton && !submission?.verifiers?.includes(account) && submission?.author !== account
-        return (
-          <li key={idx} className="py-2">
-            <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
-              <div className="flex items-center justify-between">
-                <div className="flex w-full">
-                  <div>
-                    <UserAvatar account={submission.author} />
+      {submissions?.map((submission, idx) => (
+        <li key={idx} className="py-2">
+          <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
+            <div className="flex items-center justify-between">
+              <div className="flex w-full">
+                <div>
+                  <UserAvatar account={submission.author} />
+                </div>
+                <div className="pl-4 w-full flex flex-col gap-1">
+                  <div className="flex justify-between w-full">
+                    <p className="text-sm">
+                      <UserName account={submission.author} />
+                    </p>
+                    <p className="text-sm text-gray-500 pr-1">
+                      <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                    </p>
                   </div>
-                  <div className="pl-4 w-full flex flex-col gap-1">
-                    <div className="flex justify-between w-full">
-                      <p className="text-sm">
-                        <UserName account={submission.author} />
-                      </p>
-                      <p className="text-sm text-gray-500 pr-1">
-                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                      </p>
-                    </div>
-                    <div className="flex justify-between w-full">
+                  <div className="flex justify-between w-full">
+                    {submission?.verifiers?.length > 0 ? (
                       <div className="inline-flex gap-1 items-center">
                         <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                        <p className="text-sm">{submission?.verifiers?.length || 0} verifications</p>
+                        <p className="text-sm">Verified</p>
                       </div>
-                      {canVerify && (
-                        <PrimaryButton
-                          className="text-xs px-2 w-max"
-                          onClick={() => onVerifyClick(submission)}
-                        >
-                          Verify &amp; Earn XPs
-                        </PrimaryButton>
-                      )}
-                    </div>
+                    ) : (
+                      <div className="inline-flex gap-1 items-center text-daonative-white">
+                        <ClockIcon className="w-5 h-5" />
+                        <p className="text-sm">Pending</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          </li>
-        )
-      })}
+          </div>
+        </li>
+      ))}
     </ul>
   )
 }
@@ -269,6 +265,7 @@ const ChallengeDetails = () => {
   const db = getFirestore()
   const { query: params } = useRouter()
   const challengeId = params.challengeId || ''
+  const roomId = params.daoId || ''
   const [challenge] = useDocumentData(
     doc(db, 'challenges', challengeId || 'null')
   )
@@ -278,10 +275,16 @@ const ChallengeDetails = () => {
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), woorkproofId: doc.id }))
 
   const { account } = useWallet()
-  const { query: { daoId: roomId } } = useRouter()
   const membership = useMembership(account, roomId)
   const isMember = !!membership
   const isAdmin = membership?.roles?.includes('admin')
+
+  // 1. work that doesn't have any verification yet
+  // 2. work that is not authored by the current user
+  const hasWorkToVerify = submissions && submissions?.filter(submission => (
+    submission.author !== account &&
+    !(submission?.verifiers?.length > 0)
+  )).length > 0
 
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
@@ -308,7 +311,7 @@ const ChallengeDetails = () => {
           <div className="w-full">
             <h2 className="text-xl py-4 text-daonative-subtitle">Description</h2>
             <div className="whitespace-pre-wrap text-daonative-white">
-              <Linkify options={{className: 'text-daonative-primary-purple underline'}}>
+              <Linkify options={{ className: 'text-daonative-primary-purple underline' }}>
                 {challenge?.description}
               </Linkify>
             </div>
