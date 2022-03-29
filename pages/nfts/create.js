@@ -186,6 +186,9 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                 <Disclosure.Panel>
                   <div className="flex flex-col gap-4">
                     <div>
+                      <span className="text-xs text-daonative-subtitle py-4 ">
+                        💡 When setting metadata the image field will be ignored.
+                      </span>
                       <label className="block text-sm font-medium py-2">
                         Metadata
                       </label>
