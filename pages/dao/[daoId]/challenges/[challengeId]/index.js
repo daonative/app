@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon, PlusIcon } from '@heroicons/react/solid'
+import { CheckIcon, ClockIcon, PlusIcon, BanIcon } from '@heroicons/react/solid'
 import { addDoc, arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -146,49 +146,60 @@ const ProofModal = ({ show, onClose, challenge }) => {
   )
 }
 
-const SubmissionsList = ({ submissions, onVerifyClick, showVerifyButton }) => {
-  const { account } = useWallet()
-
+const SubmissionsList = ({ submissions }) => {
   if (submissions?.length === 0) return <EmptyStateNoSubmissions />
 
   return (
     <ul>
-      {submissions?.map((submission, idx) => (
-        <li key={idx} className="py-2">
-          <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
-            <div className="flex items-center justify-between">
-              <div className="flex w-full">
-                <div>
-                  <UserAvatar account={submission.author} />
-                </div>
-                <div className="pl-4 w-full flex flex-col gap-1">
-                  <div className="flex justify-between w-full">
-                    <p className="text-sm">
-                      <UserName account={submission.author} />
-                    </p>
-                    <p className="text-sm text-gray-500 pr-1">
-                      <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                    </p>
+      {submissions?.map((submission, idx) => {
+        const verifications = submission?.verifications ? Object.values(submission.verifications) :[]
+        const isPending = verifications.length === 0
+        const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
+        const isVerified = !isPending && !isReverted
+        return (
+          <li key={idx} className="py-2">
+            <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
+              <div className="flex items-center justify-between">
+                <div className="flex w-full">
+                  <div>
+                    <UserAvatar account={submission.author} />
                   </div>
-                  <div className="flex justify-between w-full">
-                    {submission?.verifiers?.length > 0 ? (
-                      <div className="inline-flex gap-1 items-center">
-                        <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                        <p className="text-sm">Verified</p>
-                      </div>
-                    ) : (
-                      <div className="inline-flex gap-1 items-center text-daonative-white">
-                        <ClockIcon className="w-5 h-5" />
-                        <p className="text-sm">Pending</p>
-                      </div>
-                    )}
+                  <div className="pl-4 w-full flex flex-col gap-1">
+                    <div className="flex justify-between w-full">
+                      <p className="text-sm">
+                        <UserName account={submission.author} />
+                      </p>
+                      <p className="text-sm text-gray-500 pr-1">
+                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                      </p>
+                    </div>
+                    <div className="flex justify-between w-full">
+                      {isVerified && (
+                        <div className="inline-flex gap-1 items-center">
+                          <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                          <p className="text-sm">Verified</p>
+                        </div>
+                      )}
+                      {isPending && (
+                        <div className="inline-flex gap-1 items-center text-daonative-white">
+                          <ClockIcon className="w-5 h-5" />
+                          <p className="text-sm">Pending</p>
+                        </div>
+                      )}
+                      {isReverted && (
+                        <div className="inline-flex gap-1 items-center text-daonative-white">
+                          <BanIcon className="w-5 h-5" />
+                          <p className="text-sm">Reverted</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </li>
-      ))}
+          </li>
+        )
+      })}
     </ul>
   )
 }
