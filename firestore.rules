@@ -36,15 +36,19 @@ service cloud.firestore {
         && request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
         && request.resource.data.author == request.auth.uid
         && request.resource.data.weight is int;
-      allow update: if
-        isAdmin(request.resource.data.roomId)
-        && resource.data.author != request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers', 'verifications'].toSet()
-        && (
-          request.resource.data.verifiers == [request.auth.uid] ||
-          request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
+      allow update: if (
+          isAdmin(request.resource.data.roomId)
+          && resource.data.author != request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers', 'verifications'].toSet()
+          && (
+            request.resource.data.verifiers == [request.auth.uid] ||
+            request.resource.data.verifiers.toSet().difference(resource.data.verifiers.toSet()) == [request.auth.uid].toSet()
+          )
+          && request.resource.data.verifications.keys().toSet() == request.resource.data.verifiers.toSet()
+        ) || (
+          resource.data.author == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys() == ['description'].toSet()
         )
-        && request.resource.data.verifications.keys().toSet() == request.resource.data.verifiers.toSet()
     }
     match /invites/{inviteId} {
       allow read: if false;

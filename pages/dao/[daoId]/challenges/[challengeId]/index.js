@@ -28,7 +28,7 @@ const VerifyModal = ({ show, onClose, workproof }) => {
   const handleVerifyWork = async () => {
     setIsLoading(true)
     await requireAuthentication()
-    const workproofDoc = doc(db, 'workproofs', workproof.woorkproofId)
+    const workproofDoc = doc(db, 'workproofs', workproof.workproofId)
     await updateDoc(workproofDoc, {
       verifiers: arrayUnion(account)
     })
@@ -137,7 +137,60 @@ const ProofModal = ({ show, onClose, challenge }) => {
             {isSubmitting ? (
               <span className="w-4 h-4 mx-auto"><Spinner /></span>
             ) : (
-              <>Submit Challenge</>
+              <>Submit Proof of Work</>
+            )}
+          </PrimaryButton>
+        </ModalActionFooter>
+      </form>
+    </Modal>
+  )
+}
+
+const EditProofModal = ({ show, onClose, submission }) => {
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const requireAuthentication = useRequireAuthentication()
+
+  useEffect(() => {
+    reset({ description: submission?.description || "" })
+  }, [submission, reset])
+
+  const editProof = async (description) => {
+    const proof = {
+      description,
+    }
+    const db = getFirestore()
+    await updateDoc(doc(db, 'workproofs', submission.workproofId), proof)
+  }
+
+  const handleEditProof = async (data) => {
+    await requireAuthentication()
+    await editProof(data.description)
+    onClose()
+  }
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <form onSubmit={handleSubmit(handleEditProof)}>
+        <ModalTitle>Proof of Work</ModalTitle>
+        <ModalBody>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Description
+              </label>
+              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              {errors.description && (
+                <span className="text-xs text-red-400">You need to set a description</span>
+              )}
+            </div>
+          </div>
+        </ModalBody>
+        <ModalActionFooter>
+          <PrimaryButton type="submit">
+            {isSubmitting ? (
+              <span className="w-4 h-4 mx-auto"><Spinner /></span>
+            ) : (
+              <>Edit Proof of Work</>
             )}
           </PrimaryButton>
         </ModalActionFooter>
@@ -147,60 +200,82 @@ const ProofModal = ({ show, onClose, challenge }) => {
 }
 
 const SubmissionsList = ({ submissions }) => {
+  const { account } = useWallet()
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [submissionToEdit, setSubmissionToEdit] = useState(null)
+
   if (submissions?.length === 0) return <EmptyStateNoSubmissions />
 
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false)
+    setSubmissionToEdit(null)
+  }
+  const handleOpenEditModal = (submission) => {
+    setSubmissionToEdit(submission)
+    setEditModalOpen(true)
+  }
+
   return (
-    <ul>
-      {submissions?.map((submission, idx) => {
-        const verifications = submission?.verifications ? Object.values(submission.verifications) :[]
-        const isPending = verifications.length === 0
-        const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
-        const isVerified = !isPending && !isReverted
-        return (
-          <li key={idx} className="py-2">
-            <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
-              <div className="flex items-center justify-between">
-                <div className="flex w-full">
-                  <div>
-                    <UserAvatar account={submission.author} />
-                  </div>
-                  <div className="pl-4 w-full flex flex-col gap-1">
-                    <div className="flex justify-between w-full">
-                      <p className="text-sm">
-                        <UserName account={submission.author} />
-                      </p>
-                      <p className="text-sm text-gray-500 pr-1">
-                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                      </p>
+    <>
+      <EditProofModal show={editModalOpen} onClose={handleCloseEditModal} submission={submissionToEdit} />
+      <ul>
+        {submissions?.map((submission, idx) => {
+          const verifications = submission?.verifications ? Object.values(submission.verifications) : []
+          const isPending = verifications.length === 0
+          const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
+          const isVerified = !isPending && !isReverted
+          const isEditable = isPending && submission.author === account
+          return (
+            <li key={idx} className="py-2">
+              <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
+                <div className="flex items-center justify-between">
+                  <div className="flex w-full">
+                    <div>
+                      <UserAvatar account={submission.author} />
                     </div>
-                    <div className="flex justify-between w-full">
-                      {isVerified && (
-                        <div className="inline-flex gap-1 items-center">
-                          <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                          <p className="text-sm">Verified</p>
-                        </div>
-                      )}
-                      {isPending && (
-                        <div className="inline-flex gap-1 items-center text-daonative-white">
-                          <ClockIcon className="w-5 h-5" />
-                          <p className="text-sm">Pending</p>
-                        </div>
-                      )}
-                      {isReverted && (
-                        <div className="inline-flex gap-1 items-center text-daonative-white">
-                          <BanIcon className="w-5 h-5" />
-                          <p className="text-sm">Reverted</p>
-                        </div>
-                      )}
+                    <div className="pl-4 w-full flex flex-col gap-1">
+                      <div className="flex justify-between w-full">
+                        <p className="text-sm">
+                          <UserName account={submission.author} />
+                        </p>
+                        <p className="text-sm text-gray-500 pr-1">
+                          <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                        </p>
+                      </div>
+                      <div className="flex justify-between w-full">
+                        {isVerified && (
+                          <div className="inline-flex gap-1 items-center">
+                            <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                            <p className="text-sm">Verified</p>
+                          </div>
+                        )}
+                        {isPending && (
+                          <div className="inline-flex gap-1 items-center text-daonative-white">
+                            <ClockIcon className="w-5 h-5" />
+                            <p className="text-sm">Pending</p>
+                          </div>
+                        )}
+                        {isReverted && (
+                          <div className="inline-flex gap-1 items-center text-daonative-white">
+                            <BanIcon className="w-5 h-5" />
+                            <p className="text-sm">Reverted</p>
+                          </div>
+                        )}
+                        {isEditable && (
+                          <div className="">
+                            <SecondaryButton onClick={() => handleOpenEditModal(submission)}>Edit</SecondaryButton>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </li>
-        )
-      })}
-    </ul>
+            </li>
+          )
+        })}
+      </ul>
+    </>
   )
 }
 
@@ -284,7 +359,7 @@ const ChallengeDetails = () => {
   const [submissionsSnapshot] = useCollection(
     query(collection(db, 'workproofs'), where('challengeId', '==', challengeId), orderBy('created', 'desc'))
   )
-  const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), woorkproofId: doc.id }))
+  const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id }))
 
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
