@@ -184,17 +184,22 @@ const ChallengeDetails = () => {
           </div>
         </div>
         <div className="flex gap-8">
-          {submissions?.length > 0 ? (
+          {!isAdmin && <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />}
+          {isAdmin && (
             <>
-              <div className="w-1/2">
-                <SubmissionsList submissions={submissions} currentSubmissionIdx={currentSubmission} onCurrentSubmissionChanged={setCurrentSubmission} />
-              </div>
-              <div className="w-1/2">
-                {currentSubmission < submissions?.length && <VerifyWork workproof={submissions[currentSubmission]} onVerified={() => { }} />}
-              </div>
+              {submissions?.length > 0 ? (
+                <>
+                  <div className="w-1/2">
+                    <SubmissionsList submissions={submissions} currentSubmissionIdx={currentSubmission} onCurrentSubmissionChanged={setCurrentSubmission} />
+                  </div>
+                  <div className="w-1/2">
+                    {currentSubmission < submissions?.length && <VerifyWork workproof={submissions[currentSubmission]} onVerified={() => { }} />}
+                  </div>
+                </>
+              ) : (
+                <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />
+              )}
             </>
-          ) : (
-            <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />
           )}
         </div>
       </div>
