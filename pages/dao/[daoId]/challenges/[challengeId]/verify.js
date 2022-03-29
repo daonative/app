@@ -107,35 +107,40 @@ const VerifyWork = ({ workproof, onVerified }) => {
 
 const SubmissionsList = ({ submissions, currentSubmissionIdx, onCurrentSubmissionChanged }) => {
   return (
-    <ul>
-      {submissions?.map((submission, idx) => {
-        return (
-          <li key={idx} className="py-2">
-            <Card className={currentSubmissionIdx === idx && "shadow-daonative-blue"}>
-              <div className="flex items-center justify-between" onClick={() => onCurrentSubmissionChanged(idx)}>
-                <div className="flex w-full">
-                  <div>
-                    <UserAvatar account={submission.author} />
-                  </div>
-                  <div className="pl-4 w-full flex flex-col gap-1">
-                    <div className="flex justify-between w-full">
-                      <p className="text-sm">
-                        <UserName account={submission.author} />
-                      </p>
+    <>
+      <h2 className="text-xl py-4 text-daonative-subtitle">Review Queue</h2>
+      <ul>
+        {submissions?.map((submission, idx) => {
+          return (
+            <li key={idx} className="py-2" style={currentSubmissionIdx === idx ? { transform: 'scale(1.03)', transition: '0.2s ease-in' } : {
+              transition: '0.2s ease-in'
+            }}>
+              <Card >
+                <div className="flex items-center justify-between" onClick={() => onCurrentSubmissionChanged(idx)}>
+                  <div className="flex w-full">
+                    <div>
+                      <UserAvatar account={submission.author} />
                     </div>
-                    <div className="flex justify-between w-full">
-                      <p className="text-sm text-gray-500 pr-1">
-                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                      </p>
+                    <div className="pl-4 w-full flex flex-col gap-1">
+                      <div className="flex justify-between w-full">
+                        <p className="text-sm">
+                          <UserName account={submission.author} />
+                        </p>
+                      </div>
+                      <div className="flex justify-between w-full">
+                        <p className="text-sm text-gray-500 pr-1">
+                          <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Card>
-          </li>
-        )
-      })}
-    </ul>
+              </Card>
+            </li>
+          )
+        })}
+      </ul>
+    </>
   )
 }
 
@@ -175,7 +180,7 @@ const ChallengeDetails = () => {
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex p-4">
           <div className="flex justify-center w-full">
-            <h1 className="text-2xl">{challenge?.title}</h1>
+            <h1 className="text-2xl mb-5">{challenge?.title}</h1>
           </div>
         </div>
         <div className="flex gap-8">
