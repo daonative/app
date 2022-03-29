@@ -62,7 +62,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
     return metadataUri
   }
 
-  const createCollection = async (name, symbol, image, metadata) => {
+  const createCollection = async (name, symbol, image, metadata, maxSupply) => {
     if (image?.length > 0 && metadata) {
       throw Error("Cannot create a collection when both an image is uploaded and metadata is provided.")
     }
@@ -79,9 +79,9 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
     ) : (
       await uploadImageAndMetadata(name, image)
     )
-    return await contract.createCollection(name, symbol, metadataUri, false, 0, 0)
+    const maxOrInfiniteSupply = maxSupply ? maxSupply : 0
+    return await contract.createCollection(name, symbol, metadataUri, false, 0, maxOrInfiniteSupply)
   }
-
 
   const getNewCollectionAddressFromTxReceipt = (txReceipt) => {
     const collectionCreatorInterface = new ethers.utils.Interface(collectionCreatorAbi)
@@ -108,7 +108,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
     try {
-      const newCollectionTx = await createCollection(data.name, data.symbol, data.image, data.metadata)
+      const newCollectionTx = await createCollection(data.name, data.symbol, data.image, data.metadata, data.maxSupply)
       const newCollectionReceipt = await newCollectionTx.wait()
       const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
       toast.success("NFT collection created", { id: toastId })
@@ -184,32 +184,37 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                 leaveTo="transform scale-95 opacity-0"
               >
                 <Disclosure.Panel>
-                  <div>
-                    <span className="text-xs text-daonative-subtitle py-4 ">
-                      💡 When setting metadata the image field will be ignored.
-                    </span>
-                    <label className="block text-sm font-medium py-2">
-                      Metadata
-                    </label>
-                    <textarea
-                      {...register("metadata", {
-                        required: false,
-                        validate: {
-                          metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
-                          json: value => !value || isValidJSON(value)
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <label className="block text-sm font-medium py-2">
+                        Metadata
+                      </label>
+                      <textarea
+                        {...register("metadata", {
+                          required: false,
+                          validate: {
+                            metaOrImage: value => checkMetaDataOrImage(getValues('image'), value),
+                            json: value => !value || isValidJSON(value)
+                          }
+                        })
                         }
-                      })
-                      }
-                      rows={8}
-                      placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
-                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent"
-                    />
-                    {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
-                      <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
-                    )}
-                    {errors?.metadata?.type === "json" && (
-                      <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
-                    )}
+                        rows={8}
+                        placeholder={'{\n"image":"https://ipfs.infura.io/ipfs/QmcnySmHZNj9r5gwS86oKsQ8Gu7qPxdiGzvu6KfE1YKCSu",\n"name":"DAOnative Membership",\n"description":""\n}'}
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent"
+                      />
+                      {open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
+                        <span className="block text-xs text-red-400 pt-2">You need to set either an image or metadata</span>
+                      )}
+                      {errors?.metadata?.type === "json" && (
+                        <span className="block text-xs text-red-400">Metadata should be a valid JSON format</span>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium py-2">
+                        Max Supply (optional)
+                      </label>
+                      <input type="number" {...register("maxSupply", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+                    </div>
                   </div>
                 </Disclosure.Panel>
               </Transition>
@@ -283,7 +288,8 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
 export const ImagePreview = ({ uri }) => {
   return (
     <div className="flex items-center justify-center h-full p-2" style={{ maxWidth: 350, }}>
-      {uri ? <img src={uri} className="h-auto w-full" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {uri ? <img src={uri} className="h-auto w-full" alt="Your token artwork" /> : <PhotographIcon className="text-daonative-dark-100 w-32" />}
     </div>
   )
 }

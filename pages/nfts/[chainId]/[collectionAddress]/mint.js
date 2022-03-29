@@ -55,7 +55,11 @@ const Mint = () => {
     } catch (e) {
       console.log(e)
       toast.error("Failed to mint your NFT", { id: toastId })
-      const message = e?.data?.message || e.message
+      let message = e?.data?.message || e?.error?.message || e.message
+
+      if (message === 'execution reverted: Max supply exceeded')
+        message = "This collection has reached its max supply. You cannot mint any NFTs anymore."
+
       toast.error(message)
     }
   }
