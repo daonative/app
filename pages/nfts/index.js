@@ -11,22 +11,9 @@ import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 import { Card } from "../../components/Card";
 import { getReadonlyProvider, getCollectionCreatorAddress } from "../../lib/chainSupport";
+import NFTSteps from "../../components/NFTSteps";
 
-const EmptyCollectionList = () => (
-  <div className="w-full p-8 text-center flex flex-col items-center gap-8">
-    <CollectionIcon className="h-12 w-12 " />
-    <ul>
-      <li>1. Create your NFT collection</li>
-      <li>2. Send your community the minting invite link</li>
-      <li>3. Community members start minting</li>
-    </ul>
-    <span className="text-daonative-subtitle">The NFT collections {"you've"} created will show up here.</span>
-    <span className="text-daonative-subtitle py-8">
-      {"We'd"} love to talk to you!{" "}
-      <a href="https://discord.gg/m3mC5f4jBU" className="underline hover:text-daonative-primary-purple">Ask us on discord!</a>
-    </span>
-  </div>
-)
+
 
 const CollectionList = ({ chainId, collections }) => {
   const { asPath: path } = useRouter()
@@ -59,7 +46,7 @@ export const Gator = () => {
   const [collections, setCollections] = useState([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
 
-  const myCollections = collections.filter(collection => collection.owner === account)
+  const myCollections = collections.filter(collection => collection.owner === account) || []
 
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(chainId)
@@ -115,35 +102,47 @@ export const Gator = () => {
           <div className="flex justify-between w-full">
             <div>
               <h2 className="text-2xl">NFT Collection Creator</h2>
-              <p className="mt-1 max-w-2xl text-sm text-daonative-subtitle">
+              <p className="mt-1 text-sm text-daonative-text">
                 {"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers. "}
                 <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
               </p>
             </div>
-            <Link href="/nfts/create">
-              <a>
-                <PrimaryButton className={(!account || (collectionsLoading)) && "invisible w-max h-max "}>Create Collection</PrimaryButton>
-              </a>
-            </Link>
+            <>
+              {!account &&
+                <ConnectWalletButton >
+                  <PrimaryButton >
+                    Connect your wallet
+                  </PrimaryButton>
+                </ConnectWalletButton>
+              }
+              {!(!account || (collectionsLoading)) &&
+                <Link href="/nfts/create">
+                  <a className="ml-6 flex items-end">
+                    <PrimaryButton  >Create Collection</PrimaryButton>
+                  </a>
+                </Link>
+              }
+            </>
           </div>
           <div className="w-full">
-            {account && collectionsLoading && (
-              <div className="flex w-full justify-center p-8">
-                <div className="w-8 h-8">
-                  <Spinner />
-                </div>
-              </div>
-            )}
-            {!account &&
-              <ConnectWalletButton >
-                <PrimaryButton >
-                  Connect your wallet
-                </PrimaryButton>
-              </ConnectWalletButton>
-            }
-            {!collectionsLoading && myCollections.length === 0 && account && (
-              <EmptyCollectionList />
-            )}
+
+            <div className="flex">
+              {myCollections.length === 0 && (
+                <>
+                  <NFTSteps />
+                  {account && collectionsLoading && (
+                    <div className="flex w-full justify-center p-8">
+                      <div className="w-8 h-8">
+                        Loading...
+                      </div>
+                    </div>
+
+                  )}
+                </>
+              )}
+
+
+            </div>
             {!collectionsLoading && myCollections.length > 0 && (
               <CollectionList chainId={chainId} collections={myCollections} />
             )}

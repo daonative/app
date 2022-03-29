@@ -22,8 +22,9 @@ export const PrimaryButton = ({ children, onClick, type = "button", className = 
     className={classNames(
       "bg-daonative-primary-blue",
       "shadow-daonative-blue",
+      "w-max",
+      disabled && "opacity-50",
       className,
-      disabled && "bg-opacity-50"
     )}
     diabled={disabled}
   >
