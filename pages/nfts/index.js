@@ -99,15 +99,15 @@ export const Gator = () => {
     <div className="text-daonative-white">
       <div className="flex justify-center px-8 lg:px-0">
         <div className="flex flex-col gap-8 w-full lg:w-3/4">
-          <div className="flex justify-between w-full">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between w-full">
             <div>
               <h2 className="text-2xl">NFT Collection Creator</h2>
-              <p className="mt-1 text-sm text-daonative-text">
+              <p className="mt-1 text-xs md:text-sm text-daonative-text">
                 {"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers. "}
                 <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
               </p>
             </div>
-            <>
+            <div className="mt-7 mb-2 sm:mt-0 flex justify-center">
               {!account &&
                 <ConnectWalletButton >
                   <PrimaryButton >
@@ -117,12 +117,12 @@ export const Gator = () => {
               }
               {!(!account || (collectionsLoading)) &&
                 <Link href="/nfts/create">
-                  <a className="ml-6 flex items-end">
+                  <a className="ml-6 flex items-end ">
                     <PrimaryButton  >Create Collection</PrimaryButton>
                   </a>
                 </Link>
               }
-            </>
+            </div>
           </div>
           <div className="w-full">
 
