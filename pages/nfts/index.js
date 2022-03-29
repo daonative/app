@@ -107,7 +107,7 @@ export const Gator = () => {
                 <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
               </p>
             </div>
-            <div className="mt-7 mb-2 sm:mt-0 flex justify-center">
+            <div className="mt-7 mb-2 sm:mt-0 flex justify-center w-full sm:w-fit sm:ml-4">
               {!account &&
                 <ConnectWalletButton >
                   <PrimaryButton >
@@ -115,9 +115,9 @@ export const Gator = () => {
                   </PrimaryButton>
                 </ConnectWalletButton>
               }
-              {!(!account || (collectionsLoading)) &&
+              {account &&
                 <Link href="/nfts/create">
-                  <a className="ml-6 flex items-end ">
+                  <a className="flex items-end ">
                     <PrimaryButton  >Create Collection</PrimaryButton>
                   </a>
                 </Link>
@@ -125,23 +125,21 @@ export const Gator = () => {
             </div>
           </div>
           <div className="w-full">
-
-            <div className="flex">
+            <div className="">
               {myCollections.length === 0 && (
                 <>
-                  <NFTSteps />
+                  <div className="py-8">
+                    <NFTSteps />
+                  </div>
                   {account && collectionsLoading && (
                     <div className="flex w-full justify-center p-8">
-                      <div className="w-8 h-8">
+                      <div>
                         Loading...
                       </div>
                     </div>
-
                   )}
                 </>
               )}
-
-
             </div>
             {!collectionsLoading && myCollections.length > 0 && (
               <CollectionList chainId={chainId} collections={myCollections} />
