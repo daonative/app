@@ -74,8 +74,8 @@ const NftFaq = () => (
           <FAQItem question="Can I set a price to mint a token?">
             No. Let us know if you want this!
           </FAQItem>
-          <FAQItem question="The token artwork doesn't show up on OpenSea">
-            It takes OpenSea some time to fetch and cache the artwork. This is usually solved within 10 minutes after minting.
+          <FAQItem question="Why doesn't my token artwork show up on OpenSea?">
+            It takes OpenSea some time to fetch and cache the artwork. Use the refresh metadata button, in the top right corner of your token in OpenSea, to make sure OpenSea has a cached version of your artwork.
           </FAQItem>
           <FAQItem question="Can I add attributes?">
             <p>
