@@ -1,6 +1,7 @@
 import { CheckIcon } from "@heroicons/react/solid"
 import { arrayUnion, collection, doc, getFirestore, orderBy, query, updateDoc, where } from "firebase/firestore"
 import { reset } from "linkifyjs"
+import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
@@ -138,12 +139,24 @@ const SubmissionsList = ({ submissions, currentSubmissionIdx, onCurrentSubmissio
   )
 }
 
+const NothingToVerify = ({ challengeURL }) => (
+  <div className="w-full p-14 text-center flex flex-col items-center gap-4">
+    <h3 className="mt-2 text-lg font-medium text-daonative-gray-100">{"All Proof of Works have been reviewed!"}</h3>
+    <Link href={challengeURL}>
+      <a>
+        <PrimaryButton>Go back to the challenge</PrimaryButton>
+      </a>
+    </Link>
+  </div>
+)
+
 const ChallengeDetails = () => {
   const db = getFirestore()
   const { account } = useWallet()
   const { query: params } = useRouter()
   const [currentSubmission, setCurrentSubmission] = useState(0)
   const challengeId = params.challengeId || ''
+  const roomId = params.daoId || ''
   const [challenge] = useDocumentData(
     doc(db, 'challenges', challengeId || 'null')
   )
@@ -154,7 +167,6 @@ const ChallengeDetails = () => {
     .map(doc => ({ ...doc.data(), workproofId: doc.id }))
     .filter(submission => !(submission?.verifiers?.length > 0) && submission.author !== account)
 
-  const { query: { daoId: roomId } } = useRouter()
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.roles?.includes('admin')
 
@@ -167,12 +179,18 @@ const ChallengeDetails = () => {
           </div>
         </div>
         <div className="flex gap-8">
-          <div className="w-1/2">
-            <SubmissionsList submissions={submissions} currentSubmissionIdx={currentSubmission} onCurrentSubmissionChanged={setCurrentSubmission} />
-          </div>
-          <div className="w-1/2">
-            {currentSubmission < submissions?.length && <VerifyWork workproof={submissions[currentSubmission]} onVerified={() => { }} />}
-          </div>
+          {submissions?.length > 0 ? (
+            <>
+              <div className="w-1/2">
+                <SubmissionsList submissions={submissions} currentSubmissionIdx={currentSubmission} onCurrentSubmissionChanged={setCurrentSubmission} />
+              </div>
+              <div className="w-1/2">
+                {currentSubmission < submissions?.length && <VerifyWork workproof={submissions[currentSubmission]} onVerified={() => { }} />}
+              </div>
+            </>
+          ) : (
+            <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />
+          )}
         </div>
       </div>
     </LayoutWrapper>
