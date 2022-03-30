@@ -60,6 +60,9 @@ const Mint = () => {
       if (message === 'execution reverted: Max supply exceeded')
         message = "This collection has reached its max supply. You cannot mint any NFTs anymore."
 
+      if (message === 'execution reverted: Recipient already has a token')
+        message = "You already have an NFT from this collection. You can't have more than one NFT of this collection per wallet."
+
       toast.error(message)
     }
   }
