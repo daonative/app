@@ -261,11 +261,6 @@ const SubmissionsList = ({ submissions }) => {
                             <p className="text-sm">Reverted</p>
                           </div>
                         )}
-                        {isEditable && (
-                          <div className="">
-                            <SecondaryButton onClick={() => handleOpenEditModal(submission)}>Edit</SecondaryButton>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
