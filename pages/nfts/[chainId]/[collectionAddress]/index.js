@@ -186,7 +186,7 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
             <ShortAddress>{owner}</ShortAddress>
           </span>
           <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-            {date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()}
+            {/*date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()*/}
           </span>
         </div>
         <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
@@ -416,13 +416,15 @@ export const GatorCollection = () => {
     const retrieveCollectionTokens = async (address) => {
       setIsLoading(true)
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-      const mintFilter = contract.filters.Transfer(null)
-      const mintEvents = await contract.queryFilter(mintFilter)
-      const tokens = await Promise.all(mintEvents.map(async event => ({
-        tokenId: event.args?.tokenId.toNumber(),
-        owner: event.args?.to,
-        metadataUri: await getTokenURI(address, event.args?.tokenId.toNumber()),
-        timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp,
+      //const mintFilter = contract.filters.Transfer(null)
+      //const mintEvents = await contract.queryFilter(mintFilter)
+      const currentSupply = await contract.totalSupply()
+      const tokenIds = [...Array(currentSupply.toNumber()).keys()]
+      const tokens = await Promise.all(tokenIds.map(async tokenId => ({
+        tokenId,
+        owner: await contract.ownerOf(tokenId),
+        metadataUri: await getTokenURI(address, tokenId),
+        //timestamp: (await readonlyProvider.getBlock(event.blockNumber)).timestamp,
         chainId
       })))
       setCollectionTokens(tokens)
