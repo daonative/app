@@ -17,30 +17,17 @@ import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
 import useMembership from '../../../../../lib/useMembership'
 import Linkify from 'linkify-react'
 import Link from 'next/link'
+import { classNames } from '../../../../../lib/utils'
 
 
-const VerifyModal = ({ show, onClose, workproof }) => {
-  const db = getFirestore()
-  const [isLoading, setIsLoading] = useState(false)
-  const requireAuthentication = useRequireAuthentication()
-  const { account } = useWallet()
-
-  const handleVerifyWork = async () => {
-    setIsLoading(true)
-    await requireAuthentication()
-    const workproofDoc = doc(db, 'workproofs', workproof.workproofId)
-    await updateDoc(workproofDoc, {
-      verifiers: arrayUnion(account)
-    })
-    onClose()
-    setIsLoading(false)
-  }
-
-  const handleReportWork = () => { }
-
+const ProofOfWorkModal = ({ show, onClose, workproof }) => {
+  const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
+  const isPending = verifications.length === 0
+  const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
+  const isVerified = !isPending && !isReverted
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Verify Submission</ModalTitle>
+      <ModalTitle>Proof of Work</ModalTitle>
       <ModalBody>
         <div className="flex flex-col gap-4">
           <div>
@@ -63,26 +50,55 @@ const VerifyModal = ({ show, onClose, workproof }) => {
               </div>
             </div>
           )}
-        </div>
-        <div className="pt-8 text-sm">
-          💡 You can also earn XPs by reporting false submissions
+          <div>
+            <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+              Status
+            </p>
+            {isVerified && (
+              <div className="inline-flex gap-1 items-center">
+                <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                <p className="text-sm">Verified</p>
+              </div>
+            )}
+            {isPending && (
+              <div className="inline-flex gap-1 items-center text-daonative-white">
+                <ClockIcon className="w-5 h-5" />
+                <p className="text-sm">Pending</p>
+              </div>
+            )}
+            {isReverted && (
+              <div className="inline-flex gap-1 items-center text-daonative-white">
+                <BanIcon className="w-5 h-5" />
+                <p className="text-sm">Reverted</p>
+              </div>
+            )}
+          </div>
+          {verifications.length > 0 && (
+            <div>
+              <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+                Reason
+              </p>
+              {verifications.map((verification, idx) => (
+                <div key={idx} className="whitespace-pre-wrap text-sm font-medium">
+                  {verification.reason}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </ModalBody>
       <ModalActionFooter>
-        <div className="w-full flex justify-between">
-          <SecondaryButton className="invisible">
-            Report
+        <div className="w-full flex justify-end">
+          <SecondaryButton onClick={onClose}>
+            Close
           </SecondaryButton>
-          <PrimaryButton onClick={handleVerifyWork}>
-            {isLoading ? <span className="w-4 h-4 mx-auto"><Spinner /></span> : "Verify"}
-          </PrimaryButton>
         </div>
       </ModalActionFooter>
     </Modal>
   )
 }
 
-const ProofModal = ({ show, onClose, challenge }) => {
+const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
@@ -146,88 +162,41 @@ const ProofModal = ({ show, onClose, challenge }) => {
   )
 }
 
-const EditProofModal = ({ show, onClose, submission }) => {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
-  const requireAuthentication = useRequireAuthentication()
-
-  useEffect(() => {
-    reset({ description: submission?.description || "" })
-  }, [submission, reset])
-
-  const editProof = async (description) => {
-    const proof = {
-      description,
-    }
-    const db = getFirestore()
-    await updateDoc(doc(db, 'workproofs', submission.workproofId), proof)
-  }
-
-  const handleEditProof = async (data) => {
-    await requireAuthentication()
-    await editProof(data.description)
-    onClose()
-  }
-
-  return (
-    <Modal show={show} onClose={onClose}>
-      <form onSubmit={handleSubmit(handleEditProof)}>
-        <ModalTitle>Proof of Work</ModalTitle>
-        <ModalBody>
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-sm font-medium pb-2">
-                Description
-              </label>
-              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
-              {errors.description && (
-                <span className="text-xs text-red-400">You need to set a description</span>
-              )}
-            </div>
-          </div>
-        </ModalBody>
-        <ModalActionFooter>
-          <PrimaryButton type="submit">
-            {isSubmitting ? (
-              <span className="w-4 h-4 mx-auto"><Spinner /></span>
-            ) : (
-              <>Edit Proof of Work</>
-            )}
-          </PrimaryButton>
-        </ModalActionFooter>
-      </form>
-    </Modal>
-  )
-}
-
 const SubmissionsList = ({ submissions }) => {
   const { account } = useWallet()
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [submissionToEdit, setSubmissionToEdit] = useState(null)
+  const [proofOfWorkModalOpen, setProofOfWorkModalOpen] = useState(false)
+  const [proofOfWorkToShow, setProofOfWorkToShow] = useState(null)
 
   if (submissions?.length === 0) return <EmptyStateNoSubmissions />
 
   const handleCloseEditModal = () => {
-    setEditModalOpen(false)
-    setSubmissionToEdit(null)
+    setProofOfWorkModalOpen(false)
+    setProofOfWorkToShow(null)
   }
   const handleOpenEditModal = (submission) => {
-    setSubmissionToEdit(submission)
-    setEditModalOpen(true)
+    setProofOfWorkToShow(submission)
+    setProofOfWorkModalOpen(true)
   }
 
   return (
     <>
-      <EditProofModal show={editModalOpen} onClose={handleCloseEditModal} submission={submissionToEdit} />
+      <ProofOfWorkModal show={proofOfWorkModalOpen} onClose={handleCloseEditModal} workproof={proofOfWorkToShow} />
       <ul>
         {submissions?.map((submission, idx) => {
           const verifications = submission?.verifications ? Object.values(submission.verifications) : []
           const isPending = verifications.length === 0
           const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
           const isVerified = !isPending && !isReverted
-          const isEditable = isPending && submission.author === account
+          const isAuthor = submission?.author === account
           return (
             <li key={idx} className="py-2">
-              <div className="px-4 py-4 sm:px-6 bg-daonative-component-bg rounded">
+              <div
+                className={classNames(
+                  "px-4 py-4 sm:px-6 bg-daonative-component-bg rounded",
+                  isAuthor && "hover:cursor-pointer"
+                )}
+                onClick={() => isAuthor && handleOpenEditModal(submission)}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex w-full">
                     <div>
@@ -380,8 +349,8 @@ const ChallengeDetails = () => {
   return (
     <LayoutWrapper>
       <EditChallengeModal show={showEditChallengeModal} onClose={handleCloseEditChallengeModal} challenge={{ ...challenge, challengeId }} />
-      <ProofModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
-      <VerifyModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
+      <SubmitProofOfWorkModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
+      <ProofOfWorkModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex">
           <div className="flex justify-center w-full">
