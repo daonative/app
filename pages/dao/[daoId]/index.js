@@ -229,18 +229,6 @@ const Dashboard = ({ dao: initialDAO }) => {
         <div className="mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex items-center justify-between gap-4">
             <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
-            {isAdmin && (
-              <Link href={`/dao/${roomId}/config`} passHref>
-                <a>
-                  <SecondaryButton>
-                    <span className="h-4 w-4 mr-2">
-                      <CogIcon />
-                    </span>
-                    DAO settings
-                  </SecondaryButton>
-                </a>
-              </Link>
-            )}
           </div>
           <Mission roomId={roomId} mission={dao.mission} />
         </div>
