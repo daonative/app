@@ -20,6 +20,9 @@ import Spinner from '../../../components/Spinner';
 import { useRequireAuthentication } from '../../../lib/authenticate';
 import { Members } from './members';
 import { LayoutWrapper } from '../../../components/LayoutWrapper';
+import { SecondaryButton } from '../../../components/Button';
+import { CogIcon } from '@heroicons/react/solid';
+import Link from 'next/link';
 
 const db = getFirestore()
 
@@ -210,6 +213,9 @@ const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
+  const { account } = useWallet()
+  const membership = useMembership(account, roomId)
+  const isAdmin = !!membership?.roles?.includes('admin')
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
@@ -221,7 +227,21 @@ const Dashboard = ({ dao: initialDAO }) => {
     <>
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
-          <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+            {isAdmin && (
+              <Link href={`/dao/${roomId}/config`} passHref>
+                <a>
+                  <SecondaryButton>
+                    <span className="h-4 w-4 mr-2">
+                      <CogIcon />
+                    </span>
+                    DAO settings
+                  </SecondaryButton>
+                </a>
+              </Link>
+            )}
+          </div>
           <Mission roomId={roomId} mission={dao.mission} />
         </div>
         <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
