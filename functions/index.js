@@ -21,7 +21,6 @@ exports.updateSubmissionCount = functions.firestore
   });
 
 const updateLeaderboardPosition = async (roomId, account) => {
-
   const workproofSubmissionsQuery = db.collection('workproofs').where('roomId', '==', roomId).where('author', '==', account)
   const workproofSubmissionsSnap = await workproofSubmissionsQuery.get()
 
@@ -127,4 +126,82 @@ ${log?.url || ""}
 ${log.msg}`
 
     await axios.post(process.env.DAONATIVE_DISCORD_WEBHOOK_LOGS, { content })
+  })
+
+const sendDiscordNotification = async (roomId, content) => {
+  const roomSnap = await db.collection('rooms').doc(roomId).get()
+
+  if (!roomSnap.exists) {
+    console.log(roomId, "DOESNT EXIST")
+    return
+  }
+
+  const roomData = roomSnap.data()
+
+  if (!roomData.discordNotificationWebhook) {
+    console.log(roomData, "DOESNT HAVE WEBHOOK")
+    return
+  }
+
+  await axios.post(roomData.discordNotificationWebhook, { content })
+}
+
+exports.newChallengeDiscordNotification = functions.firestore
+  .document('logs/{logId}')
+  .onCreate(async (snap, context) => {
+  })
+
+exports.newProofOfWorkDiscordNotification = functions.firestore
+  .document('workproofs/{workproofId}')
+  .onCreate(async (snap, context) => {
+    const proofOfWork = snap.data()
+    const roomId = proofOfWork.roomId
+    const challengeId = proofOfWork.challengeId
+    const challengeSnap = await db.collection('challenges').doc(challengeId).get()
+    const challenge = challengeSnap.data()
+    const message =
+`:pick: **New Proof of Work!**
+
+Challenge: ${challenge.title}
+Author: ${proofOfWork.author}`
+    await sendDiscordNotification(roomId, message)
+  })
+
+exports.verifiedProofOfWorkDiscordNotification = functions.firestore
+  .document('workproofs/{workproofId}')
+  .onUpdate(async (change, context) => {
+    const proofOfWork = change.after.data()
+    const roomId = proofOfWork.roomId
+    const challengeId = proofOfWork.challengeId
+
+    const challengeSnap = await db.collection('challenges').doc(challengeId).get()
+    const challenge = challengeSnap.data()
+
+    const verifications = proofOfWork?.verifications ? Object.values(proofOfWork.verifications) : []
+    const isPending = verifications.length === 0
+    const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
+    const isVerified = !isPending && !isReverted
+
+    if (isPending)
+      return
+
+    if (isReverted) {
+      const message =
+`:x: **Proof of Work reverted!**
+
+Challenge: ${challenge.title}
+Author: ${proofOfWork.author}`
+      await sendDiscordNotification(roomId, message)
+      return
+    }
+
+    if (isVerified) {
+      const message =
+`:ballot_box_with_check: **Proof of Work verified!**
+
+Challenge: ${challenge.title}
+Author: ${proofOfWork.author}`
+      await sendDiscordNotification(roomId, message)
+      return
+    }
   })
