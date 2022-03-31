@@ -147,8 +147,14 @@ const sendDiscordNotification = async (roomId, content) => {
 }
 
 exports.newChallengeDiscordNotification = functions.firestore
-  .document('logs/{logId}')
+  .document('challenges/{challengeId}')
   .onCreate(async (snap, context) => {
+    const challenge = snap.data()
+    const roomId = challenge.roomId
+    const message =
+`:sparkles: **New Challenge!**
+${challenge.title}`
+    await sendDiscordNotification(roomId, message)
   })
 
 exports.newProofOfWorkDiscordNotification = functions.firestore
