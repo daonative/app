@@ -26,6 +26,8 @@ const Mint = () => {
   const [collectionName, setCollectionName] = useState("")
   const [collectionImageURI, setCollectionImageURI] = useState('')
   const [collectionHasError, setCollectionHasError] = useState(false)
+  const [collectionMaxSupply, setCollectionMaxSupply] = useState(null)
+  const [collectionTotalSupply, setCollectionTotalSupply] = useState(null)
 
   // Invite
   const [isValidInvite, setIsValidInvite] = useState(true)
@@ -38,6 +40,11 @@ const Mint = () => {
   const isRinkebyNFT = Number(chainId) === 4
   const isCorrectChain = Number(chainId) === injectedChainId
 
+  const canStillMint = (
+    collectionMaxSupply !== null &&
+    collectionTotalSupply !== null &&
+    (collectionMaxSupply === 0 || collectionMaxSupply > collectionTotalSupply)
+  )
 
   const mintNFT = async (collectionAddress, inviteCode, inviteMaxUse, inviteSig) => {
     const signer = injectedProvider.getSigner()
@@ -83,6 +90,15 @@ const Mint = () => {
       setCollectionImageURI(res?.data?.image)
     }
 
+    const retrieveCollectionSupply = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const totalSupply = await contract.totalSupply()
+      const maxSupply = await contract.maxSupply()
+      //const supply = [totalSupply.toNumber(), maxSupply.toNumber()]
+      setCollectionMaxSupply(maxSupply.toNumber())
+      setCollectionTotalSupply(totalSupply.toNumber())
+    }
+
     const retrieveCollectionData = async (collectionAddress) => {
       if (!ethers.utils.isAddress(collectionAddress)) {
         setCollectionHasError(true)
@@ -94,6 +110,7 @@ const Mint = () => {
         await Promise.all([
           retrieveCollectionName(collectionAddress),
           retrieveCollectionImageURI(collectionAddress),
+          retrieveCollectionSupply(collectionAddress)
         ])
       } catch (e) {
         console.log(e)
@@ -122,7 +139,13 @@ const Mint = () => {
             </PrimaryButton>
           </ConnectWalletButton>
         )}
-        {!collectionHasError && isValidInvite && account && (
+        {!collectionHasError && isValidInvite && account && collectionMaxSupply != null && !canStillMint && (
+          <>
+            <p className="text-center">This NFT has reached {"it's"} max supply.</p>
+            <p className="text-center">Minting is not possible anymore.</p>
+          </>
+        )}
+        {!collectionHasError && isValidInvite && account && collectionMaxSupply != null && canStillMint && (
           <div className="flex flex-col items-center gap-4">
             {isCorrectChain && (
               <PrimaryButton onClick={handleMintNFT}>Mint your NFT</PrimaryButton>
@@ -149,8 +172,16 @@ const Mint = () => {
         )}
 
         <div>
-
-          <div className="text-xs text-daonative-primary-purple h-12 inline-flex items-center font-bold">{collectionName || "DAOnative Core"}</div>
+          <div className="text-xs text-daonative-primary-purple h-12 flex justify-between items-center font-bold">
+            <div>
+              {collectionName || "DAOnative Core"}
+            </div>
+            {!!collectionTotalSupply && !!collectionMaxSupply && (
+              <div>
+                {collectionTotalSupply} / {collectionMaxSupply}
+              </div>
+            )}
+          </div>
           <div className="flex shadow-daonative justify-center border border-daonative-border  rounded w-96 min-h-[18em] overflow-hidden p-6">
             <ImagePreview uri={collectionImageURI} />
           </div>
@@ -164,8 +195,6 @@ const Mint = () => {
         {collectionHasError && (
           <CollectionNotFound />
         )}
-
-
       </div>
     </div>
   )
@@ -178,7 +207,6 @@ const MintPage = () => {
         <main className="flex justify-center items-center h-screen">
           <div className="flex flex-col items-center">
             <h1 className="text-xl font-space text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
-
             < Mint />
           </div>
         </main>
