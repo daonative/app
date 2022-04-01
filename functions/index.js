@@ -143,7 +143,12 @@ const sendDiscordNotification = async (roomId, content) => {
     return
   }
 
-  await axios.post(roomData.discordNotificationWebhook, { content })
+  await axios.post(roomData.discordNotificationWebhook, {
+    content,
+    embeds: null,
+    username: "DAOnative",
+    avatar_url: "https://app.daonative.xyz/DAOnativeLogo.png"
+  })
 }
 
 exports.newChallengeDiscordNotification = functions.firestore
@@ -151,9 +156,10 @@ exports.newChallengeDiscordNotification = functions.firestore
   .onCreate(async (snap, context) => {
     const challenge = snap.data()
     const roomId = challenge.roomId
+    const challengeId = context.params.challengeId
     const message =
-`:sparkles: **New Challenge!**
-${challenge.title}`
+      `:sparkles: **New Challenge!**
+[${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})`
     await sendDiscordNotification(roomId, message)
   })
 
@@ -166,9 +172,9 @@ exports.newProofOfWorkDiscordNotification = functions.firestore
     const challengeSnap = await db.collection('challenges').doc(challengeId).get()
     const challenge = challengeSnap.data()
     const message =
-`:pick: **New Proof of Work!**
+      `:pick: **New Proof of Work!**
 
-Challenge: ${challenge.title}
+Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
 Author: ${proofOfWork.author}`
     await sendDiscordNotification(roomId, message)
   })
@@ -193,9 +199,9 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
 
     if (isReverted) {
       const message =
-`:x: **Proof of Work reverted!**
+        `:x: **Proof of Work reverted!**
 
-Challenge: ${challenge.title}
+Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
 Author: ${proofOfWork.author}`
       await sendDiscordNotification(roomId, message)
       return
@@ -203,9 +209,9 @@ Author: ${proofOfWork.author}`
 
     if (isVerified) {
       const message =
-`:ballot_box_with_check: **Proof of Work verified!**
+        `:ballot_box_with_check: **Proof of Work verified!**
 
-Challenge: ${challenge.title}
+Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
 Author: ${proofOfWork.author}`
       await sendDiscordNotification(roomId, message)
       return
