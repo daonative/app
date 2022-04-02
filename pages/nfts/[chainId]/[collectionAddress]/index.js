@@ -11,12 +11,13 @@ import Spinner from '../../../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../../../components/ShortAddress'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
+import { Card, SimpleCard } from '../../../../components/Card'
 import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../../../lib/useMembership'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import { classNames } from '../../../../lib/utils'
 import { ClipboardCopyIcon } from '@heroicons/react/solid'
-import { OpenSeaPreview } from '../../create'
+import { ImagePreview, OpenSeaPreview } from '../../create'
 import Link from 'next/link'
 import { getReadonlyProvider } from '../../../../lib/chainSupport'
 
@@ -178,24 +179,27 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
   }, [metadataUri])
 
   return (
-    <a href={getOpenSeaUrl(Number(chainId), tokenAddress, tokenId)}>
-      <div className="relative w-64 rounded-lg overflow-hidden">
-        <img className="object-cover w-full" src={metadata.image} />
-        <div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
-          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-            <ShortAddress>{owner}</ShortAddress>
-          </span>
-          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-            {/*date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()*/}
-          </span>
-        </div>
-        <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
-          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-            #{String(tokenId + 1).padStart(3, '0')}
-          </span>
+    <SimpleCard className="opacity-[80%] hover:opacity-100">
+      <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+        #{String(tokenId + 1).padStart(3, '0')}
+      </span >
+      <a href={getOpenSeaUrl(Number(chainId), tokenAddress, tokenId)}>
+        <img className="object-cover w-full p-2 min-h-[100px] w-[200px]" src={metadata.image} />
+      </a >
+      < div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center" >
+        <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+          {/*date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()*/}
+        </span>
+      </div >
+      <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
+      </div>
+      <div className='text-daonative-subtitle'>
+        Minted
+        <div>
+          by <span className='text-daonative-white'><ShortAddress>{owner}</ShortAddress></span>
         </div>
       </div>
-    </a>
+    </SimpleCard >
   )
 }
 
@@ -206,6 +210,8 @@ const EmptyTokenList = ({ onInviteToMint, canInvite, children }) => (
       <>
         <p className="mt-1 text-sm text-daonative-subtitle my-6">Create an invitation and share it with people to mint!</p>
         <PrimaryButton onClick={onInviteToMint}>Create an invitation link</PrimaryButton>
+
+        <Link href="/nfts/faq"><a className="underline text-sm mt-3">How does this work?</a></Link>
       </>
     )}
   </div>
@@ -218,35 +224,14 @@ export const CollectionNotFound = () => (
 )
 
 const TokenList = ({ address, tokens }) => (
-  <>
+  <div className='grid grid-cols-3 gap-4'>
     {tokens?.map((token) => (
       <Token key={token.tokenId} {...token} tokenAddress={address} />
     ))}
-  </>
-)
-
-export const CollectionHeader = ({ isLoading, imageUri, children }) => (
-  <div className="flex justify-between items-center gap-3">
-    <CollectionImage imageUri={imageUri} isLoading={isLoading} />
-    <CollectionTitle>{children}</CollectionTitle>
   </div>
 )
 
-const CollectionTitle = ({ children }) => (
-  <h2 className="text-2xl text-daonative-white">{children}</h2>
-)
 
-const CollectionImage = ({ imageUri, isLoading }) => (
-  <span className="inline-block relative h-12 w-12">
-    {isLoading && <Spinner className='absolute top-0' />}
-    {!isLoading && imageUri && (
-      <>
-        <img className="h-12 w-12 rounded-md" src={imageUri} alt="" />
-        <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-green-400" />
-      </>
-    )}
-  </span>
-)
 
 const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
   const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
@@ -462,28 +447,44 @@ export const GatorCollection = () => {
     <div className="flex justify-center px-8 lg:px-0 ">
       <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
-      <div className="flex flex-col gap-8 w-full lg:w-3/4">
-        <div className="flex justify-between items-center">
-          {!isLoading && collectionTokens.length > 0 && (
+      <div className="flex flex-col gap-8 w-full lg:w-3/4 items-center">
+        <div className="flex justify-center items-center w-full max-w-2xl">
+          {!isLoading && (
             <>
-              <CollectionHeader imageUri={collectionImageURI}>{collectionName}</CollectionHeader>
-              <div className={classNames(
-                "flex gap-4",
-                isLoading && "invisible"
-              )}>
-                <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton>
-                <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
-                {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
-              </div>
+              <h2 className="text-2xl text-daonative-white">{collectionName} Collection</h2>
             </>
           )}
         </div>
 
-        {collectionTokens.length > 0 && (
-          <div className="flex flex-wrap gap-4 justify-center">
-            <TokenList address={collectionAddress} tokens={collectionTokens} />
+        <div>
+          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded-lg w-64 h-[18em] overflow-hidden ">
+            <ImagePreview uri={collectionImageURI} />
           </div>
-        )}
+        </div>
+
+
+        <div className='flex justify-between w-full max-w-2xl'>
+          <h2 className="text-2xl text-daonative-text font-bold">Owners</h2>
+          <div>
+
+            <div className={classNames(
+              "flex gap-4",
+              isLoading && "invisible"
+            )}>
+              {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
+              {/* <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton> */}
+              <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
+            </div>
+          </div>
+
+        </div>
+        <div className='w-full max-w-2xl'>
+          {collectionTokens.length > 0 && (
+            <div className="flex flex-wrap gap-4 ">
+              <TokenList address={collectionAddress} tokens={collectionTokens} />
+            </div>
+          )}
+        </div>
 
         {!collectionHasError && isLoading && (
           <div className="flex w-full justify-center">
@@ -500,12 +501,6 @@ export const GatorCollection = () => {
         {!collectionHasError && !isLoading && collectionTokens.length === 0 && (
           <div className="flex gap-4">
             <EmptyTokenList onInviteToMint={handleOpenInviteModal} canInvite={isOwner} />
-            <div>
-              <div>Preview</div>
-              <div className='text-daonative-subtitle text-xs'>This is what you can expect after when minting!</div>
-              <Link href="/nfts/faq"><a className="underline text-sm">How does this work?</a></Link>
-              <OpenSeaPreview collectionName={collectionName} metadata={{ image: collectionImageURI }} />
-            </div>
           </div>
         )}
       </div>

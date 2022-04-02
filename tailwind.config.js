@@ -28,6 +28,7 @@ module.exports = {
         "daonative-text": "#D6D7E3",
         "daonative-primary-purple": "rgb(176 130 255)",
         "daonative-component-bg": "#222235",
+        'daonative-modal-border': "rgba(49, 49, 74, 0.4)",
       },
       dropShadow: {
         'daonative': '0px 0px 5px rgba(160, 163, 189, 0.1)',

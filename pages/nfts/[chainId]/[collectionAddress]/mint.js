@@ -182,7 +182,7 @@ const Mint = () => {
               </div>
             )}
           </div>
-          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded w-96 min-h-[18em] overflow-hidden p-6">
+          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded-lg w-96 min-h-[18em] overflow-hidden p-6">
             <ImagePreview uri={collectionImageURI} />
           </div>
         </div>
