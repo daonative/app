@@ -10,7 +10,7 @@ import { PrimaryButton, SecondaryButton } from '../../../../../components/Button
 import EmptyStateNoSubmissions from '../../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../../components/Modal'
-import { UserAvatar, UserName } from '../../../../../components/PFP'
+import { RectangleAvatar, UserAvatar, UserName } from '../../../../../components/PFP'
 import Spinner from '../../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
@@ -18,6 +18,7 @@ import useMembership from '../../../../../lib/useMembership'
 import Linkify from 'linkify-react'
 import Link from 'next/link'
 import { classNames } from '../../../../../lib/utils'
+import { SimpleCard } from '../../../../../components/Card'
 
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
@@ -181,7 +182,7 @@ const SubmissionsList = ({ submissions }) => {
   return (
     <>
       <ProofOfWorkModal show={proofOfWorkModalOpen} onClose={handleCloseEditModal} workproof={proofOfWorkToShow} />
-      <ul>
+      <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
         {submissions?.map((submission, idx) => {
           const verifications = submission?.verifications ? Object.values(submission.verifications) : []
           const isPending = verifications.length === 0
@@ -189,52 +190,49 @@ const SubmissionsList = ({ submissions }) => {
           const isVerified = !isPending && !isReverted
           const isAuthor = submission?.author === account
           return (
-            <li key={idx} className="py-2">
-              <div
+            <li key={idx} >
+              <SimpleCard
+                onClick={() => isAuthor && handleOpenEditModal(submission)}
                 className={classNames(
-                  "px-4 py-4 sm:px-6 bg-daonative-component-bg rounded",
                   isAuthor && "hover:cursor-pointer"
                 )}
-                onClick={() => isAuthor && handleOpenEditModal(submission)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex w-full">
-                    <div>
-                      <UserAvatar account={submission.author} />
+                  <div className='w-full'>
+                    <UserAvatar account={submission.author} />
+                  </div>
+                  <div className="w-full flex flex-col gap-1">
+                    <div className=" ">
+                      <p className="text-sm">
+                        <UserName account={submission.author} />
+                      </p>
+                      <p className="text-sm text-gray-500 pr-1">
+                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                      </p>
                     </div>
-                    <div className="pl-4 w-full flex flex-col gap-1">
-                      <div className="flex justify-between w-full">
-                        <p className="text-sm">
-                          <UserName account={submission.author} />
-                        </p>
-                        <p className="text-sm text-gray-500 pr-1">
-                          <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                        </p>
-                      </div>
-                      <div className="flex justify-between w-full">
-                        {isVerified && (
-                          <div className="inline-flex gap-1 items-center">
-                            <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                            <p className="text-sm">Verified</p>
-                          </div>
-                        )}
-                        {isPending && (
-                          <div className="inline-flex gap-1 items-center text-daonative-white">
-                            <ClockIcon className="w-5 h-5" />
-                            <p className="text-sm">Pending</p>
-                          </div>
-                        )}
-                        {isReverted && (
-                          <div className="inline-flex gap-1 items-center text-daonative-white">
-                            <BanIcon className="w-5 h-5" />
-                            <p className="text-sm">Reverted</p>
-                          </div>
-                        )}
-                      </div>
+                    <div className="flex justify-between w-full">
+                      {isVerified && (
+                        <div className="inline-flex gap-1 items-center">
+                          <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                          <p className="text-sm">Verified</p>
+                        </div>
+                      )}
+                      {isPending && (
+                        <div className="inline-flex gap-1 items-center text-daonative-white">
+                          <ClockIcon className="w-5 h-5" />
+                          <p className="text-sm">Pending</p>
+                        </div>
+                      )}
+                      {isReverted && (
+                        <div className="inline-flex gap-1 items-center text-daonative-white">
+                          <BanIcon className="w-5 h-5" />
+                          <p className="text-sm">Reverted</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
+              </SimpleCard>
             </li>
           )
         })}
@@ -353,15 +351,14 @@ const ChallengeDetails = () => {
       <ProofOfWorkModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex">
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center w-full max-w-2xl mx-auto">
             <h1 className="text-2xl">{challenge?.title}</h1>
           </div>
           {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
         </div>
-        <div className="flex flex-col md:flex-row w-full pt-16 gap-4">
+        <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
-            <h2 className="text-xl py-4 text-daonative-subtitle">Description</h2>
-            <div className="whitespace-pre-wrap text-daonative-white">
+            <div className="whitespace-pre-wrap text-daonative-text">
               <Linkify options={{ className: 'text-daonative-primary-purple underline' }}>
                 {challenge?.description}
               </Linkify>
@@ -370,7 +367,7 @@ const ChallengeDetails = () => {
           <div className="w-full">
             <div className="flex justify-between py-4">
               <div>
-                <h2 className="text-xl text-daonative-subtitle">Submissions</h2>
+                <h2 className="text-xl text-daonative-white">Submissions</h2>
               </div>
               <div className="flex gap-4 items-center">
                 {isAdmin && hasWorkToVerify && (

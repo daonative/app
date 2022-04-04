@@ -9,7 +9,8 @@ const PFP = ({ address, size }) => (
   <Jazzicon diameter={size} seed={jsNumberForAddress(address || '')} />
 )
 
-export const UserAvatar = ({ account }) => {
+
+export const UserAvatar = ({ account, }) => {
   const [ensAvatar, setEnsAvatar] = useState(null)
 
   useEffect(() => {
