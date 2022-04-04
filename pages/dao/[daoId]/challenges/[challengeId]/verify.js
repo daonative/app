@@ -1,5 +1,5 @@
 import { CheckIcon } from "@heroicons/react/solid"
-import { arrayUnion, collection, doc, getFirestore, orderBy, query, updateDoc, where } from "firebase/firestore"
+import { arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { reset } from "linkifyjs"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -30,6 +30,7 @@ const VerifyWork = ({ workproof, onVerified }) => {
       verifiers: arrayUnion(verifier),
       [`verifications.${verifier}.accepted`]: accepted,
       [`verifications.${verifier}.reason`]: reason,
+      [`verifications.${verifier}.timestamp`]: serverTimestamp(),
     })
   }
 
