@@ -115,6 +115,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
     const roomRef = await addDoc(roomsCollection, { name, treasury: address })
     return {
       roomId: roomRef.id,
+      created: serverTimestamp(),
       ...room
     }
   }
