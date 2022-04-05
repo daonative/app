@@ -352,6 +352,7 @@ const ChallengeDetails = () => {
   const membership = useMembership(account, roomId)
   const isMember = !!membership
   const isAdmin = membership?.roles?.includes('admin')
+  const isEnabled = challenge?.status !== "closed"
 
   // 1. work that doesn't have any verification yet
   // 2. work that is not authored by the current user
@@ -403,7 +404,7 @@ const ChallengeDetails = () => {
                     </a>
                   </Link>
                 )}
-                {isMember && (
+                {isMember && isEnabled && (
                   <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
                     <PlusIcon className="w-4 h-4" />
                   </button>
