@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import { useForm } from 'react-hook-form'
 
@@ -21,9 +21,12 @@ import { CheckIcon } from '@heroicons/react/solid'
 import PolygonWarning from '../components/ChainWarning'
 import { useRequireAuthentication } from '../lib/authenticate'
 import { PrimaryButton } from '../components/Button'
+import { guild as guild } from '@guildxyz/sdk'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
+
+const GUILD_ID = 2099
 
 const ROOM_CREATOR_CONTRACT_ADDRESS = '0xb89f8e5DB0A595533eF05F3765c51E85361cA913'
 const MEMBERSHIP_CONTRACT_ADDRESS = '0xaB601D1a49D5B2CBB93458175776DE24b06473b3'
@@ -337,13 +340,29 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 }
 
 const Onboarding = () => {
-  const [isLoading, setIsLoading] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAllowed, setIsAllowed] = useState(false)
   const [dao, setDAO] = useState()
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
   const isConnected = useIsConnected()
+  const { account } = useWallet()
 
   useDarkMode()
+
+  useEffect(() => {
+    const setGuildAccess = async (account) => {
+      setIsLoading(true)
+      const roles = await guild.getUserAccess(GUILD_ID, account)
+      const hasAccess = roles.filter(role => role.access === true).length > 0
+      setIsAllowed(hasAccess)
+      setIsLoading(false)
+    }
+
+    if (!account) return
+
+    setGuildAccess(account)
+  }, [account])
 
   const stepStatus = (index) => {
     if (index === currentStep) return "current"
@@ -389,7 +408,7 @@ const Onboarding = () => {
           <div className={classNames("w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
-          {!isConnected && (
+          {!isConnected && !isLoading && (
             <>
               <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create your DAO</p>
               <div className="w-36 h-16">
@@ -401,8 +420,18 @@ const Onboarding = () => {
               </div>
             </>
           )}
-          {isConnected && !isLoading && currentStep === 1 && <Create onDaoCreating={handleLoading} onDaoCreated={handleDaoCreated} />}
-          {isConnected && !isLoading && currentStep === 2 && <Join onMemberJoining={handleLoading} onMemberJoined={handleMemberJoined} dao={dao} />}
+          {isConnected && !isAllowed && !isLoading && (
+            <>
+              <p className="p-6 text-gray-200 font-bold text-center">You need to be a DAOnative member to create a DAO. Join our Discord to get access.</p>
+              <a href="https://discord.gg/m3mC5f4jBU" target="_blank" rel="noreferrer">
+                <PrimaryButton className='h-min'>
+                  Request access on Discord
+                </PrimaryButton>
+              </a>
+            </>
+          )}
+          {isConnected && isAllowed && !isLoading && currentStep === 1 && <Create onDaoCreating={handleLoading} onDaoCreated={handleDaoCreated} />}
+          {isConnected && isAllowed && !isLoading && currentStep === 2 && <Join onMemberJoining={handleLoading} onMemberJoined={handleMemberJoined} dao={dao} />}
         </div>
         <div className="absolute bottom-10">
           {/*<PolygonWarning />*/}

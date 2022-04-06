@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@guildxyz/sdk": "^0.1.1",
     "@headlessui/react": "^1.4.3",
     "@heroicons/react": "^1.0.5",
     "@svgr/webpack": "^6.2.0",
