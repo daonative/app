@@ -36,11 +36,11 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$|/$" },
     { name: 'Challenges', disabled: !roomId, href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9/]*)?$" },
     { name: 'Leaderboard', disabled: !roomId, href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
-    //{ name: 'Members', href: `/dao/${roomId}/members`, icon: UsersIcon },
+    { name: 'Members', disabled: !roomId, href: `/dao/${roomId}/members`, icon: UsersIcon, match: "^/dao/[a-zA-Z0-9]*/members$" },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
     { name: 'Rewards', disabled: true, comingSoon: true, href: '#', icon: HeartIcon },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
-    { name: 'Members', disabled: true, comingSoon: true, href: '#', icon: UsersIcon },
+    // { name: 'Members', disabled: false, comingSoon: true, href: '#', icon: UsersIcon },
   ]
 
   const NavLink = ({ disabled = false, href, current, children }) => (
@@ -115,7 +115,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                 </div>
               </Transition.Child>
               <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-component-bg">
-                <div className="h-8 w-8">
+                <div className="h-8 w-8 fill-daonative-white">
                   <DAOnativeLogo />
                 </div>
               </div>
@@ -160,7 +160,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex-1 flex flex-col min-h-0 bg-daonative-dark-200">
           <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-b border-daonative-component-bg">
-            <div className="h-8 w-8">
+            <div className="h-8 w-8 fill-daonative-white">
               <DAOnativeLogo />
             </div>
           </div>

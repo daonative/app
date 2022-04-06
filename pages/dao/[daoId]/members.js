@@ -1,5 +1,5 @@
 import { CheckCircleIcon } from "@heroicons/react/solid"
-import { doc, getDoc, getFirestore } from "firebase/firestore"
+import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../../../components/Button"
@@ -11,6 +11,9 @@ import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
 import { Card } from "../../../components/Card"
 import { getReadonlyProvider } from "../../../lib/chainSupport"
+import useProvider from "../../../lib/useProvider"
+import { ethers } from "ethers"
+import { useRouter } from "next/router"
 
 
 const MemberItem = ({ member }) => {
@@ -112,6 +115,7 @@ export const Members = () => {
   const roomId = useRoomId()
   const [open, setOpen] = useState(false)
   const [inviteLink, setInviteLink] = useState('')
+  const { query: params, push } = useRouter()
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.roles?.includes('admin')
@@ -120,10 +124,26 @@ export const Members = () => {
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
+  const injectedProvider = useProvider()
 
-  useEffect(() => {
-    setInviteLink(`${window?.origin}/dao/${roomId}/join`)
-  }, [roomId])
+
+  const generateInviteCodes = async (inviteMaxUse) => {
+    const signer = injectedProvider.getSigner()
+    const inviteCode = (Math.random() + 1).toString(36).substring(2)
+    const inviteHash = ethers.utils.solidityKeccak256(['string', 'uint'], [inviteCode, 0]);
+    const inviteSig = await signer.signMessage(ethers.utils.arrayify(inviteHash))
+    return { inviteCode, inviteMaxUse, inviteSig }
+  }
+
+  const handleModal = async () => {
+    const db = getFirestore()
+    const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
+    const inviteRef = doc(db, 'invites', inviteCode);
+    console.log(params.daoId)
+    await setDoc(inviteRef, { role: 'member', roomId: params.daoId });
+    setInviteLink(`${window?.origin}/dao/${roomId}/join?inviteCode=${inviteCode}`)
+    openModal()
+  }
 
   return (
     <>
@@ -132,7 +152,7 @@ export const Members = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Members</h2>
-            {false && isAdmin && (<PrimaryButton onClick={openModal}>Add member</PrimaryButton>)}
+            {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
           </div>
           <MemberList members={members} />
         </div>
