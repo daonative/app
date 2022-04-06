@@ -77,16 +77,7 @@ const Mint = (props) => {
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(Number(chainId))
 
-    const retrieveCollectionName = async (address) => {
-      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-      const collectionName = await contract.name()
-    }
 
-    const retrieveCollectionImageURI = async (address) => {
-      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
-      const uri = await contract.collectionURI()
-      const res = await axios.get(uri)
-    }
 
     const retrieveCollectionSupply = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
@@ -106,8 +97,6 @@ const Mint = (props) => {
       setIsLoading(true)
       try {
         await Promise.all([
-          retrieveCollectionName(collectionAddress),
-          retrieveCollectionImageURI(collectionAddress),
           retrieveCollectionSupply(collectionAddress)
         ])
       } catch (e) {
