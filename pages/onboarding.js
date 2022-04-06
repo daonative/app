@@ -340,13 +340,14 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 }
 
 const Onboarding = () => {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isAllowed, setIsAllowed] = useState(false)
   const [dao, setDAO] = useState()
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
   const isConnected = useIsConnected()
-  const { account } = useWallet()
+  const { account, status } = useWallet()
+  const isConnecting = status === 'connecting'
 
   useDarkMode()
 
@@ -408,7 +409,7 @@ const Onboarding = () => {
           <div className={classNames("w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
-          {!isConnected && !isLoading && (
+          {!isConnected && !isConnecting && (
             <>
               <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create your DAO</p>
               <div className="w-36 h-16">
