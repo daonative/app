@@ -33,6 +33,7 @@ service cloud.firestore {
     match /workproofs/{workproofId} {
       allow create: if
         isMember(request.resource.data.roomId)
+        && getChallenge(request.resource.data.challengeId).get("status", "open") != "closed"
         && request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
         && request.resource.data.author == request.auth.uid
         && request.resource.data.weight is int;
