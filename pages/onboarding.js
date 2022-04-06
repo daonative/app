@@ -22,6 +22,7 @@ import PolygonWarning from '../components/ChainWarning'
 import { useRequireAuthentication } from '../lib/authenticate'
 import { PrimaryButton } from '../components/Button'
 import { guild as guild } from '@guildxyz/sdk'
+import Link from 'next/link'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -406,7 +407,7 @@ const Onboarding = () => {
       </Steps>
       <main className="flex justify-center items-center">
         <div className="flex flex-col items-center ">
-          <div className={classNames("w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
+          <div className={classNames("fill-daonative-white w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
           {!isConnected && !isConnecting && (
@@ -423,12 +424,12 @@ const Onboarding = () => {
           )}
           {isConnected && !isAllowed && !isLoading && (
             <>
-              <p className="p-6 text-gray-200 font-bold text-center">You need to be a DAOnative member to create a DAO. Join our Discord to get access.</p>
-              <a href="https://discord.gg/m3mC5f4jBU" target="_blank" rel="noreferrer">
+              <p className="p-6 text-gray-200 font-bold text-center">Only DAOnative NFT holders can join the alpha</p>
+              <Link passHref href="/nfts/137/0x6b362FE1445DBAC80B064DD13b77403d4f17EE17/mint?inviteCode=kypymbk4tk&inviteMaxUse=0&inviteSig=0x0fa2306b57e7d2f0a95c4dc59b7439a0ec088ef1c58e42f3628cbed6034a53db6cf0e232f0535e7946e9f6ee67df0b6dcd81300d225d4e4b0207c164a5d08ece1c">
                 <PrimaryButton className='h-min'>
-                  Request access on Discord
+                  Mint your NFT
                 </PrimaryButton>
-              </a>
+              </Link>
             </>
           )}
           {isConnected && isAllowed && !isLoading && currentStep === 1 && <Create onDaoCreating={handleLoading} onDaoCreated={handleDaoCreated} />}
