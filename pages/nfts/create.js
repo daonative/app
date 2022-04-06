@@ -62,7 +62,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
     return metadataUri
   }
 
-  const createCollection = async (name, symbol, image, metadata, oneTokenPerAddress, maxSupply) => {
+  const createCollection = async (name, symbol, image, metadata, oneTokenPerAddress, maxSupply, endDateTime) => {
     if (image?.length > 0 && metadata) {
       throw Error("Cannot create a collection when both an image is uploaded and metadata is provided.")
     }
@@ -80,7 +80,8 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
       await uploadImageAndMetadata(name, image)
     )
     const maxOrInfiniteSupply = maxSupply ? maxSupply : 0
-    return await contract.createCollection(name, symbol, metadataUri, oneTokenPerAddress, 0, maxOrInfiniteSupply)
+    const endTimeStamp = endDateTime ? new Date(endDateTime).getTime() / 1000 : 0
+    return await contract.createCollection(name, symbol, metadataUri, oneTokenPerAddress, endTimeStamp, maxOrInfiniteSupply)
   }
 
   const getNewCollectionAddressFromTxReceipt = (txReceipt) => {
@@ -108,7 +109,7 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const handleCreateCollection = async (data) => {
     const toastId = toast.loading("Deploying your NFT collection")
     try {
-      const newCollectionTx = await createCollection(data.name, data.symbol, data.image, data.metadata, data.oneTokenPerAddress, data.maxSupply)
+      const newCollectionTx = await createCollection(data.name, data.symbol, data.image, data.metadata, data.oneTokenPerAddress, data.maxSupply, data.endDateTime)
       const newCollectionReceipt = await newCollectionTx.wait()
       const newCollectionAddress = getNewCollectionAddressFromTxReceipt(newCollectionReceipt)
       toast.success("NFT collection created", { id: toastId })
@@ -217,6 +218,12 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                         Max Supply (optional)
                       </label>
                       <input type="number" {...register("maxSupply", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium py-2">
+                        End of minting window (UTC) (optional)
+                      </label>
+                      <input type="datetime-local" {...register("endDateTime", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
                     </div>
                     <div>
                       <input type="checkbox" {...register("oneTokenPerAddress", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
