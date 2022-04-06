@@ -12,6 +12,7 @@ import { collectionAbi } from "../../../../lib/abi";
 import useProvider from "../../../../lib/useProvider";
 import { ImagePreview } from "../../create";
 import { getReadonlyProvider } from "../../../../lib/chainSupport";
+import { NextSeo } from "next-seo";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
@@ -200,18 +201,40 @@ const Mint = () => {
   )
 }
 
-const MintPage = () => {
+const MintPage = (props) => {
+  const url = 'https://app.daonative.xyz'
   return (
-    <div>
-      <div className="overflow-hidden w-full h-screen">
-        <main className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center">
-            <h1 className="text-xl font-space text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
-            < Mint />
-          </div>
-        </main>
+    <>
+      <NextSeo
+        title="DAONative | Mint your NFT"
+        description=""
+        canonical={url}
+        openGraph={{
+          url: url,
+          title: `Mint your ${props.collectionName} NFT`,
+          description: '',
+          images: [
+            { url: props.collectionImageURI },
+          ],
+          site_name: 'DAOnative',
+        }}
+        twitter={{
+          handle: '@daonative',
+          cardType: 'summary',
+        }}
+      />
+      <div>
+        <div className="overflow-hidden w-full h-screen">
+          <main className="flex justify-center items-center h-screen">
+            <div className="flex flex-col items-center">
+              <h1 className="text-xl font-space text-daonative-white pb-2 mb-4 ">{"You've been invited to mint an NFT"}</h1>
+              < Mint {...props} />
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
+
   )
 }
 
