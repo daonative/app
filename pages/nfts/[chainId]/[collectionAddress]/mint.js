@@ -20,12 +20,11 @@ const InvalidInviteCode = () => (
   </div>
 )
 
-const Mint = () => {
+const Mint = (props) => {
   const [isLoading, setIsLoading] = useState(false)
-
+  const { collectionName, collectionImageURI } = props
+  console.log('props', props)
   // Collection
-  const [collectionName, setCollectionName] = useState("")
-  const [collectionImageURI, setCollectionImageURI] = useState('')
   const [collectionHasError, setCollectionHasError] = useState(false)
   const [collectionMaxSupply, setCollectionMaxSupply] = useState(null)
   const [collectionTotalSupply, setCollectionTotalSupply] = useState(null)
@@ -81,14 +80,12 @@ const Mint = () => {
     const retrieveCollectionName = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const collectionName = await contract.name()
-      setCollectionName(collectionName)
     }
 
     const retrieveCollectionImageURI = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.collectionURI()
       const res = await axios.get(uri)
-      setCollectionImageURI(res?.data?.image)
     }
 
     const retrieveCollectionSupply = async (address) => {
@@ -236,6 +233,37 @@ const MintPage = (props) => {
     </>
 
   )
+}
+
+
+const getCollection = async (address, chainId) => {
+
+  const readonlyProvider = getReadonlyProvider(Number(chainId))
+  const retrieveCollectionName = async () => {
+    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+    return await contract.name()
+  }
+
+  const retrieveCollectionImageURI = async () => {
+    const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+    const uri = await contract.collectionURI()
+    const res = await axios.get(uri)
+    return res?.data?.image
+  }
+  const collectionName = await retrieveCollectionName()
+  const collectionImageURI = await retrieveCollectionImageURI()
+
+  return { collectionName, collectionImageURI }
+}
+
+
+export async function getServerSideProps(context) {
+  const { chainId, collectionAddress } = context.params
+  const data = await getCollection(collectionAddress, chainId)
+  console.log(data)
+  return {
+    props: data, // will be passed to the page component as props
+  }
 }
 
 export default MintPage
