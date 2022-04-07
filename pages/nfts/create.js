@@ -22,7 +22,7 @@ import { translateURI } from '../../lib/translateURI'
 
 import PolygonLogo from '../../public/PolygonLogo.svg'
 import EthereumLogo from '../../public/EthereumLogo.svg'
-import { useProfile } from "../../components/ProfileProvider";
+import { useProfile } from "../../components/ENSProvider";
 import { getCollectionCreatorAddress, isSupportedChain, switchToMainnet, switchToPolygon, switchToRinkeby } from "../../lib/chainSupport";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
 import { uploadToIPFS } from "../../lib/uploadToIPFS";
@@ -313,7 +313,8 @@ export const ImagePreview = ({ uri }) => {
 export const OpenSeaPreview = ({ collectionName, metadata, chainId }) => {
   const imageUri = translateURI(metadata.image)
   const tokenName = metadata.name
-  const { displayName } = useProfile()
+  const { account } = useWallet()
+  const { displayName } = useProfile(account)
 
   return (
     <div className="flex gap-6 flex-col lg:flex-row">

@@ -42,7 +42,7 @@ const ProfileButton = () => {
   if (!roomId)
     return (
       <div
-        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900flex items-center gap-4 h-full w-full p-4"
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 flex items-center gap-4 h-full w-full p-4"
       >
         <UserAvatar account={account} />
         <UserName account={account} />
