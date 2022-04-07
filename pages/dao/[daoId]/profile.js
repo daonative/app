@@ -1,3 +1,4 @@
+import { CheckIcon } from "@heroicons/react/solid"
 import { doc, getFirestore } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { useDocumentData } from "react-firebase-hooks/firestore"
@@ -13,9 +14,6 @@ const ProfilePage = () => {
   const db = getFirestore()
   const { account } = useWallet()
   const { query: { daoId: roomId } } = useRouter()
-  const [user] = useDocumentData(
-    doc(db, 'users', account || '0')
-  )
   const [leaderboardPosition] = useDocumentData(
     doc(db, 'rooms', roomId || '0', 'leaderboard', account || '0')
   )
@@ -24,14 +22,20 @@ const ProfilePage = () => {
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8 lg:w-3/4 flex flex-col gap-8">
         <div className="flex justify-between w-full items-center">
-          <h1 className="text-2xl">
-            <UserName account={account} />
-          </h1>
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl">
+              <UserName account={account} />
+            </h1>
             <div className="px-4 py-0.5 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
               {kFormatter(leaderboardPosition?.verifiedExperience)} XPs
             </div>
-            <div className="text-daonative-subtitle text-sm">{leaderboardPosition?.submissionCount} Challenges</div>
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <div className="text-daonative-subtitle text-sm flex">
+              <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+              {leaderboardPosition?.submissionCount} Challenges Completed
+            </div>
+            <PrimaryButton>Claim</PrimaryButton>
           </div>
         </div>
         <div className="flex justify-between w-full items-end">
@@ -42,7 +46,7 @@ const ProfilePage = () => {
             </h2>
           </div>
           <div className="flex flex-col items-end gap-1">
-            <div className="text-daonative-subtitle text-sm">3 Pending Rewards &amp; Role</div>
+            <div className="text-daonative-subtitle text-sm">3 Pending Rewards &amp; 1 Role</div>
           </div>
         </div>
         <div className="flex justify-between w-full items-end border-t pt-8 border-daonative-component-bg">
@@ -65,7 +69,6 @@ const ProfilePage = () => {
           </div>
         </div>
         <div className="flex justify-end w-full items-end">
-          <PrimaryButton>Claim Reward</PrimaryButton>
         </div>
       </div>
     </LayoutWrapper>

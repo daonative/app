@@ -39,7 +39,7 @@ const LeaderboardList = ({ leaders }) => {
                 <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
                   <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
                   <p>
-                    {leader?.submissionCount || 0} Completions
+                    {leader?.submissionCount || 0} Submissions
                   </p>
                 </div>
               </div>
