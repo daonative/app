@@ -8,6 +8,7 @@ import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { ProfileProvider } from '../components/ProfileProvider';
 import { useEffect } from 'react'
+import { ENSProvider } from '../components/ENSProvider'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -47,10 +48,12 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <ConnectWalletModalProvider>
-          <ProfileProvider>
-            <Toaster position="bottom-center" />
-            <Component {...pageProps} />
-          </ProfileProvider>
+          <ENSProvider>
+            <ProfileProvider>
+              <Toaster position="bottom-center" />
+              <Component {...pageProps} />
+            </ProfileProvider>
+          </ENSProvider>
         </ConnectWalletModalProvider>
       </UseWalletProvider>
     </>
