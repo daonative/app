@@ -39,13 +39,25 @@ const ProfileButton = () => {
       </button>
     )
 
+  if (!roomId)
+    return (
+      <div
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900flex items-center gap-4 h-full w-full p-4"
+      >
+        <UserAvatar account={account} />
+        <UserName account={account} />
+      </div>
+    )
+
   return (
-    <div
-      className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 flex items-center gap-4 h-full w-full p-4"
-    >
-      <UserAvatar account={account} />
-      <UserName account={account} />
-    </div>
+    <Link href={`/dao/${roomId}/profile`} passHref>
+      <a>
+        <div className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center gap-4 h-full w-full p-4">
+          <UserAvatar account={account} />
+          <UserName account={account} />
+        </div>
+      </a>
+    </Link>
   )
 }
 
