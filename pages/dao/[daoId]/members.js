@@ -14,6 +14,7 @@ import { getReadonlyProvider } from "../../../lib/chainSupport"
 import useProvider from "../../../lib/useProvider"
 import { ethers } from "ethers"
 import { useRouter } from "next/router"
+import { useRequireAuthentication } from "../../../lib/authenticate"
 
 
 const MemberItem = ({ member }) => {
@@ -115,33 +116,22 @@ export const Members = () => {
   const roomId = useRoomId()
   const [open, setOpen] = useState(false)
   const [inviteLink, setInviteLink] = useState('')
-  const { query: params, push } = useRouter()
+  const { query: params } = useRouter()
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.roles?.includes('admin')
   const [members] = useNewMembers()
+  const requireAuthentication = useRequireAuthentication()
 
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
-  const injectedProvider = useProvider()
-
-
-  const generateInviteCodes = async (inviteMaxUse) => {
-    const signer = injectedProvider.getSigner()
-    const inviteCode = (Math.random() + 1).toString(36).substring(2)
-    const inviteHash = ethers.utils.solidityKeccak256(['string', 'uint'], [inviteCode, 0]);
-    const inviteSig = await signer.signMessage(ethers.utils.arrayify(inviteHash))
-    return { inviteCode, inviteMaxUse, inviteSig }
-  }
 
   const handleModal = async () => {
+    await requireAuthentication()
     const db = getFirestore()
-    const { inviteCode, inviteMaxUse, inviteSig } = await generateInviteCodes(0)
-    const inviteRef = doc(db, 'invites', inviteCode);
-    console.log(params.daoId)
-    await setDoc(inviteRef, { role: 'member', roomId: params.daoId });
-    setInviteLink(`${window?.origin}/dao/${roomId}/join?inviteCode=${inviteCode}`)
+    const inviteRef = await addDoc(collection(db, 'invites'), { roomId: params.daoId });
+    setInviteLink(`${window?.origin}/dao/${roomId}/join?inviteCode=${inviteRef.id}`)
     openModal()
   }
 
