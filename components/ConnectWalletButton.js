@@ -1,13 +1,10 @@
 import { useWallet } from 'use-wallet'
 import { useConnectWalletModal } from './ConnectWalletModal'
 import useIsConnected from '../lib/useIsConnected'
-import PFP from './PFP'
-import { useProfile } from './ProfileProvider'
-import { CheckCircleIcon } from '@heroicons/react/solid'
+import { UserAvatar, UserName } from './PFP'
 
 const ConnectWalletButton = ({ children }) => {
   const { account } = useWallet()
-  const { displayName, displayNameVerified, avatar } = useProfile()
   const isConnected = useIsConnected()
   const { openConnectWalletModal } = useConnectWalletModal()
 
@@ -19,20 +16,10 @@ const ConnectWalletButton = ({ children }) => {
       {isConnected ? (
         <>
           <div className="h-8 w-8">
-            {/* eslint-disable @next/next/no-img-element */}
-            {avatar ? (
-              <img src={avatar} className="rounded-full h-8 w-8" alt="User profile" />
-            ) : (
-              <PFP address={account} size={32} />
-            )}
-            {/* eslint-enable @next/next/no-img-element */}
+            <UserAvatar account={account} />
           </div>
-
           <div className="px-4">
-            <div className="flex gap-1 items-center">
-              {displayName}
-              {displayNameVerified && <CheckCircleIcon className="h-3 w-3 text-daonative-white" />}
-            </div>
+            <UserName account={account} />
           </div>
         </>
       ) : (

@@ -10,7 +10,7 @@ import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/fire
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
-import PFP from './PFP';
+import PFP, { UserAvatar, UserName } from './PFP';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
@@ -130,16 +130,11 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                     </div>
                     <div>
                       <div className="flex gap-1 items-center">
-                        {displayName}
-                        {displayNameVerified && <CheckCircleIcon className="h-3 w-3 text-daonative-white" />}
+                        <UserName account={account} />
                       </div>
                     </div>
                     {/* eslint-disable @next/next/no-img-element */}
-                    {avatar ? (
-                      <img src={avatar} className="rounded-full h-6 w-6" alt="User profile" />
-                    ) : (
-                      <PFP address={account} size={24} />
-                    )}
+                    <UserAvatar account={account} size={24} />
                     {/* eslint-enable @next/next/no-img-element */}
                   </Menu.Button>
                 </div>

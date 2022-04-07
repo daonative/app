@@ -6,14 +6,14 @@ const PFP = ({ address, size }) => (
   <Jazzicon diameter={size} seed={jsNumberForAddress(address || '')} />
 )
 
-export const UserAvatar = ({ account, }) => {
+export const UserAvatar = ({ account, size = 40}) => {
   const {ensAvatar} = useProfile(account)
 
   if (!ensAvatar)
-    return <PFP address={account} size={40} />
+    return <PFP address={account} size={size} />
 
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={ensAvatar} alt="Member avatar" className="rounded-full h-10 w-10" />
+  return <img src={ensAvatar} alt="Member avatar" className={`rounded-full h-${size/4} w-${size/4}`} />
 }
 
 export const UserName = ({ account }) => {
