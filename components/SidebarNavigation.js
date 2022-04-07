@@ -12,15 +12,55 @@ import {
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
-import ConnectWalletButton from '../components/ConnectWalletButton'
 import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import PolygonWarning from './ChainWarning'
+import { useConnectWalletModal } from './ConnectWalletModal'
+import { useWallet } from 'use-wallet'
+import { UserAvatar, UserName } from './PFP'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
+
+const ProfileButton = () => {
+  const { openConnectWalletModal } = useConnectWalletModal()
+  const { account, status } = useWallet()
+  const isConnected = status === "connected"
+  const { query: { daoId: roomId } } = useRouter()
+
+  if (!isConnected)
+    return (
+      <button
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4"
+        onClick={openConnectWalletModal}
+      >
+        Connect
+      </button>
+    )
+
+  if (!roomId)
+    return (
+      <div
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900flex items-center gap-4 h-full w-full p-4"
+      >
+        <UserAvatar account={account} />
+        <UserName account={account} />
+      </div>
+    )
+
+  return (
+    <Link href={`/dao/${roomId}/profile`} passHref>
+      <a>
+        <div className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center gap-4 h-full w-full p-4">
+          <UserAvatar account={account} />
+          <UserName account={account} />
+        </div>
+      </a>
+    </Link>
+  )
+}
+
 
 const SidebarNavigation = ({ showMobile, onClose }) => {
   const { query, asPath } = useRouter()
@@ -143,9 +183,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                   })}
                 </nav>
                 <div className="py-5 px-4 flex flex-col gap-2">
-                  {/*<PolygonWarning />*/}
                   <div className="h-14">
-                    <ConnectWalletButton />
+                    <ProfileButton />
                   </div>
                 </div>
               </div>
@@ -188,9 +227,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               })}
             </nav>
             <div className="py-5 px-4 flex flex-col gap-2">
-              {/*<PolygonWarning />*/}
               <div className="h-14">
-                <ConnectWalletButton />
+                <ProfileButton />
               </div>
             </div>
           </div>
