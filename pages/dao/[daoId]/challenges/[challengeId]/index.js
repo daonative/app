@@ -354,10 +354,7 @@ const ChallengeDetails = () => {
 
   // 1. work that doesn't have any verification yet
   // 2. work that is not authored by the current user
-  const hasWorkToVerify = submissions && submissions?.filter(submission => (
-    submission.author !== account &&
-    !(submission?.verifiers?.length > 0)
-  )).length > 0
+  const hasWorkToVerify = submissions && submissions?.length > 0
 
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
@@ -394,7 +391,7 @@ const ChallengeDetails = () => {
                 {isAdmin && hasWorkToVerify && (
                   <Link href={`/dao/${roomId}/challenges/${challengeId}/verify`} passHref>
                     <a>
-                      <PrimaryButton>Verify pending work</PrimaryButton>
+                      <PrimaryButton>Verify work</PrimaryButton>
                     </a>
                   </Link>
                 )}
