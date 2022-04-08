@@ -352,8 +352,6 @@ const ChallengeDetails = () => {
   const isAdmin = membership?.roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
 
-  // 1. work that doesn't have any verification yet
-  // 2. work that is not authored by the current user
   const hasWorkToVerify = submissions && submissions?.length > 0
 
   const handleOpenProofModal = () => setShowProofModal(true)
