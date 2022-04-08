@@ -314,7 +314,6 @@ const ExportSubmissionsCSV = ({ submissions }) => {
   useEffect(() => {
     const CSV = submissions ? submissions
       .map(submission => {
-        console.log(submission)
         const author = submission?.author
         const created = submission?.created?.toDate()
         const description = submission?.description
