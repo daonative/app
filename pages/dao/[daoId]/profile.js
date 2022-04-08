@@ -22,12 +22,14 @@ const ProfilePage = () => {
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8 lg:w-3/4 flex flex-col gap-8">
         <div className="flex justify-between w-full items-center">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col grow-0 gap-1">
             <h1 className="text-2xl">
               <UserName account={account} />
             </h1>
-            <div className="px-4 py-0.5 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-              {kFormatter(leaderboardPosition?.verifiedExperience)} XPs
+            <div>
+              <span className="px-4 py-0.5 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space text-center inline">
+                {kFormatter(leaderboardPosition?.verifiedExperience)} XPs
+              </span>
             </div>
           </div>
           <div className="flex flex-col items-end gap-1">
@@ -35,9 +37,13 @@ const ProfilePage = () => {
               <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
               {leaderboardPosition?.submissionCount} Challenges Completed
             </div>
-            <PrimaryButton>Claim</PrimaryButton>
+            <PrimaryButton disabled={true}>Claim</PrimaryButton>
           </div>
         </div>
+        <div className="pt-8 text-center">
+          <p>Coming soon. Here you will be able to claim the rewards for your work.</p>
+        </div>
+        {/*
         <div className="flex justify-between w-full items-end">
           <div>
             <span className="text-sm text-daonative-subtitle">Role</span>
@@ -70,6 +76,7 @@ const ProfilePage = () => {
         </div>
         <div className="flex justify-end w-full items-end">
         </div>
+        */}
       </div>
     </LayoutWrapper>
   )

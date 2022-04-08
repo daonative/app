@@ -29,6 +29,10 @@ const ProfileButton = () => {
   const isConnected = status === "connected"
   const { query: { daoId: roomId } } = useRouter()
 
+ // Only Li.Zard DAO, DAOnative and some test DAOs can click on the profile page
+  const allowedDAOs = ['ChPm9dws3RZz3FYRCsBJ', 'aUwxLWYfkLHwOeXjwE40', 'HU2kHOO6NRSa2LLxKOIV']
+  const canSeeProfile = allowedDAOs.includes(roomId)
+
   if (!isConnected)
     return (
       <button
@@ -39,10 +43,10 @@ const ProfileButton = () => {
       </button>
     )
 
-  if (!roomId)
+  if (!roomId || !canSeeProfile)
     return (
       <div
-        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900flex items-center gap-4 h-full w-full p-4"
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 flex items-center gap-4 h-full w-full p-4"
       >
         <UserAvatar account={account} />
         <UserName account={account} />
