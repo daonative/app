@@ -10,11 +10,10 @@ import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/fire
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
-import PFP, { UserAvatar, UserName } from './PFP';
+import { UserAvatar, UserName } from './PFP';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
-import { useProfile } from './ProfileProvider';
 
 const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
@@ -44,7 +43,6 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
   const requireAuthentication = useRequireAuthentication()
   const membership = useMembership(account, roomId)
   const isMember = !!membership
-  const { displayName, displayNameVerified, avatar } = useProfile()
 
   const logWork = async (data) => {
     await requireAuthentication()
