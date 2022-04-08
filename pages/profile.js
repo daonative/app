@@ -1,12 +1,10 @@
 import { CheckIcon } from "@heroicons/react/solid"
-import { collectionGroup, doc, getDocs, getFirestore, query, where } from "firebase/firestore"
-import { useRouter } from "next/router"
+import { collectionGroup, getDocs, getFirestore, query, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore"
 import { useWallet } from "use-wallet"
-import { PrimaryButton } from "../../../components/Button"
-import { LayoutWrapper } from "../../../components/LayoutWrapper"
-import { UserName } from "../../../components/PFP"
+import { PrimaryButton } from "../components/Button"
+import { LayoutWrapper } from "../components/LayoutWrapper"
+import { UserName } from "../components/PFP"
 
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)

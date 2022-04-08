@@ -27,7 +27,6 @@ const ProfileButton = () => {
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, status } = useWallet()
   const isConnected = status === "connected"
-  const { query: { daoId: roomId } } = useRouter()
 
   if (!isConnected)
     return (
@@ -39,18 +38,8 @@ const ProfileButton = () => {
       </button>
     )
 
-  if (!roomId)
-    return (
-      <div
-        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 flex items-center gap-4 h-full w-full p-4"
-      >
-        <UserAvatar account={account} />
-        <UserName account={account} />
-      </div>
-    )
-
   return (
-    <Link href={`/dao/${roomId}/profile`} passHref>
+    <Link href={`/profile`} passHref>
       <a>
         <div className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center gap-4 h-full w-full p-4">
           <UserAvatar account={account} />
