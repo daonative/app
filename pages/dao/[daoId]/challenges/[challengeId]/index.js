@@ -1,5 +1,5 @@
 import { CheckIcon, ClockIcon, PlusIcon, BanIcon } from '@heroicons/react/solid'
-import { addDoc, arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
@@ -10,7 +10,7 @@ import { PrimaryButton, SecondaryButton } from '../../../../../components/Button
 import EmptyStateNoSubmissions from '../../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../../components/Modal'
-import { RectangleAvatar, UserAvatar, UserName } from '../../../../../components/PFP'
+import { UserAvatar, UserName } from '../../../../../components/PFP'
 import Spinner from '../../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
@@ -19,7 +19,6 @@ import Linkify from 'linkify-react'
 import Link from 'next/link'
 import { classNames } from '../../../../../lib/utils'
 import { SimpleCard } from '../../../../../components/Card'
-
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -335,7 +334,6 @@ const ExportSubmissionsCSV = ({ submissions }) => {
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
   const [showEditChallengeModal, setShowEditChallengeModal] = useState(false)
-  const [proofToVerify, setProofToVerify] = useState(null)
   const db = getFirestore()
   const { query: params } = useRouter()
   const challengeId = params.challengeId || ''
@@ -364,9 +362,6 @@ const ChallengeDetails = () => {
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
 
-  const handleVerifyProof = (workproof) => setProofToVerify(workproof)
-  const handleCloseVerifyProof = () => setProofToVerify(null)
-
   const handleOpenEditChallengeModal = () => setShowEditChallengeModal(true)
   const handleCloseEditChallengeModal = () => setShowEditChallengeModal(false)
 
@@ -374,7 +369,6 @@ const ChallengeDetails = () => {
     <LayoutWrapper>
       <EditChallengeModal show={showEditChallengeModal} onClose={handleCloseEditChallengeModal} challenge={{ ...challenge, challengeId }} />
       <SubmitProofOfWorkModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
-      <ProofOfWorkModal show={!!proofToVerify} onClose={handleCloseVerifyProof} workproof={proofToVerify} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex">
           <div className="flex justify-center w-full max-w-2xl mx-auto">
