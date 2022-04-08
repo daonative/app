@@ -74,7 +74,7 @@ const ProofOfWorkModal = ({ show, onClose, workproof }) => {
               </div>
             )}
           </div>
-          {verifications.length > 0 && (
+          {verifications.filter(verification => !!verification.reason).length > 0 && (
             <div>
               <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
                 Reason
@@ -163,7 +163,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
   )
 }
 
-const SubmissionsList = ({ submissions }) => {
+const SubmissionsList = ({ submissions, isAdmin }) => {
   const { account } = useWallet()
   const [proofOfWorkModalOpen, setProofOfWorkModalOpen] = useState(false)
   const [proofOfWorkToShow, setProofOfWorkToShow] = useState(null)
@@ -189,12 +189,13 @@ const SubmissionsList = ({ submissions }) => {
           const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
           const isVerified = !isPending && !isReverted
           const isAuthor = submission?.author === account
+          const canInspect = isAuthor || isAdmin
           return (
             <li key={idx} >
               <SimpleCard
-                onClick={() => isAuthor && handleOpenEditModal(submission)}
+                onClick={() => canInspect && handleOpenEditModal(submission)}
                 className={classNames(
-                  isAuthor && "hover:cursor-pointer"
+                  canInspect && "hover:cursor-pointer"
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -411,7 +412,7 @@ const ChallengeDetails = () => {
                 )}
               </div>
             </div>
-            <SubmissionsList submissions={submissions} onVerifyClick={(workproof) => handleVerifyProof(workproof)} showVerifyButton={isAdmin} />
+            <SubmissionsList submissions={submissions} isAdmin={isAdmin} />
           </div>
         </div>
       </div>
