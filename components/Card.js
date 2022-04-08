@@ -9,9 +9,9 @@ export const SimpleCard = ({ onClick, children, className }) => {
 }
 
 
-export const Card = ({ children, className }) => {
+export const Card = ({ onClick, children, className }) => {
   return (
-    <div className={classNames(
+    <div onClick={onClick} className={classNames(
       "px-4 py-4 sm:px-6 bg-daonative-component-bg rounded-lg",
       "hover:cursor-pointer opacity-[85%] hover:opacity-100",
       "drop-shadow-daonative",
