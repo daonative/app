@@ -60,11 +60,6 @@ const ProfilePage = () => {
         </div>
       </div>
       <div className="relative mx-auto py-8 px-4 sm:px-6 md:px-8 lg:w-3/4 flex flex-col gap-8">
-        <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
-          <div className="flex items-center justify-center text-3xl pt-20">
-            Coming soon
-          </div>
-        </div>
         <div className="flex justify-between w-full items-end">
           <div>
             <span className="text-sm text-daonative-subtitle">Role</span>
@@ -79,13 +74,20 @@ const ProfilePage = () => {
         <div className="flex justify-between w-full items-end border-t pt-8 border-daonative-component-bg">
           <div>
             <h2 className="text-xl">Latest Rewards</h2>
+
           </div>
           <div className="flex gap-1">
             <span className="text-xl">{Math.floor(verifiedXps / 10)}</span>
             <span className="text-daonative-subtitle text-xl">$GREEN</span>
           </div>
         </div>
-        <div className="flex gap-6">
+        <div className="flex gap-6 relative">
+          <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
+            <div className="flex items-center justify-center text-3xl pt-20">
+              Coming soon
+            </div>
+          </div>
+
           <div>
             <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
             <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
