@@ -10,7 +10,7 @@ import { PrimaryButton, SecondaryButton } from '../../../../../components/Button
 import EmptyStateNoSubmissions from '../../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../../components/Modal'
-import { UserAvatar, UserName } from '../../../../../components/PFP'
+import { UserAvatar, UserName, UserRectangleAvatar } from '../../../../../components/PFP'
 import Spinner from '../../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
@@ -18,7 +18,7 @@ import useMembership from '../../../../../lib/useMembership'
 import Linkify from 'linkify-react'
 import Link from 'next/link'
 import { classNames } from '../../../../../lib/utils'
-import { SimpleCard } from '../../../../../components/Card'
+import { SimpleCard, SimpleCardBody } from '../../../../../components/Card'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -197,38 +197,36 @@ const SubmissionsList = ({ submissions, isAdmin }) => {
                   canInspect && "hover:cursor-pointer"
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <div className='w-full'>
-                    <UserAvatar account={submission.author} />
-                  </div>
-                  <div className="w-full flex flex-col gap-1">
-                    <div className=" ">
+                <div className=' py-2 sm:px-2'>
+                  <div className="flex items-center justify-between">
+                    <UserRectangleAvatar account={submission.author} />
+                    <div className="flex flex-col gap-1 items-end">
                       <p className="text-sm">
                         <UserName account={submission.author} />
                       </p>
-                      <p className="text-sm text-gray-500 pr-1">
+                      <p className="text-sm text-gray-500 ">
                         <Moment date={submission?.created?.toMillis()} fromNow={true} />
                       </p>
-                    </div>
-                    <div className="flex justify-between w-full">
-                      {isVerified && (
-                        <div className="inline-flex gap-1 items-center">
-                          <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-                          <p className="text-sm">Verified</p>
-                        </div>
-                      )}
-                      {isPending && (
-                        <div className="inline-flex gap-1 items-center text-daonative-white">
-                          <ClockIcon className="w-5 h-5" />
-                          <p className="text-sm">Pending</p>
-                        </div>
-                      )}
-                      {isReverted && (
-                        <div className="inline-flex gap-1 items-center text-daonative-white">
-                          <BanIcon className="w-5 h-5" />
-                          <p className="text-sm">Reverted</p>
-                        </div>
-                      )}
+                      <div className="flex justify-between">
+                        {isVerified && (
+                          <div className="inline-flex gap-1 items-center">
+                            <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+                            <p className="text-sm">Verified</p>
+                          </div>
+                        )}
+                        {isPending && (
+                          <div className="inline-flex gap-1 items-center text-daonative-white">
+                            <ClockIcon className="w-5 h-5" />
+                            <p className="text-sm">Pending</p>
+                          </div>
+                        )}
+                        {isReverted && (
+                          <div className="inline-flex gap-1 items-center text-daonative-white">
+                            <BanIcon className="w-5 h-5" />
+                            <p className="text-sm">Reverted</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

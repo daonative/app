@@ -7,6 +7,19 @@ const PFP = ({ address, size }) => (
   <Jazzicon diameter={size} seed={jsNumberForAddress(address || '')} />
 )
 
+export const UserRectangleAvatar = ({ account, size = 80 }) => {
+  const { ensAvatar } = useUserProfile(account, false)
+
+  if (!ensAvatar)
+    return <>
+
+      <PFP address={account} size={size} />
+    </>
+
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={ensAvatar} alt="Member avatar" className={`rounded-lg h-[80px] w-[80px]`} />
+}
+
 export const UserAvatar = ({ account, size = 40 }) => {
   const { ensAvatar } = useUserProfile(account, false)
 

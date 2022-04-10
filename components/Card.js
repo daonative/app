@@ -2,10 +2,17 @@ import { classNames } from "../lib/utils"
 
 export const SimpleCard = ({ onClick, children, className }) => {
   return (
-    <div onClick={onClick} className={classNames("px-4 py-4 sm:px-6 bg-daonative-component-bg rounded-lg", className)}>
+    <div onClick={onClick} className={classNames("bg-daonative-component-bg rounded-lg", className)}>
       {children}
-    </div>
+    </div >
   );
+}
+export const SimpleCardBody = ({ children, className }) => {
+  return (
+    <div className={classNames(" px-4 py-4 sm:px-6", className)}>
+      {children}
+    </div >
+  )
 }
 
 
