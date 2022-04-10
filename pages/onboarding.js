@@ -38,9 +38,7 @@ const MINT_NFT_MEMBERSHIP = false
 const Steps = ({ children }) => (
   <nav aria-label="Progress" className="p-4 md:p-10">
     <ol role="list" className="md:flex justify-center">
-      <li className="border-y-gray-300 md:grow md:border-y"></li>
       {children}
-      <li className="border-y-gray-300 md:grow md:border-y md:border-gray-300 md:border-l"></li>
     </ol>
   </nav>
 )
@@ -53,19 +51,7 @@ const Step = ({ status, children, id }) => (
     )}
   >
     <div className="hidden md:block absolute top-0 left-0 h-full w-5" aria-hidden="true">
-      <svg
-        className="h-full w-full text-gray-300"
-        viewBox="0 0 22 80"
-        fill="none"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0.500122 0V30.2439L10.5001 40L0.500122 49.7561V80"
-          vectorEffect="non-scaling-stroke"
-          stroke="currentcolor"
-          strokeLinejoin="round"
-        />
-      </svg>
+
     </div>
     <div className="group flex items-center w-full">
       <span className="px-6 py-4 flex items-center text-sm font-medium">
@@ -91,7 +77,7 @@ const Step = ({ status, children, id }) => (
 )
 
 const StepTitle = ({ children }) => (
-  <span className="ml-4 text-sm font-medium text-daonative-white font-medium uppercase tracking-wider font-bold">{children}</span>
+  <span className="ml-4 text-sm font-medium font-space text-daonative-white font-medium uppercase tracking-wider font-bold">{children}</span>
 )
 
 const StepDescription = ({ children }) => (
@@ -394,7 +380,7 @@ const Onboarding = () => {
   }
 
   return (
-    <div className="overflow-hidden w-full h-screen daonative-white">
+    <div className="overflow-hidden w-full h-screen text-daonative-white ">
       <Steps>
         <Step id={1} status={stepStatus(1)}>
           <StepTitle>Create</StepTitle>
