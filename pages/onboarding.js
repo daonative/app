@@ -102,10 +102,9 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
     const db = getFirestore()
     const room = { name, treasury: address }
     const roomsCollection = collection(db, 'rooms')
-    const roomRef = await addDoc(roomsCollection, { name, treasury: address })
+    const roomRef = await addDoc(roomsCollection, { name, treasury: address, created: serverTimestamp() })
     return {
       roomId: roomRef.id,
-      created: serverTimestamp(),
       ...room
     }
   }
