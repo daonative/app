@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form"
 import Moment from "react-moment"
 import { useWallet } from "use-wallet"
 import { PrimaryButton, SecondaryButton } from "../../../../../components/Button"
-import { Card } from "../../../../../components/Card"
+import { Card, SimpleCard, SimpleCardBody } from "../../../../../components/Card"
 import { LayoutWrapper } from "../../../../../components/LayoutWrapper"
 import { UserAvatar, UserName } from "../../../../../components/PFP"
 import { useRequireAuthentication } from "../../../../../lib/authenticate"
@@ -179,42 +179,44 @@ const SubmissionsList = ({ submissions, currentSubmissionId, onCurrentSubmission
               className="py-2"
               style={isCurrent ? { transform: 'scale(1.03)', transition: '0.2s ease-in' } : { transition: '0.2s ease-in' }}
             >
-              <Card
+              <SimpleCard
                 onClick={() => onCurrentSubmissionChanged(submission.workproofId)}
                 className={isCurrent && "outline outline-daonative-primary-blue"}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex w-full">
-                    <div>
-                      <UserAvatar account={submission.author} />
-                    </div>
-                    <div className="pl-4 w-full flex flex-col gap-1">
-                      <div className="flex justify-between w-full">
-                        <p className="text-sm">
-                          <UserName account={submission.author} />
-                        </p>
-                        <div>
-                          {isVerified && (
-                            <div className="inline-flex gap-1 items-center">
-                              <CheckIcon className="w-5 h-5" />
-                            </div>
-                          )}
-                          {isReverted && (
-                            <div className="inline-flex gap-1 items-center text-daonative-white">
-                              <BanIcon className="w-5 h-5" />
-                            </div>
-                          )}
-                        </div>
+                <SimpleCardBody>
+                  <div className="flex items-center justify-between">
+                    <div className="flex w-full">
+                      <div>
+                        <UserAvatar account={submission.author} />
                       </div>
-                      <div className="flex justify-between w-full">
-                        <p className="text-sm text-gray-500 pr-1">
-                          <Moment date={submission?.created?.toMillis()} fromNow={true} />
-                        </p>
+                      <div className="pl-4 w-full flex flex-col gap-1">
+                        <div className="flex justify-between w-full">
+                          <p className="text-sm">
+                            <UserName account={submission.author} />
+                          </p>
+                          <div>
+                            {isVerified && (
+                              <div className="inline-flex gap-1 items-center">
+                                <CheckIcon className="w-5 h-5" />
+                              </div>
+                            )}
+                            {isReverted && (
+                              <div className="inline-flex gap-1 items-center text-daonative-white">
+                                <BanIcon className="w-5 h-5" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex justify-between w-full">
+                          <p className="text-sm text-gray-500 pr-1">
+                            <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </SimpleCardBody>
+              </SimpleCard>
             </li>
           )
         })}
