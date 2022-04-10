@@ -1,5 +1,5 @@
 import { BanIcon, CheckIcon, ClockIcon } from "@heroicons/react/solid"
-import { arrayUnion, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { arrayUnion, collection, doc, getDoc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { reset } from "linkifyjs"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -8,13 +8,13 @@ import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useForm } from "react-hook-form"
 import Moment from "react-moment"
 import { useWallet } from "use-wallet"
-import { PrimaryButton, SecondaryButton } from "../../../../../components/Button"
-import { Card, SimpleCard, SimpleCardBody } from "../../../../../components/Card"
-import { LayoutWrapper } from "../../../../../components/LayoutWrapper"
-import { UserAvatar, UserName } from "../../../../../components/PFP"
-import { useRequireAuthentication } from "../../../../../lib/authenticate"
-import useMembership from "../../../../../lib/useMembership"
-import { classNames } from "../../../../../lib/utils"
+import { PrimaryButton, SecondaryButton } from "../../../../../../components/Button"
+import { Card, SimpleCard, SimpleCardBody } from "../../../../../../components/Card"
+import { LayoutWrapper } from "../../../../../../components/LayoutWrapper"
+import { UserAvatar, UserName } from "../../../../../../components/PFP"
+import { useRequireAuthentication } from "../../../../../../lib/authenticate"
+import useMembership from "../../../../../../lib/useMembership"
+import { classNames } from "../../../../../../lib/utils"
 
 const VerifyWork = ({ workproof, onVerified }) => {
   const db = getFirestore()
@@ -236,7 +236,7 @@ const NothingToVerify = ({ challengeURL }) => (
   </div>
 )
 
-const ChallengeDetails = () => {
+const VerifyList = ({ currentSubmission }) => {
   const db = getFirestore()
   const { account } = useWallet()
   const { query: { challengeId, daoId: roomId } } = useRouter()
@@ -333,4 +333,28 @@ const ChallengeDetails = () => {
   )
 }
 
-export default ChallengeDetails
+const getSubmission = async (submissionId) => {
+  if (!submissionId) return
+  const db = getFirestore()
+  const docRef = doc(db, "workproofs", submissionId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return docSnap.data()
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+}
+
+
+
+export async function getServerSideProps(context) {
+  const { submissionId } = context.params
+  const currentSubmission = await getSubmission(submissionId)
+  return {
+    // used empty remove key from
+    props: { currentSubmission: { ...currentSubmission, created: 'empty' } }, // will be passed to the page component as props
+  }
+}
+
+export default VerifyList
