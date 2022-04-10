@@ -75,7 +75,7 @@ export const Members = () => {
   return (
     <>
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
-      <div className="mx-auto px-4 sm:px-6 md:px-8">
+      <div className="mx-auto px-4 sm:px-6 md:px-8 ">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Members</h2>
@@ -93,7 +93,9 @@ export const Members = () => {
 const MembersPage = () => {
   return (
     <LayoutWrapper>
-      <Members />
+      <div className="max-w-4xl m-auto">
+        <Members />
+      </div>
     </LayoutWrapper>
   )
 }

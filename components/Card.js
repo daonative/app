@@ -2,7 +2,11 @@ import { classNames } from "../lib/utils"
 
 export const SimpleCard = ({ onClick, children, className }) => {
   return (
-    <div onClick={onClick} className={classNames("bg-daonative-component-bg rounded-lg", className)}>
+    <div
+      style={{
+        border: '1px solid rgba(49, 49, 74, 0.4)',
+      }}
+      onClick={onClick} className={classNames("bg-daonative-component-bg rounded-lg ", className)}>
       {children}
     </div >
   );
