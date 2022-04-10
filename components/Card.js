@@ -9,7 +9,7 @@ export const SimpleCard = ({ onClick, children, className }) => {
 }
 export const SimpleCardBody = ({ children, className }) => {
   return (
-    <div className={classNames(" px-4 py-4 sm:px-6", className)}>
+    <div className={classNames(" px-3 py-3 ", className)}>
       {children}
     </div >
   )

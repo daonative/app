@@ -11,7 +11,7 @@ import Spinner from '../../../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../../../components/ShortAddress'
 import { LayoutWrapper } from '../../../../components/LayoutWrapper'
-import { Card, SimpleCard } from '../../../../components/Card'
+import { Card, SimpleCard, SimpleCardBody } from '../../../../components/Card'
 import { useForm } from 'react-hook-form'
 import { getUserRooms } from '../../../../lib/useMembership'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
@@ -180,25 +180,27 @@ const Token = ({ chainId, tokenAddress, tokenId, owner, metadataUri, timestamp }
 
   return (
     <SimpleCard className="opacity-[80%] hover:opacity-100">
-      <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-        #{String(tokenId + 1).padStart(3, '0')}
-      </span >
-      <a href={getOpenSeaUrl(Number(chainId), tokenAddress, tokenId)}>
-        <img className="object-cover w-full p-2 min-h-[100px] w-[200px]" src={metadata.image} />
-      </a >
-      < div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center" >
+      <SimpleCardBody>
         <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
-          {/*date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()*/}
-        </span>
-      </div >
-      <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
-      </div>
-      <div className='text-daonative-subtitle'>
-        Minted
-        <div>
-          by <span className='text-daonative-white'><ShortAddress>{owner}</ShortAddress></span>
+          #{String(tokenId + 1).padStart(3, '0')}
+        </span >
+        <a href={getOpenSeaUrl(Number(chainId), tokenAddress, tokenId)}>
+          <img className="object-cover w-full py-2 min-h-[100px] w-[200px]" src={metadata.image} />
+        </a >
+        < div className="absolute w-full py-8 top-0 inset-x-0 leading-4 flex flex-col gap-4 items-center" >
+          <span className="px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800 font-weight-600 font-space">
+            {/*date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()*/}
+          </span>
+        </div >
+        <div className="absolute w-full py-8 bottom-0 inset-x-0 leading-4 flex flex-col gap-4 items-center">
         </div>
-      </div>
+        <div className='text-daonative-subtitle'>
+          Minted
+          <div>
+            by <span className='text-daonative-white'><ShortAddress>{owner}</ShortAddress></span>
+          </div>
+        </div>
+      </SimpleCardBody>
     </SimpleCard >
   )
 }

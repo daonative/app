@@ -194,14 +194,14 @@ const SubmissionsList = ({ submissions, isAdmin }) => {
               <SimpleCard
                 onClick={() => canInspect && handleOpenEditModal(submission)}
                 className={classNames(
-                  canInspect && "hover:cursor-pointer"
-                )}
+                  canInspect && "hover:cursor-pointer",
+                  "hover:cursor-pointer opacity-[75%] hover:opacity-100")}
               >
-                <div className=' py-2 sm:px-2'>
-                  <div className="flex items-center justify-between">
+                <div className=' py-2 px-3'>
+                  <div className="grid grid-cols-2 overflow-hidden">
                     <UserRectangleAvatar account={submission.author} />
-                    <div className="flex flex-col gap-1 items-end">
-                      <p className="text-sm">
+                    <div className="flex flex-col gap-1 items-end ">
+                      <p className="text-sm  max-w-[100%] truncate text-ellipsis">
                         <UserName account={submission.author} />
                       </p>
                       <p className="text-sm text-gray-500 ">
