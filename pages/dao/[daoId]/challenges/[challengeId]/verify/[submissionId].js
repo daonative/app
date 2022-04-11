@@ -319,13 +319,16 @@ const VerifyList = ({ currentSubmission }) => {
                     </div>
                   </>
                 )}
-                <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">Reviewed</h2>
-                <div className="px-4">
-                  <SubmissionsList submissions={reviewedSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
-                </div>
+                {reviewableSubmissions.length > 0 && (
+                  <>
+                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">Reviewed</h2>
+                    <div className="px-4">
+                      <SubmissionsList submissions={reviewedSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
+                    </div>
+                  </>
+                )}
               </div>
             </>
-
           )}
         </div>
       </div>
