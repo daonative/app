@@ -372,7 +372,7 @@ const ChallengeDetails = () => {
         </div>
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
-            <div className="whitespace-pre-wrap text-daonative-text">
+            <div className="prose prose-sm prose-daonative-text prose-invert text-daonative-text">
               <ReactMarkdown>
                 {challenge?.description}
               </ReactMarkdown>

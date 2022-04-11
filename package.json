@@ -13,6 +13,7 @@
     "@heroicons/react": "^1.0.5",
     "@svgr/webpack": "^6.2.0",
     "@tailwindcss/forms": "^0.4.0",
+    "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.2",
     "axios": "^0.26.0",
     "chart.js": "^3.7.0",
