@@ -283,6 +283,8 @@ const VerifyList = ({ currentSubmission }) => {
     }
   }, [currentWorkproofId, allSubmissions, reviewableSubmissions, reviewedSubmissions, unreviewableSubmissions])
 
+  console.log(reviewedSubmissions)
+
   return (
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8">
@@ -319,7 +321,7 @@ const VerifyList = ({ currentSubmission }) => {
                     </div>
                   </>
                 )}
-                {reviewableSubmissions.length > 0 && (
+                {reviewedSubmissions.length > 0 && (
                   <>
                     <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">Reviewed</h2>
                     <div className="px-4">
