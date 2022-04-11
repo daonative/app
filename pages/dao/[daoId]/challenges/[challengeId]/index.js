@@ -19,6 +19,7 @@ import Linkify from 'linkify-react'
 import Link from 'next/link'
 import { classNames } from '../../../../../lib/utils'
 import { SimpleCard, SimpleCardBody } from '../../../../../components/Card'
+import ReactMarkdown from 'react-markdown'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -372,9 +373,9 @@ const ChallengeDetails = () => {
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
             <div className="whitespace-pre-wrap text-daonative-text">
-              <Linkify options={{ className: 'text-daonative-primary-purple underline' }}>
+              <ReactMarkdown>
                 {challenge?.description}
-              </Linkify>
+              </ReactMarkdown>
             </div>
           </div>
           <div className="w-full">
