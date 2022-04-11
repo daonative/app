@@ -327,13 +327,16 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
 const Onboarding = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [isAllowed, setIsAllowed] = useState(false)
+  const [isGuildMember, setIsGuildMember] = useState(false)
   const [dao, setDAO] = useState()
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
   const isConnected = useIsConnected()
   const { account, status } = useWallet()
   const isConnecting = status === 'connecting'
+
+  const hasFreePass = router?.query?.ref === "PolygonBounty"
+  const isAllowed = hasFreePass || isGuildMember
 
   useDarkMode()
 
@@ -342,7 +345,7 @@ const Onboarding = () => {
       setIsLoading(true)
       const roles = await guild.getUserAccess(GUILD_ID, account)
       const hasAccess = roles.filter(role => role.access === true).length > 0
-      setIsAllowed(hasAccess)
+      setIsGuildMember(hasAccess)
       setIsLoading(false)
     }
 
@@ -350,6 +353,7 @@ const Onboarding = () => {
 
     setGuildAccess(account)
   }, [account])
+
 
   const stepStatus = (index) => {
     if (index === currentStep) return "current"

@@ -293,7 +293,7 @@ const Dashboard = ({ dao: initialDAO }) => {
   } : initialDAO
 
   const SEOImage = initialDAO.profilePictureURI ? (
-    initialDAO.profilePictureURI.replace('https://ipfs.infura.io/', 'https://ipfs.io/')
+    initialDAO.profilePictureURI
   ) : (
     "/DAOnativeSEOLogo.png"
   )
