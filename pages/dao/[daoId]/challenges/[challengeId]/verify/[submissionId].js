@@ -283,8 +283,6 @@ const VerifyList = ({ currentSubmission }) => {
     }
   }, [currentWorkproofId, allSubmissions, reviewableSubmissions, reviewedSubmissions, unreviewableSubmissions])
 
-  console.log(reviewedSubmissions)
-
   return (
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8">
