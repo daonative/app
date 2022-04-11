@@ -307,7 +307,7 @@ const Dashboard = ({ dao: initialDAO }) => {
         canonical={SEOUrl}
         openGraph={{
           url: SEOUrl,
-          title: `${initialDAO.name}`,
+          title: `DAOnative | ${initialDAO.name}`,
           description: initialDAO.mission,
           images: [{url: SEOImage}],
           site_name: 'DAOnative',
