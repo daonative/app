@@ -25,6 +25,7 @@ import { CogIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import PFP from '../../../components/PFP';
 import { uploadToIPFS } from '../../../lib/uploadToIPFS';
+import { NextSeo } from 'next-seo';
 
 const db = getFirestore()
 
@@ -291,9 +292,26 @@ const Dashboard = ({ dao: initialDAO }) => {
     roomId: daoSnapshot.id
   } : initialDAO
 
-
+  const SEOImages = initialDAO.profilePictureURI ? [{url: initialDAO.profilePictureURI}] : []
+  const SEOUrl = "https://app.daonative.xyz"
   return (
     <>
+      <NextSeo
+        title="DAONative"
+        description=""
+        canonical={SEOUrl}
+        openGraph={{
+          url: SEOUrl,
+          title: `${initialDAO.name}`,
+          description: '',
+          images: SEOImages,
+          site_name: 'DAOnative',
+        }}
+        twitter={{
+          handle: '@daonative',
+          cardType: 'summary',
+        }}
+      />
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex gap-4 items-center">
