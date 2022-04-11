@@ -308,7 +308,7 @@ const Dashboard = ({ dao: initialDAO }) => {
         openGraph={{
           url: SEOUrl,
           title: `${initialDAO.name}`,
-          description: '',
+          description: initialDAO.mission,
           images: [{url: SEOImage}],
           site_name: 'DAOnative',
         }}
