@@ -20,9 +20,11 @@ import Spinner from '../../../components/Spinner';
 import { useRequireAuthentication } from '../../../lib/authenticate';
 import { Members } from './members';
 import { LayoutWrapper } from '../../../components/LayoutWrapper';
-import { SecondaryButton } from '../../../components/Button';
+import { PrimaryButton, SecondaryButton } from '../../../components/Button';
 import { CogIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
+import PFP from '../../../components/PFP';
+import { uploadToIPFS } from '../../../lib/uploadToIPFS';
 
 const db = getFirestore()
 
@@ -186,7 +188,6 @@ const LogWorkModal = ({ show, onClose, task }) => {
   )
 }
 
-
 const OpenTasks = ({ openTasks }) => {
   const [taskToLog, setTaskToLog] = useState(null)
   const [showLogWorkModal, setShowLogWorkModal] = useState(false)
@@ -209,6 +210,74 @@ const OpenTasks = ({ openTasks }) => {
   )
 }
 
+const UploadDAOProfilePictureModal = ({ currentProfilePictureURI, roomId, show, onClose }) => {
+  const { handleSubmit, register, watch } = useForm()
+  const imageFile = watch('image')
+  const imageUri = imageFile?.length > 0 ? URL.createObjectURL(imageFile[0]) : ""
+  const requireAuthentication = useRequireAuthentication()
+
+  const uploadAndSetProfileImage = async (image) => {
+    const profilePictureURI = image?.length === 1 ? await uploadToIPFS(image[0]) : null
+    const db = getFirestore()
+    const roomRef = doc(db, 'rooms', roomId)
+    await updateDoc(roomRef, { profilePictureURI })
+  }
+
+  const handleUploadProfilePicture = async (data) => {
+    await requireAuthentication()
+    await uploadAndSetProfileImage(data.image)
+    onClose()
+  }
+
+  const handleClearProfilePicture = async () => {
+    await requireAuthentication()
+    await uploadAndSetProfileImage(null)
+    onClose()
+  }
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <ModalTitle>DAO profile</ModalTitle>
+      <form onSubmit={handleSubmit(handleUploadProfilePicture)}>
+        <ModalBody>
+          <div className="flex items-center justify-center pb-8">
+            <DAOProfilePicture profilePictureURI={imageUri || currentProfilePictureURI} roomId={roomId} />
+          </div>
+          <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
+        </ModalBody>
+        <ModalActionFooter>
+          <div className="flex gap-4">
+            <SecondaryButton onClick={onClose}>Close</SecondaryButton>
+            <SecondaryButton onClick={handleClearProfilePicture}>Clear</SecondaryButton>
+            <PrimaryButton type="submit">Upload</PrimaryButton>
+          </div>
+        </ModalActionFooter>
+      </form>
+    </Modal>
+  )
+}
+
+const DAOProfilePictureButton = ({ roomId, profilePictureURI, canUploadProfilePicture }) => {
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+
+  const handleOpenUploadModal = () => setIsUploadModalOpen(true)
+  const handleCloseUploadModal = () => setIsUploadModalOpen(false)
+
+  return (
+    <div className={canUploadProfilePicture && "hover:cursor-pointer"} onClick={() => canUploadProfilePicture && handleOpenUploadModal()}>
+      <UploadDAOProfilePictureModal show={isUploadModalOpen} onClose={handleCloseUploadModal} roomId={roomId} currentProfilePictureURI={profilePictureURI} />
+      <DAOProfilePicture roomId={roomId} profilePictureURI={profilePictureURI} />
+    </div>
+  )
+}
+
+const DAOProfilePicture = ({ roomId, profilePictureURI }) => (
+  <>
+    {profilePictureURI && <img src={profilePictureURI} width="64" height="64" style={{ borderRadius: 8 }} />}
+    {!profilePictureURI && <PFP address={roomId} size={64} />}
+  </>
+)
+
 const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
@@ -227,10 +296,13 @@ const Dashboard = ({ dao: initialDAO }) => {
     <>
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+          <div className="flex gap-4 items-center">
+            <DAOProfilePictureButton roomId={roomId} profilePictureURI={dao.profilePictureURI} canUploadProfilePicture={isAdmin} />
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+              <Mission roomId={roomId} mission={dao.mission} />
+            </div>
           </div>
-          <Mission roomId={roomId} mission={dao.mission} />
         </div>
         <div className="py-4 mx-auto px-4 sm:px-6 md:px-8">
           <KPIs roomId={roomId} kpis={dao.kpis} />
