@@ -292,8 +292,13 @@ const Dashboard = ({ dao: initialDAO }) => {
     roomId: daoSnapshot.id
   } : initialDAO
 
-  const SEOImages = initialDAO.profilePictureURI ? [{url: initialDAO.profilePictureURI}] : []
+  const SEOImage = initialDAO.profilePictureURI ? (
+    initialDAO.profilePictureURI.replace('https://ipfs.infura.io/', 'https://ipfs.io/')
+  ) : (
+    "/DAOnativeSEOLogo.png"
+  )
   const SEOUrl = "https://app.daonative.xyz"
+
   return (
     <>
       <NextSeo
@@ -304,7 +309,7 @@ const Dashboard = ({ dao: initialDAO }) => {
           url: SEOUrl,
           title: `${initialDAO.name}`,
           description: '',
-          images: SEOImages,
+          images: [{url: SEOImage}],
           site_name: 'DAOnative',
         }}
         twitter={{
