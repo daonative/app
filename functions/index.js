@@ -97,6 +97,12 @@ exports.setJoinDateForMembers = functions.firestore
     snap.ref.set({ joinDate: firestore.FieldValue.serverTimestamp() }, { merge: true });
   })
 
+exports.setCreatedForNewUsers = functions.firestore
+  .document('users/{account}')
+  .onCreate(async (snap, context) => {
+    snap.ref.set({ created: firestore.FieldValue.serverTimestamp() }, { merge: true });
+  })
+
 exports.logFirstUserInteraction = functions.firestore
   .document('users/{account}')
   .onCreate(async (snap, context) => {
