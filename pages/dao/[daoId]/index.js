@@ -303,7 +303,7 @@ const Dashboard = ({ dao: initialDAO }) => {
   return (
     <>
       <Head>
-        <meta property="twitter:image" content={SEOImage} />
+        <meta property="twitter:image" content={SEOImage.replace('ipfs.infura.io', 'cloudflare-ipfs.com')} />
       </Head>
       <NextSeo
         title="DAONative"
@@ -318,7 +318,7 @@ const Dashboard = ({ dao: initialDAO }) => {
         }}
         twitter={{
           handle: '@daonative',
-          cardType: 'summary',
+          cardType: 'summary_large_image',
         }}
       />
       <LayoutWrapper>

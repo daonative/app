@@ -210,7 +210,7 @@ const MintPage = (props) => {
         }}
         twitter={{
           handle: '@daonative',
-          cardType: 'summary',
+          cardType: 'summary_large_image',
         }}
       />
       <div>

@@ -15,6 +15,7 @@ import { PrimaryButton } from '../../../components/Button'
 import DAOnativeLogo from '/public/DAOnativeLogo.svg'
 import { getRoom } from '.'
 import { NextSeo } from 'next-seo'
+import Head from 'next/head'
 
 
 export const getServerSideProps = async ({ res, params }) => {
@@ -79,6 +80,9 @@ const Join = ({ dao }) => {
 
   return (
     <>
+      <Head>
+        <meta property="twitter:image" content={SEOImage} />
+      </Head>
       <NextSeo
         title="DAONative"
         description=""
@@ -92,7 +96,7 @@ const Join = ({ dao }) => {
         }}
         twitter={{
           handle: '@daonative',
-          cardType: 'summary',
+          cardType: 'summary_large_image',
         }}
       />
       <div className="overflow-hidden w-full h-screen">
