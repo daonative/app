@@ -43,7 +43,7 @@ const getFeed = async (roomId) => {
   })
 }
 
-const getRoom = async (roomId) => {
+export const getRoom = async (roomId) => {
   const roomRef = doc(db, 'rooms', roomId)
   const roomSnap = await getDoc(roomRef)
 
@@ -309,7 +309,7 @@ const Dashboard = ({ dao: initialDAO }) => {
           url: SEOUrl,
           title: `DAOnative | ${initialDAO.name}`,
           description: initialDAO.mission,
-          images: [{url: SEOImage}],
+          images: [{ url: SEOImage }],
           site_name: 'DAOnative',
         }}
         twitter={{
