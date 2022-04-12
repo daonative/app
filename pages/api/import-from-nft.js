@@ -1,6 +1,7 @@
+import requireAuthenticationMiddleware from '../../lib/requireAuthenticationMiddleware'
 import admin from 'firebase-admin';
 import { collectionAbi, ERC1155Abi } from '../../lib/abi'
-import { ethers, providers } from 'ethers'
+import { ethers } from 'ethers'
 import { getReadonlyProvider, isSupportedChain } from '../../lib/chainSupport';
 
 if (!admin.apps.length) {
@@ -15,36 +16,6 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-const verifyToken = async (tokenId) => {
-  try {
-    const token = await admin.auth().verifyIdToken(tokenId)
-    return token.uid
-  } catch (e) {
-    return null
-  }
-}
-
-const checkAuth = async (req, res) => {
-  if (!req.headers.authorization) {
-    return res.status(403).json({ error: 'No credentials' })
-  }
-
-  const authHeader = req.headers.authorization.split(' ')
-
-  if (authHeader.length != 2) {
-    return res.status(403).json({ error: 'Invalid credentials' })
-  }
-
-  const token = authHeader[1];
-  const uid = await verifyToken(token)
-
-  if (!uid) {
-    return res.status(403).json({ error: 'Invalid credentials' })
-  }
-
-  req.uid = uid
-}
-
 const isRoomAdmin = async (roomId, uid) => {
   try {
     const membershipDoc = await db.collection('rooms').doc(roomId).collection('members').doc(uid).get()
@@ -56,22 +27,12 @@ const isRoomAdmin = async (roomId, uid) => {
 }
 
 const getERC721TokenHolders = async (chainId, collectionAddress) => {
-  // const events = [{from: 0, to: 1, id: 1}, {from: 0, to: 1, id: 2}, {from: 0, to: 2, id: 2}, {from: 1, to: 3, id: 1}, {from: 1, to: 4, id: 2}]
-  // events.reduce((holders, event) => {
-  //    holders[event.to] = holders[event.to] ? holders[event.to] += 1 : 1
-  //    if (event.from != 0) holders[event.from] -= 1
-  //    return holders
-  //}, {})
-
   const readonlyProvider = getReadonlyProvider(chainId)
   const contract = new ethers.Contract(collectionAddress, collectionAbi, readonlyProvider)
-  const mintFilter = contract.filters.Transfer(null)
-  const mintEvents = await contract.queryFilter(mintFilter)
-  const tokens = await Promise.all(mintEvents.map(async event => ({
-    tokenId: event.args?.tokenId.toNumber(),
-    owner: event.args?.to
-  })))
-  return tokens
+  const totalSupply = await contract.totalSupply()
+  const tokenIds = [...Array(totalSupply.toNumber()).keys()]
+  const holders = await Promise.all(tokenIds.map(async tokenId => await contract.ownerOf(tokenId)))
+  return holders
 }
 
 const getERC1155TokenHolders = async (chainId, address) => {
@@ -104,58 +65,39 @@ const supportsInterface = async (provider, address, ifaceId) => {
 const getTokenHolders = async (chainId, address) => {
   const readonlyProvider = getReadonlyProvider(chainId)
   const isERC721 = await supportsInterface(readonlyProvider, address, '0x80ac58cd')
+  const isEnumerable = await supportsInterface(readonlyProvider, address, '0x780e9d63')
 
-  if (isERC721) {
+  if (isERC721 && isEnumerable) {
     return await getERC721TokenHolders(chainId, address)
   }
 
-  const isERC1155 = await supportsInterface(readonlyProvider, address, '0xd9b67a26')
+  //const isERC1155 = await supportsInterface(readonlyProvider, address, '0xd9b67a26')
 
-  if (isERC1155) {
-    return await getERC1155TokenHolders(chainId, address)
-  }
+  //if (isERC1155) {
+  //  return await getERC1155TokenHolders(chainId, address)
+  //}
 
-  throw Error('Invalid contract address')
+  throw Error('Invalid contract address. Needs to be an enumerable ERC721')
 }
 
-const setMembership = async (account, roomId, roles) => {
-  const rolesData = roles?.length > 0 ? { roles: admin.firestore.FieldValue.arrayUnion(...roles) } : { }
-
-  // Set membership
-  await db.collection('rooms').doc(roomId).collection('members').doc(account).set({
-    account,
-    ...rolesData
-  }, { merge: true })
-
-  // Update user
-  //await db.collection('users').doc(account).set({
-  //  rooms: admin.firestore.FieldValue.arrayUnion(account)
-  //}, { merge: true })
+const setMembership = async (account, roomId) => {
+  await db.collection('rooms').doc(roomId).collection('members').doc(account).set({ account }, { merge: true })
 }
 
-const setRoomTokenGate = async (roomId, chainId, tokenAdress, roles) => {
+const setRoomTokenGate = async (roomId, chainId, tokenAdress) => {
   await db.collection('rooms').doc(roomId).set({
     tokenGates: admin.firestore.FieldValue.arrayUnion({
       chainId,
-      tokenAdress,
-      roles,
+      tokenAdress
     })
   }, { merge: true })
 }
 
-async function handler(req, res) {
-  await checkAuth(req, res)
+const handler = async (req, res) => {
+  const { chainId, collectionAddress, roomId } = req.body
 
-  if (!req.uid) return
-
-  const { chainId, tokenAddress, roomId, roles } = req.body
-
-  if (!tokenAddress || !roomId || admin === undefined) {
+  if (!chainId || !collectionAddress || !roomId) {
     return res.status(400).json({ error: 'Missing one of the required parameters' })
-  }
-
-  if (roles.length > 0 && roles !== ['admin']) {
-    return res.status(400).json({ error: 'Invalid roles' })
   }
 
   if (!isSupportedChain(Number(chainId))) {
@@ -167,13 +109,13 @@ async function handler(req, res) {
   }
 
   // Configure the gate at room level
-  await setRoomTokenGate(roomId, Number(chainId), tokenAddress, roles)
+  await setRoomTokenGate(roomId, Number(chainId), collectionAddress)
 
   // Get the holders and add them as members
-  const holders = await getTokenHolders(Number(chainId), tokenAddress)
-  holders.forEach(token => setMembership(token, roomId, roles))
+  const holders = [...new Set(await getTokenHolders(Number(chainId), collectionAddress))]
+  holders.forEach(token => setMembership(token, roomId))
 
-  res.status(200).json({ roomId, roles, tokens: holders });
+  res.status(200).json({ roomId, holders });
 }
 
-export default handler;
+export default requireAuthenticationMiddleware(handler);

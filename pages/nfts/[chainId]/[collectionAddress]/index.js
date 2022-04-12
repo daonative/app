@@ -21,86 +21,47 @@ import { ImagePreview, OpenSeaPreview } from '../../create'
 import Link from 'next/link'
 import { getReadonlyProvider } from '../../../../lib/chainSupport'
 
-const LinkDAOModal = ({ show, onClose, collectionAddress }) => {
-  const [rooms, setRooms] = useState([])
-  const { account } = useWallet()
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+const CreateDAOModal = ({ show, onClose, chainId, collectionAddress }) => {
+  const { handleSubmit, register, formState: { isSubmitting } } = useForm()
   const requireAuthentication = useRequireAuthentication()
+  const { push } = useRouter()
 
-  useEffect(() => {
-    const retrieveMyRooms = async () => {
-      setRooms([])
-      const userRooms = await getUserRooms(account)
-      const userAdminRooms = userRooms.filter(room => room?.membership?.roles?.includes('admin'))
-      setRooms(userAdminRooms)
-    }
-
-    if (!account) return
-
-    retrieveMyRooms()
-  }, [account])
-
-  const linkDAO = async (collectionAddress, roomId, admin) => {
+  const createDAO = async (name) => {
     const tokenId = await requireAuthentication()
-    const result = await axios.post('/api/link-nft', { collectionAddress, roomId, admin }, { headers: { 'Authorization': `Bearer ${tokenId}` } })
-    console.log(result.data)
+    const authHeaders = { headers: { 'Authorization': `Bearer ${tokenId}` } }
+    const createResult = await axios.post('/api/create-dao', { name }, authHeaders)
+    const { roomId } = createResult.data
+    await axios.post('/api/import-from-nft', { chainId, collectionAddress, roomId }, authHeaders)
+    return roomId
   }
 
-  const handleLinkDAO = async (data) => {
-    await linkDAO(collectionAddress, data.room, !!data.admin)
+  const handleCreateDAO = async (data) => {
+    const roomId = await createDAO(data.name)
+    await push(`/dao/${roomId}`)
   }
-
-  const RoomOption = ({ roomId, name }) => (
-    <li className="w-full py-1">
-      <label className="text-sm">
-        <input className="sr-only peer" type="radio" value={roomId} {...register('room', { required: true })} />
-        <div className="peer-checked:bg-daonative-component-bg bg-daonative-dark-200 hover:cursor-pointer hover:bg-daonative-dark-200 hover:bg-opacity-50 px-2 py-1.5 rounded-md">
-          {name}
-        </div>
-      </label>
-    </li>
-  )
 
   return (
     <Modal show={show} onClose={onClose}>
-      <ModalTitle>Link a DAO</ModalTitle>
-      <form onSubmit={handleSubmit(handleLinkDAO)}>
+      <ModalTitle>Create a DAO</ModalTitle>
+      <form onSubmit={handleSubmit(handleCreateDAO)}>
         <ModalBody>
           <div className="flex flex-col gap-8">
-            <p className="text-center text-sm text-daonative-gray-200 pb-4">Make the NFT holders become a member of the DAO.</p>
+            <p className="text-center text-sm text-daonative-gray-200">All NFT holders will be eligible to join the DAO.</p>
             <div>
-              <label className="block font-bold pb-2 font-space">
-                Membership Roles
-              </label>
+              <label className="block font-bold pb-2 font-space">Name</label>
               <div className="flex gap-2 items-center">
-                <input type="checkbox" {...register("admin")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" id="admin-roles" />
-                <label className="text-sm font-medium" htmlFor="admin-roles">
-                  Admin
-                </label>
+                <input type="text" {...register("name", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300 w-full" />
               </div>
-            </div>
-            <div>
-              <label className="block font-bold pb-2 font-space">
-                DAO
-              </label>
-              <ul className="justify-center w-full">
-                {rooms.map((room) => <RoomOption key={room.roomId} name={room.name} roomId={room.roomId} />)}
-                {rooms.length > 0 && <div className="flex-grow border-t border-daonative-component-bg my-2"></div>}
-                <RoomOption name="Create a new DAO" roomId="" />
-              </ul>
-              {errors.room && (
-                <span className="text-xs text-red-400">You need to select a DAO</span>
-              )}
             </div>
           </div>
         </ModalBody>
         <ModalActionFooter>
           <div className="flex gap-2">
-            <SecondaryButton onClick={onClose}>
-              Close
-            </SecondaryButton>
             <PrimaryButton type="submit">
-              Link
+              {isSubmitting && (
+                <span className="w-4 h-4 mr-2"><Spinner /></span>
+              )}
+              Create
             </PrimaryButton>
           </div>
         </ModalActionFooter>
@@ -233,8 +194,6 @@ const TokenList = ({ address, tokens }) => (
   </div>
 )
 
-
-
 const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
   const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
   const injectedProvider = useProvider()
@@ -309,7 +268,7 @@ export const GatorCollection = () => {
   const [collectionPaused, setCollectionPaused] = useState(null)
   const [collectionHasError, setCollectionHasError] = useState(false)
   // Modals
-  const [showLinkDAOModal, setShowLinkDAOModal] = useState(false)
+  const [showCreateDAOModal, setShowCreateDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [inviteLink, setInviteLink] = useState("")
 
@@ -347,8 +306,8 @@ export const GatorCollection = () => {
     setInviteLink("")
   }
 
-  const handleOpenCreateDAOModal = () => setShowLinkDAOModal(true)
-  const handleCloseLinkDAOModal = () => setShowLinkDAOModal(false)
+  const handleOpenCreateDAOModal = () => setShowCreateDAOModal(true)
+  const handleCloseCreateDAOModal = () => setShowCreateDAOModal(false)
 
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(Number(chainId))
@@ -447,7 +406,7 @@ export const GatorCollection = () => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0 ">
-      <LinkDAOModal show={showLinkDAOModal} onClose={handleCloseLinkDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
+      <CreateDAOModal show={showCreateDAOModal} onClose={handleCloseCreateDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4 items-center">
         <div className="flex justify-center items-center w-full max-w-2xl">
@@ -475,6 +434,7 @@ export const GatorCollection = () => {
             )}>
               {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
               {/* <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton> */}
+              <SecondaryButton className={!isOwner && "invisible"} onClick={handleOpenCreateDAOModal}>Create a DAO</SecondaryButton>
               <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
             </div>
           </div>
