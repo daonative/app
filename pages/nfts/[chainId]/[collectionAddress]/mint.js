@@ -13,6 +13,7 @@ import useProvider from "../../../../lib/useProvider";
 import { ImagePreview } from "../../create";
 import { getReadonlyProvider } from "../../../../lib/chainSupport";
 import { NextSeo } from "next-seo";
+import Head from "next/head";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
@@ -191,6 +192,9 @@ const MintPage = (props) => {
   const url = 'https://app.daonative.xyz'
   return (
     <>
+      <Head>
+        <meta property="twitter:image" content={props.collectionImageURI} />
+      </Head>
       <NextSeo
         title="DAONative | Mint your NFT"
         description=""

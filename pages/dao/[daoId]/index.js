@@ -26,6 +26,7 @@ import Link from 'next/link';
 import PFP from '../../../components/PFP';
 import { uploadToIPFS } from '../../../lib/uploadToIPFS';
 import { NextSeo } from 'next-seo';
+import Head from 'next/head';
 
 const db = getFirestore()
 
@@ -301,6 +302,9 @@ const Dashboard = ({ dao: initialDAO }) => {
 
   return (
     <>
+      <Head>
+        <meta property="twitter:image" content={SEOImage} />
+      </Head>
       <NextSeo
         title="DAONative"
         description=""
