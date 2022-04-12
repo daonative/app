@@ -446,9 +446,9 @@ export const GatorCollection = () => {
               "flex gap-4",
               (!isOwner || isLoading) && "invisible"
             )}>
-              <SecondaryButton className={(!isOwner || tokenGateCount > 0) && "invisible"} onClick={handleOpenCreateDAOModal}>Create a DAO</SecondaryButton>
-              <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
-              {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
+              <SecondaryButton className={(collectionTokens.length === 0 || tokenGateCount > 0) && "invisible"} onClick={handleOpenCreateDAOModal}>Create a DAO</SecondaryButton>
+              <PauseUnpauseButton isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
+              {!collectionPaused && <PrimaryButton onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
             </div>
           </div>
 
