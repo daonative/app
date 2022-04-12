@@ -20,6 +20,7 @@ import { ClipboardCopyIcon } from '@heroicons/react/solid'
 import { ImagePreview, OpenSeaPreview } from '../../create'
 import Link from 'next/link'
 import { getReadonlyProvider } from '../../../../lib/chainSupport'
+import { collection, doc, getDocs, getFirestore, query, where } from 'firebase/firestore'
 
 const CreateDAOModal = ({ show, onClose, chainId, collectionAddress }) => {
   const { handleSubmit, register, formState: { isSubmitting } } = useForm()
@@ -267,6 +268,7 @@ export const GatorCollection = () => {
   const [collectionImageURI, setCollectionImageURI] = useState('')
   const [collectionPaused, setCollectionPaused] = useState(null)
   const [collectionHasError, setCollectionHasError] = useState(false)
+  const [tokenGateCount, setTokenGateCount] = useState(0)
   // Modals
   const [showCreateDAOModal, setShowCreateDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
@@ -277,7 +279,6 @@ export const GatorCollection = () => {
   const injectedProvider = useProvider()
 
   const isOwner = collectionOwner === account
-  const isLrnt = account === '0xec55D3113fb2fb929bE6Ca6B328927D7EF32a719'
 
   const generateInviteCodes = async (inviteMaxUse) => {
     const signer = injectedProvider.getSigner()
@@ -378,6 +379,18 @@ export const GatorCollection = () => {
       //listenForNewCollectionTokens(address)
     }
 
+    const retrieveCollectionDAOs = async (collectionAddress) => {
+      const db = getFirestore()
+      const tokengates = await getDocs(
+        query(
+          collection(db, 'tokengates'),
+          where('chainId', '==', Number(chainId)),
+          where('tokenAddress', '==', collectionAddress)
+        )
+      )
+      setTokenGateCount(tokengates.docs.length)
+    }
+
     const retrieveCollectionData = async (collectionAddress) => {
       if (!ethers.utils.isAddress(collectionAddress)) {
         setCollectionHasError(true)
@@ -390,7 +403,8 @@ export const GatorCollection = () => {
           retrieveCollectionTokens(collectionAddress),
           retrieveCollectionOwner(collectionAddress),
           retrieveCollectionImageURI(collectionAddress),
-          retrieveCollectionPaused(collectionAddress)
+          retrieveCollectionPaused(collectionAddress),
+          retrieveCollectionDAOs(collectionAddress)
         ])
       } catch (e) {
         console.log(e)
@@ -430,12 +444,11 @@ export const GatorCollection = () => {
 
             <div className={classNames(
               "flex gap-4",
-              isLoading && "invisible"
+              (!isOwner || isLoading) && "invisible"
             )}>
-              {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
-              {/* <SecondaryButton onClick={handleOpenCreateDAOModal} className={(!isOwner || !isLrnt) && "invisible"}>Link a DAO</SecondaryButton> */}
-              <SecondaryButton className={!isOwner && "invisible"} onClick={handleOpenCreateDAOModal}>Create a DAO</SecondaryButton>
+              <SecondaryButton className={(!isOwner || tokenGateCount > 0) && "invisible"} onClick={handleOpenCreateDAOModal}>Create a DAO</SecondaryButton>
               <PauseUnpauseButton className={!isOwner && "invisible"} isPaused={collectionPaused} setIsPaused={setCollectionPaused} address={collectionAddress} />
+              {!collectionPaused && <PrimaryButton className={!isOwner && "invisible"} onClick={handleOpenInviteModal}>Invite to mint</PrimaryButton>}
             </div>
           </div>
 

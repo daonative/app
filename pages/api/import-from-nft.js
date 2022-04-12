@@ -84,13 +84,12 @@ const setMembership = async (account, roomId) => {
   await db.collection('rooms').doc(roomId).collection('members').doc(account).set({ account }, { merge: true })
 }
 
-const setRoomTokenGate = async (roomId, chainId, tokenAdress) => {
-  await db.collection('rooms').doc(roomId).set({
-    tokenGates: admin.firestore.FieldValue.arrayUnion({
-      chainId,
-      tokenAdress
-    })
-  }, { merge: true })
+const setRoomTokenGate = async (roomId, chainId, tokenAddress) => {
+  await db.collection('tokengates').add({
+    roomId,
+    chainId,
+    tokenAddress
+  })
 }
 
 const handler = async (req, res) => {
