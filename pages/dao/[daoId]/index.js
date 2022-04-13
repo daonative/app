@@ -212,7 +212,7 @@ const OpenTasks = ({ openTasks }) => {
   )
 }
 
-const UploadDAOProfilePictureModal = ({ currentProfilePictureURI, roomId, show, onClose }) => {
+const DAOProfileModal = ({ room, roomId, show, onClose }) => {
   const { handleSubmit, register, watch } = useForm()
   const imageFile = watch('image')
   const imageUri = imageFile?.length > 0 ? URL.createObjectURL(imageFile[0]) : ""
@@ -243,7 +243,7 @@ const UploadDAOProfilePictureModal = ({ currentProfilePictureURI, roomId, show, 
       <form onSubmit={handleSubmit(handleUploadProfilePicture)}>
         <ModalBody>
           <div className="flex items-center justify-center pb-8">
-            <DAOProfilePicture profilePictureURI={imageUri || currentProfilePictureURI} roomId={roomId} />
+            <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
           </div>
           <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
         </ModalBody>
@@ -259,16 +259,16 @@ const UploadDAOProfilePictureModal = ({ currentProfilePictureURI, roomId, show, 
   )
 }
 
-const DAOProfilePictureButton = ({ roomId, profilePictureURI, canUploadProfilePicture }) => {
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+const DAOProfileButton = ({ roomId, room, canEditProfile }) => {
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
-  const handleOpenUploadModal = () => setIsUploadModalOpen(true)
-  const handleCloseUploadModal = () => setIsUploadModalOpen(false)
+  const handleOpenUploadModal = () => setIsProfileModalOpen(true)
+  const handleCloseUploadModal = () => setIsProfileModalOpen(false)
 
   return (
-    <div className={canUploadProfilePicture && "hover:cursor-pointer"} onClick={() => canUploadProfilePicture && handleOpenUploadModal()}>
-      <UploadDAOProfilePictureModal show={isUploadModalOpen} onClose={handleCloseUploadModal} roomId={roomId} currentProfilePictureURI={profilePictureURI} />
-      <DAOProfilePicture roomId={roomId} profilePictureURI={profilePictureURI} />
+    <div className={canEditProfile && "hover:cursor-pointer"} onClick={() => canEditProfile && handleOpenUploadModal()}>
+      <DAOProfileModal show={isProfileModalOpen} onClose={handleCloseUploadModal} roomId={roomId} room={room} />
+      <DAOProfilePicture roomId={roomId} profilePictureURI={room.profilePictureURI} />
     </div>
   )
 }
@@ -324,7 +324,7 @@ const Dashboard = ({ dao: initialDAO }) => {
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex gap-4 items-center">
-            <DAOProfilePictureButton roomId={roomId} profilePictureURI={dao.profilePictureURI} canUploadProfilePicture={isAdmin} />
+            <DAOProfileButton roomId={roomId} room={dao} canEditProfile={isAdmin} />
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
               <Mission roomId={roomId} mission={dao.mission} />
