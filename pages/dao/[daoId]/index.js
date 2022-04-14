@@ -213,45 +213,66 @@ const OpenTasks = ({ openTasks }) => {
 }
 
 const DAOProfileModal = ({ room, roomId, show, onClose }) => {
-  const { handleSubmit, register, watch } = useForm()
+  const { handleSubmit, register, watch, reset } = useForm()
   const imageFile = watch('image')
   const imageUri = imageFile?.length > 0 ? URL.createObjectURL(imageFile[0]) : ""
   const requireAuthentication = useRequireAuthentication()
 
-  const uploadAndSetProfileImage = async (image) => {
-    const profilePictureURI = image?.length === 1 ? await uploadToIPFS(image[0]) : null
+  useEffect(() => {
+    const { discordNotificationWebhook } = room
+
+    if (!discordNotificationWebhook) return
+
+    reset({ discordNotificationWebhook })
+  }, [room, reset])
+
+  const uploadProfilePicture = async (image) => {
+    if (image?.length !== 1)
+      return null
+
+    const profilePictureURI = await uploadToIPFS(image[0])
+    return profilePictureURI
+  }
+
+  const updateDAOProfile = async (image, discordNotificationWebhook) => {
     const db = getFirestore()
     const roomRef = doc(db, 'rooms', roomId)
-    await updateDoc(roomRef, { profilePictureURI })
+    const profilePictureURI = await uploadProfilePicture(image)
+    const daoProfile = profilePictureURI ? { profilePictureURI, discordNotificationWebhook } : { discordNotificationWebhook }
+    await updateDoc(roomRef, daoProfile)
   }
 
-  const handleUploadProfilePicture = async (data) => {
+  const handleUpdateDAOProfile = async (data) => {
     await requireAuthentication()
-    await uploadAndSetProfileImage(data.image)
-    onClose()
-  }
-
-  const handleClearProfilePicture = async () => {
-    await requireAuthentication()
-    await uploadAndSetProfileImage(null)
+    await updateDAOProfile(data.image, data.discordNotificationWebhook)
     onClose()
   }
 
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>DAO profile</ModalTitle>
-      <form onSubmit={handleSubmit(handleUploadProfilePicture)}>
+      <form onSubmit={handleSubmit(handleUpdateDAOProfile)}>
         <ModalBody>
-          <div className="flex items-center justify-center pb-8">
-            <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
+          <div className="flex flex-col gap-8">
+            <div className="flex items-center justify-center">
+              <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">DAO profile picture</label>
+              <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium pb-2">
+                Discord Webhook URL
+              </label>
+              <input type="text" {...register("discordNotificationWebhook", { required: false })} placeholder="https://discord.com/api/webhooks/..." className="shadow-sm focus:ring-indigo-500 focus:border-daonative-border block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-white" />
+            </div>
           </div>
-          <input {...register("image", { required: true })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
         </ModalBody>
         <ModalActionFooter>
           <div className="flex gap-4">
             <SecondaryButton onClick={onClose}>Close</SecondaryButton>
-            <SecondaryButton onClick={handleClearProfilePicture}>Clear</SecondaryButton>
-            <PrimaryButton type="submit">Upload</PrimaryButton>
+            <PrimaryButton type="submit">Save</PrimaryButton>
           </div>
         </ModalActionFooter>
       </form>
@@ -324,7 +345,7 @@ const Dashboard = ({ dao: initialDAO }) => {
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex gap-4 items-center">
-            <DAOProfileButton roomId={roomId} room={dao} canEditProfile={isAdmin} />
+            {roomId && dao && <DAOProfileButton roomId={roomId} room={dao} canEditProfile={isAdmin} />}
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
               <Mission roomId={roomId} mission={dao.mission} />
