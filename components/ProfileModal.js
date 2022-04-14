@@ -17,58 +17,12 @@ import { Tab } from '@headlessui/react'
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
 
-const tabs = ['Rewards', 'Settings']
 
-
-const Tabs = ({ tabs, current, onChange }) => {
-  return (
-    <div>
-      <div className="sm:hidden">
-        <label htmlFor="tabs" className="sr-only">
-          Select a tab
-        </label>
-        {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-        <select
-          id="tabs"
-          name="tabs"
-          className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          defaultValue={current}
-        >
-          {tabs.map((tab) => (
-            <option key={tab}>{tab}</option>
-          ))}
-        </select>
-      </div>
-      <div className="hidden sm:block">
-        <div className="">
-          <nav className="-mb-px flex space-x-4" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <div
-                key={tab}
-                className={classNames(
-                  tab === current
-                    ? 'border-daonative-primary-purple text-daonative-primary-purple'
-                    : 'boder-daonative-white text-daonative-white hover:border-daonative-subtitle hover:text-daonative-subtitle',
-                  'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm hover:cursor-pointer'
-                )}
-                aria-current={tab === current ? 'page' : undefined}
-                onClick={() => onChange(tab)}
-              >
-                {tab}
-              </div>
-            ))}
-          </nav>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 const ProfileModal = ({ show, onClose }) => {
   const { account } = useWallet()
   const [submissionCount, setSubmissionCount] = useState(0)
   const [verifiedXps, setVerifiedXps] = useState(0)
-  const [currentTab, setCurrentTab] = useState('Rewards')
   const { register, handleSubmit, reset, formState: { isSubmitting, isSubmitSuccessful } } = useForm()
   const requireAuthentication = useRequireAuthentication()
 
@@ -83,8 +37,6 @@ const ProfileModal = ({ show, onClose }) => {
     await updateProfile(data.name, data.discordHandle)
   }
 
-  const tabs = ['Rewards', 'Settings']
-  const handleTabChange = (tab) => setCurrentTab(tab)
 
   useEffect(() => {
     const retrieveUserProfile = async () => {
@@ -97,7 +49,7 @@ const ProfileModal = ({ show, onClose }) => {
 
     if (!account) return
     retrieveUserProfile()
-  }, [account])
+  }, [account,reset])
 
   useEffect(() => {
     const retrieveLeaderboardPositions = async () => {
@@ -124,7 +76,7 @@ const ProfileModal = ({ show, onClose }) => {
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>
-      <div className="4 mx-auto  flex flex-col ">
+        <div className="4 mx-auto  flex flex-col ">
           <div className='flex justify-between'>
             <div className='flex flex-col gap-3'>
               <h1 className="text-xl">
@@ -155,10 +107,10 @@ const ProfileModal = ({ show, onClose }) => {
           </div>
 
         </div>
-        
+
       </ModalTitle>
       <ModalBody>
-        
+
         <Tab.Group>
 
           <Tab.List className={'flex gap-3'}>
