@@ -12,6 +12,7 @@ import ConnectWalletButton from "../../components/ConnectWalletButton";
 import { Card } from "../../components/Card";
 import { getReadonlyProvider, getCollectionCreatorAddress } from "../../lib/chainSupport";
 import NFTSteps from "../../components/NFTSteps";
+import { NextSeo } from "next-seo";
 
 
 
@@ -96,58 +97,76 @@ export const Gator = () => {
   }, [chainId, account])
 
   return (
-    <div className="text-daonative-white">
-      <div className="flex justify-center px-8 lg:px-0">
-        <div className="flex flex-col gap-8 w-full lg:w-3/4">
-          <div className="flex flex-wrap sm:flex-nowrap justify-between w-full">
-            <div>
-              <h2 className="text-2xl">NFT Collection Creator</h2>
-              <p className="mt-1 text-xs md:text-sm text-daonative-text">
-                {"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers. "}
-                <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
-              </p>
+    <>
+      <NextSeo
+        title="DAOnative"
+        description=""
+        canonical="https://app.daonative.xyz/nfts"
+        openGraph={{
+          images: [{ url: "/DAOnativeSEOLogo.png" }],
+          url: "https://app.daonative.xyz/nfts",
+          title: "NFT Collection Creator",
+          description: "Create your NFT collection that you can easily send privately to your community members.",
+          site_name: 'DAOnative',
+        }}
+        twitter={{
+          handle: '@daonative',
+          cardType: 'summary_large_image',
+        }}
+      />
+      <div className="text-daonative-white">
+        <div className="flex justify-center px-8 lg:px-0">
+          <div className="flex flex-col gap-8 w-full lg:w-3/4">
+            <div className="flex flex-wrap sm:flex-nowrap justify-between w-full">
+              <div>
+                <h2 className="text-2xl">NFT Collection Creator</h2>
+                <p className="mt-1 text-xs md:text-sm text-daonative-text">
+                  {"Create your NFT collection that you can easily send privately to your community members. For example, you can use it combination with https://guild.xyz to easily create token-gated chat servers. "}
+                  <Link href="/nfts/faq"><a className="underline hover:text-daonative-white">How does it work?</a></Link>
+                </p>
+              </div>
+              <div className="mt-7 mb-2 sm:mt-0 flex justify-center w-full sm:w-fit sm:ml-4">
+                {!account &&
+                  <ConnectWalletButton >
+                    <PrimaryButton >
+                      Connect your wallet
+                    </PrimaryButton>
+                  </ConnectWalletButton>
+                }
+                {account &&
+                  <Link href="/nfts/create">
+                    <a className="flex items-end ">
+                      <PrimaryButton  >Create Collection</PrimaryButton>
+                    </a>
+                  </Link>
+                }
+              </div>
             </div>
-            <div className="mt-7 mb-2 sm:mt-0 flex justify-center w-full sm:w-fit sm:ml-4">
-              {!account &&
-                <ConnectWalletButton >
-                  <PrimaryButton >
-                    Connect your wallet
-                  </PrimaryButton>
-                </ConnectWalletButton>
-              }
-              {account &&
-                <Link href="/nfts/create">
-                  <a className="flex items-end ">
-                    <PrimaryButton  >Create Collection</PrimaryButton>
-                  </a>
-                </Link>
-              }
-            </div>
-          </div>
-          <div className="w-full">
-            <div className="">
-              {myCollections.length === 0 && (
-                <>
-                  <div className="py-8">
-                    <NFTSteps />
-                  </div>
-                  {account && collectionsLoading && (
-                    <div className="flex w-full justify-center p-8">
-                      <div>
-                        Loading...
-                      </div>
+            <div className="w-full">
+              <div className="">
+                {myCollections.length === 0 && (
+                  <>
+                    <div className="py-8">
+                      <NFTSteps />
                     </div>
-                  )}
-                </>
+                    {account && collectionsLoading && (
+                      <div className="flex w-full justify-center p-8">
+                        <div>
+                          Loading...
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+              {!collectionsLoading && myCollections.length > 0 && (
+                <CollectionList chainId={chainId} collections={myCollections} />
               )}
             </div>
-            {!collectionsLoading && myCollections.length > 0 && (
-              <CollectionList chainId={chainId} collections={myCollections} />
-            )}
           </div>
         </div>
-      </div>
-    </div >
+      </div >
+    </>
   )
 }
 
