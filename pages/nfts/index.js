@@ -99,6 +99,9 @@ export const Gator = () => {
 
   return (
     <>
+    <Head>
+    <meta property="twitter:image" content={'https://app.daonative.xyz/DAOnativeSEOLogo.png'} />
+    </Head>
       <NextSeo
         title="DAOnative"
         description=""
