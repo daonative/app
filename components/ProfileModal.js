@@ -1,15 +1,18 @@
+import React from 'react'
 import { CheckIcon } from "@heroicons/react/solid"
 import { collectionGroup, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../components/Button"
 import { UserName } from "../components/PFP"
-import { Modal } from "./Modal"
+import { Modal, ModalBody } from "./Modal"
 
 import { classNames } from "../lib/utils"
 import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "../lib/authenticate"
 import Spinner from "./Spinner"
+import { Tab } from '@headlessui/react'
+
 
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
@@ -120,111 +123,132 @@ const ProfileModal = ({ show, onClose }) => {
 
   return (
     <Modal show={show} onClose={onClose}>
-      <div className="pt-4 flex justify-center">
-        <Tabs tabs={tabs} current={currentTab} onChange={handleTabChange} />
-      </div>
-      <div className="py-8">
-        {currentTab === "Rewards" && (
-          <>
-            <div className="mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-8">
-              <div className="flex justify-between w-full items-center">
-                <div className="flex flex-col grow-0 gap-1">
-                  <h1 className="text-2xl">
-                    <UserName account={account} />
-                  </h1>
+      <ModalBody>
+        <Tab.Group>
+          <Tab.List className={'flex gap-3'}>
+
+            <Tab className={({ selected }) => (classNames(
+              selected
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+            ))}
+            >
+
+              Rewards
+            </Tab>
+
+            <Tab className={({ selected }) => (classNames(
+              selected
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+            ))}
+            >
+
+              Settings
+            </Tab>
+          </Tab.List>
+          <Tab.Panels>
+            <Tab.Panel> <>
+              <div className="pt-4 mx-auto  flex flex-col gap-8">
+                <div className="flex justify-between w-full items-center">
+                  <div className="flex flex-col grow-0 gap-3">
+                    <h1 className="text-2xl">
+                      <UserName account={account} />
+                    </h1>
+                    <div>
+                      <span className="py-0.5 px-4 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space text-center inline">
+                        {kFormatter(verifiedXps)} XPs
+                      </span>
+                    </div>  
+                  </div>
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="text-daonative-subtitle text-sm flex">
+                      <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                      {submissionCount} Challenges Completed
+                    </div>
+                    <PrimaryButton disabled={true}>Claim</PrimaryButton>
+                  </div>
+                </div>
+              </div>
+              <div className="relative mx-auto py-8  flex flex-col gap-8">
+                <div className="flex justify-between w-full items-end">
                   <div>
-                    <span className="px-4 py-0.5 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space text-center inline">
-                      {kFormatter(verifiedXps)} XPs
-                    </span>
+                    <span className="text-sm text-daonative-subtitle">Role</span>
+                    <h2 className="text-xl">
+                      Guild Hero
+                    </h2>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="text-daonative-subtitle text-sm">3 Pending Rewards &amp; 1 Role</div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="text-daonative-subtitle text-sm flex">
-                    <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                    {submissionCount} Challenges Completed
-                  </div>
-                  <PrimaryButton disabled={true}>Claim</PrimaryButton>
-                </div>
-              </div>
-            </div>
-            <div className="relative mx-auto py-8 px-4 sm:px-6 md:px-8 flex flex-col gap-8">
-              <div className="flex justify-between w-full items-end">
-                <div>
-                  <span className="text-sm text-daonative-subtitle">Role</span>
-                  <h2 className="text-xl">
-                    Guild Hero
-                  </h2>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="text-daonative-subtitle text-sm">3 Pending Rewards &amp; 1 Role</div>
-                </div>
-              </div>
-              <div className="flex justify-between w-full items-end border-t pt-8 border-daonative-component-bg">
-                <div>
-                  <h2 className="text-xl">Latest Rewards</h2>
+                <div className="flex justify-between w-full items-end border-t pt-8 border-daonative-component-bg">
+                  <div>
+                    <h2 className="text-xl">Latest Rewards</h2>
 
-                </div>
-                <div className="flex gap-1">
-                  <span className="text-xl">{Math.floor(verifiedXps / 10)}</span>
-                  <span className="text-daonative-subtitle text-xl">$GREEN</span>
-                </div>
-              </div>
-              <div className="flex gap-6 relative">
-                <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
-                  <div className="flex items-center justify-center text-3xl pt-20">
-                    Coming soon
+                  </div>
+                  <div className="flex gap-1">
+                    <span className="text-xl">{Math.floor(verifiedXps / 10)}</span>
+                    <span className="text-daonative-subtitle text-xl">$GREEN</span>
                   </div>
                 </div>
+                <div className="flex gap-6 relative">
+                  <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
+                    <div className="flex items-center justify-center text-3xl pt-20">
+                      Coming soon
+                    </div>
+                  </div>
 
-                <div>
-                  <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
-                  <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
-                </div>
-                <div>
-                  <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
-                  <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        {currentTab === "Settings" && (
-          <>
-            <div className="mx-auto pb-8 px-4 sm:px-6 md:px-8 flex flex-col gap-8">
-              <h1 className="text-2xl">
-                <UserName account={account} />
-              </h1>
-            </div>
-            <form onSubmit={handleSubmit(handleUpdateProfile)}>
-              <div className="mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-4">
-                <div>
-                  <label className="block text-sm font-medium pb-2">
-                    Nickname
-                  </label>
-                  <input type="text" {...register("name", { required: false })} placeholder="Han Solo" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium pb-2">
-                    Discord Handle
-                  </label>
-                  <input type="text" {...register("discordHandle", { required: false })} placeHolder="HanSolo#1244" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
-                </div>
-                <div className="flex justify-end gap-4 items-center">
-                  {isSubmitSuccessful && <CheckIcon className="h-6 w-6 text-green" />}
-                  <PrimaryButton type="submit">
-                    {isSubmitting ? (
-                      <span className="w-4 h-4 mx-auto"><Spinner /></span>
-                    ) : (
-                      <>Save</>
-                    )}
-                  </PrimaryButton>
+                  <div>
+                    <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
+                    <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
+                    <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
+                  </div>
                 </div>
               </div>
-            </form>
-          </>
-        )}
-      </div>
-    </Modal>
+            </></Tab.Panel>
+            <Tab.Panel>  <>
+              <div className="mx-auto pb-8 flex flex-col gap-8">
+   
+              </div>
+              <form onSubmit={handleSubmit(handleUpdateProfile)}>
+                <div className="mx-auto   flex flex-col gap-4">
+                  <div>
+                    <label className="block text-sm font-medium pb-2">
+                      Nickname
+                    </label>
+                    <input type="text" {...register("name", { required: false })} placeholder="Han Solo" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium pb-2">
+                      Discord Handle
+                    </label>
+                    <input type="text" {...register("discordHandle", { required: false })} placeHolder="HanSolo#1244" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+                  </div>
+                  <div className="flex justify-end gap-4 items-center">
+                    {isSubmitSuccessful && <CheckIcon className="h-6 w-6 text-green" />}
+                    <PrimaryButton type="submit">
+                      {isSubmitting ? (
+                        <span className="w-4 h-4 mx-auto"><Spinner /></span>
+                      ) : (
+                        <>Save</>
+                      )}
+                    </PrimaryButton>
+                  </div>
+                </div>
+              </form>
+            </>
+            </Tab.Panel>
+            <Tab.Panel>Content 3</Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+      </ModalBody>
+    </Modal >
 
   )
 }
