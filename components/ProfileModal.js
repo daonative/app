@@ -19,7 +19,7 @@ const kFormatter = (num) =>
 
 
 
-const ProfileModal = ({ show, onClose }) => {
+const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
   const { account } = useWallet()
   const [submissionCount, setSubmissionCount] = useState(0)
   const [verifiedXps, setVerifiedXps] = useState(0)
@@ -114,7 +114,7 @@ const ProfileModal = ({ show, onClose }) => {
 
       </ModalTitle>
       <ModalBody>
-        <Tab.Group>
+        <Tab.Group selectedIndex={selectedIndex} onChange={onChange}>
           <Tab.List className={'flex gap-3'}>
             <Tab className={({ selected }) => (classNames(
               selected
@@ -211,18 +211,20 @@ const ProfileModal = ({ show, onClose }) => {
   )
 }
 
-
 const ProfileModalContext = createContext()
-
 export const ProfileModalProvider = ({ children }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false);
 
-  const openProfileModal = () => setIsOpen(true)
+  const openProfileModal = (tab) => {
+    if (tab === "settings") setSelectedIndex(1)
+    setIsOpen(true)
+  }
   const closeProfileModal = () => setIsOpen(false)
 
   return (
     <ProfileModalContext.Provider value={{ openProfileModal, closeProfileModal }}>
-      <ProfileModal show={isOpen} onClose={closeProfileModal} />
+      <ProfileModal show={isOpen} onClose={closeProfileModal} selectedIndex={selectedIndex} onChange={setSelectedIndex} />
       {children}
     </ProfileModalContext.Provider>
   )
