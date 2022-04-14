@@ -13,6 +13,7 @@ import { Card } from "../../components/Card";
 import { getReadonlyProvider, getCollectionCreatorAddress } from "../../lib/chainSupport";
 import NFTSteps from "../../components/NFTSteps";
 import { NextSeo } from "next-seo";
+import Head from "next/head";
 
 
 
@@ -103,7 +104,7 @@ export const Gator = () => {
         description=""
         canonical="https://app.daonative.xyz/nfts"
         openGraph={{
-          images: [{ url: "/DAOnativeSEOLogo.png" }],
+          images: [{ url: "https://app.daonative.xyz/DAOnativeSEOLogo.png" }],
           url: "https://app.daonative.xyz/nfts",
           title: "NFT Collection Creator",
           description: "Create your NFT collection that you can easily send privately to your community members.",
