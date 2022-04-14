@@ -1,4 +1,4 @@
-import { Fragment, } from 'react'
+import { Fragment, useState, } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
   CalendarIcon,
@@ -18,15 +18,20 @@ import Link from 'next/link'
 import { useConnectWalletModal } from './ConnectWalletModal'
 import { useWallet } from 'use-wallet'
 import { UserAvatar, UserName } from './PFP'
+import ProfileModal from './ProfileModal'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const ProfileButton = () => {
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, status } = useWallet()
   const isConnected = status === "connected"
+
+  const handleOpenProfileModal = () => setIsProfileModalOpen(true)
+  const handleCloseProfileModal = () => setIsProfileModalOpen(false)
 
   if (!isConnected)
     return (
@@ -39,14 +44,16 @@ const ProfileButton = () => {
     )
 
   return (
-    <Link href={`/profile`} passHref>
-      <a>
-        <div className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center gap-4 h-full w-full p-4">
-          <UserAvatar account={account} />
-          <UserName account={account} />
-        </div>
-      </a>
-    </Link>
+    <>
+      <ProfileModal show={isProfileModalOpen} onClose={handleCloseProfileModal} />
+      <button
+        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4 gap-4"
+        onClick={handleOpenProfileModal}
+      >
+        <UserAvatar account={account} />
+        <UserName account={account} />
+      </button>
+    </>
   )
 }
 

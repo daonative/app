@@ -47,7 +47,7 @@ export const Modal = ({ children, show, onClose }) => (
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <div className="bg-daonative-dark-300 inline-block align-bottom bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
+          <div className="bg-daonative-dark-300 inline-block align-bottom bg-daonative-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full"
             style={{
               border: '1px solid rgba(49, 49, 74, 0.4)',
               boxShadow: '0px 0px 15px rgb(160 163 189 / 10%)',
