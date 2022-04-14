@@ -43,6 +43,9 @@ const ProfileModal = ({ show, onClose }) => {
       const db = getFirestore()
       const userRef = doc(db, 'users', account)
       const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) return
+
       const { name, discordHandle } = userDoc.data()
       reset({ name, discordHandle })
     }
