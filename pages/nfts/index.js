@@ -21,7 +21,7 @@ const CollectionList = ({ chainId, collections }) => {
   const { asPath: path } = useRouter()
 
   return (
-    <ul role="list" className="flex flex-col gap-3">
+    <ul role="list" className="flex flex-col gap-4">
       {collections?.map(collection => (
         <li key={collection.address}>
           <Link href={`${path}/${chainId}/${collection.address}`}>
@@ -118,9 +118,9 @@ export const Gator = () => {
           cardType: 'summary_large_image',
         }}
       />
-      <div className="text-daonative-white">
+      <div className="text-daonative-white sm:pl-3">
         <div className="flex justify-center px-8 lg:px-0">
-          <div className="flex flex-col gap-8 w-full lg:w-3/4">
+          <div className="flex flex-col gap-8 w-full ">
             <div className="flex flex-wrap sm:flex-nowrap justify-between w-full">
               <div>
                 <h2 className="text-2xl">NFT Collection Creator</h2>
