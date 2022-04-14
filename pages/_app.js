@@ -7,6 +7,7 @@ import { getAnalytics } from 'firebase/analytics'
 import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { useEffect } from 'react'
+import ProfileModal, { ProfileModalProvider } from '../components/ProfileModal'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -46,8 +47,10 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <ConnectWalletModalProvider>
-          <Toaster position="bottom-center" />
-          <Component {...pageProps} />
+          <ProfileModalProvider>
+            <Toaster position="bottom-center" />
+            <Component {...pageProps} />
+          </ProfileModalProvider>
         </ConnectWalletModalProvider>
       </UseWalletProvider>
     </>

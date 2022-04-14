@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useContext } from 'react'
 import { CheckIcon } from "@heroicons/react/solid"
 import { collectionGroup, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "../lib/authenticate"
 import Spinner from "./Spinner"
 import { Tab } from '@headlessui/react'
-
 
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
@@ -52,7 +51,7 @@ const ProfileModal = ({ show, onClose }) => {
 
     if (!account) return
     retrieveUserProfile()
-  }, [account,reset])
+  }, [account, reset])
 
   useEffect(() => {
     const retrieveLeaderboardPositions = async () => {
@@ -113,11 +112,8 @@ const ProfileModal = ({ show, onClose }) => {
 
       </ModalTitle>
       <ModalBody>
-
         <Tab.Group>
-
           <Tab.List className={'flex gap-3'}>
-
             <Tab className={({ selected }) => (classNames(
               selected
                 ? 'border-indigo-500 text-indigo-600'
@@ -125,7 +121,6 @@ const ProfileModal = ({ show, onClose }) => {
               'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
             ))}
             >
-
               Rewards
             </Tab>
 
@@ -136,77 +131,74 @@ const ProfileModal = ({ show, onClose }) => {
               'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
             ))}
             >
-
               Settings
             </Tab>
           </Tab.List>
           <Tab.Panels>
-            <Tab.Panel> <>
-
-              <div className="flex justify-between w-full items-end pt-8 ">
-                <div>
-                  <h2 className="text-xl">Latest Rewards</h2>
-
+            <Tab.Panel>
+              <>
+                <div className="flex justify-between w-full items-end pt-8 ">
+                  <div>
+                    <h2 className="text-xl">Latest Rewards</h2>
+                  </div>
                 </div>
+                <div className="flex gap-6 relative justify-between">
+                  <div className="flex gap-6 ">
+                    <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
+                      <div className="flex items-center justify-center text-3xl pt-20">
+                        Coming soon
+                      </div>
+                    </div>
 
-              </div>
+                    <div>
+                      <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
+                      <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
+                    </div>
+                    <div>
+                      <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
+                      <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
+                    </div>
 
-              <div className="flex gap-6 relative justify-between">
-                <div className="flex gap-6 ">
-                  <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
-                    <div className="flex items-center justify-center text-3xl pt-20">
-                      Coming soon
+                  </div>
+                  <div className='flex flex-col gap-3'>
+                    <div className="flex gap-1">
+                      <span className="">{Math.floor(verifiedXps / 10)}</span>
+                      <span className="text-daonative-subtitle ">$GREEN</span>
+                    </div>
+                    <PrimaryButton disabled={true}>Claim</PrimaryButton>
+                  </div>
+                </div>
+              </>
+            </Tab.Panel>
+            <Tab.Panel>
+              <>
+                <form onSubmit={handleSubmit(handleUpdateProfile)}>
+                  <div className="mx-auto   flex flex-col gap-4 pt-8">
+                    <div>
+                      <label className="block text-sm font-medium pb-2">
+                        Nickname
+                      </label>
+                      <input type="text" {...register("name", { required: false })} placeholder="Han Solo" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium pb-2">
+                        Discord Handle
+                      </label>
+                      <input type="text" {...register("discordHandle", { required: false })} placeHolder="HanSolo#1244" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+                    </div>
+                    <div className="flex justify-end gap-4 items-center">
+                      {isSubmitSuccessful && <CheckIcon className="h-6 w-6 text-green" />}
+                      <PrimaryButton type="submit">
+                        {isSubmitting ? (
+                          <span className="w-4 h-4 mx-auto"><Spinner /></span>
+                        ) : (
+                          <>Save</>
+                        )}
+                      </PrimaryButton>
                     </div>
                   </div>
-
-                  <div>
-                    <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
-                    <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
-                    <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
-                  </div>
-
-                </div>
-                <div className='flex flex-col gap-3'>
-                  <div className="flex gap-1">
-                    <span className="">{Math.floor(verifiedXps / 10)}</span>
-                    <span className="text-daonative-subtitle ">$GREEN</span>
-                  </div>
-                  <PrimaryButton disabled={true}>Claim</PrimaryButton>
-                </div>
-              </div>
-            </></Tab.Panel>
-            <Tab.Panel>  <>
-
-              <form onSubmit={handleSubmit(handleUpdateProfile)}>
-                <div className="mx-auto   flex flex-col gap-4 pt-8">
-                  <div>
-                    <label className="block text-sm font-medium pb-2">
-                      Nickname
-                    </label>
-                    <input type="text" {...register("name", { required: false })} placeholder="Han Solo" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium pb-2">
-                      Discord Handle
-                    </label>
-                    <input type="text" {...register("discordHandle", { required: false })} placeHolder="HanSolo#1244" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
-                  </div>
-                  <div className="flex justify-end gap-4 items-center">
-                    {isSubmitSuccessful && <CheckIcon className="h-6 w-6 text-green" />}
-                    <PrimaryButton type="submit">
-                      {isSubmitting ? (
-                        <span className="w-4 h-4 mx-auto"><Spinner /></span>
-                      ) : (
-                        <>Save</>
-                      )}
-                    </PrimaryButton>
-                  </div>
-                </div>
-              </form>
-            </>
+                </form>
+              </>
             </Tab.Panel>
             <Tab.Panel>Content 3</Tab.Panel>
           </Tab.Panels>
@@ -215,6 +207,27 @@ const ProfileModal = ({ show, onClose }) => {
     </Modal >
 
   )
+}
+
+
+const ProfileModalContext = createContext()
+
+export const ProfileModalProvider = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openProfileModal = () => setIsOpen(true)
+  const closeProfileModal = () => setIsOpen(false)
+
+  return (
+    <ProfileModalContext.Provider value={{ openProfileModal, closeProfileModal }}>
+      <ProfileModal show={isOpen} onClose={closeProfileModal} />
+      {children}
+    </ProfileModalContext.Provider>
+  )
+}
+
+export const useProfileModal = () => {
+  return useContext(ProfileModalContext);
 }
 
 export default ProfileModal

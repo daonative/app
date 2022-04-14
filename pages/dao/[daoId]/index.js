@@ -27,6 +27,8 @@ import PFP from '../../../components/PFP';
 import { uploadToIPFS } from '../../../lib/uploadToIPFS';
 import { NextSeo } from 'next-seo';
 import Head from 'next/head';
+import toast from 'react-hot-toast';
+import { useProfileModal } from '../../../components/ProfileModal';
 
 const db = getFirestore()
 
@@ -308,6 +310,7 @@ const Dashboard = ({ dao: initialDAO }) => {
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
   const isAdmin = !!membership?.roles?.includes('admin')
+  const { openProfileModal } = useProfileModal()
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
@@ -320,6 +323,34 @@ const Dashboard = ({ dao: initialDAO }) => {
     "/DAOnativeSEOLogo.png"
   )
   const SEOUrl = "https://app.daonative.xyz"
+
+  const handleOpenProfileSettings = () => {
+    openProfileModal("settings")
+  }
+
+  useEffect(() => {
+    const userNameBanner = async () => {
+      const db = getFirestore()
+      const userRef = doc(db, 'users', account)
+      const userDoc = await getDoc(userRef)
+      const user = userDoc.data()
+
+      if (userDoc.exists() && user.name) return
+
+      toast(() => (
+        <span className="text-center hover:cursor-pointer" onClick={handleOpenProfileSettings}>
+          Looks like you {"don't"} have a name set. Click here to set one.
+        </span>
+      ), {
+        icon: '💬',
+        duration: 10000
+      })
+    }
+
+    if(!account) return
+
+    userNameBanner()
+  }, [account])
 
   return (
     <>
