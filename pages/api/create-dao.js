@@ -1,5 +1,6 @@
 import requireAuthenticationMiddleware from '../../lib/requireAuthenticationMiddleware'
 import admin from 'firebase-admin';
+import { serverTimestamp } from 'firebase/firestore';
 
 const db = admin.firestore()
 
@@ -20,11 +21,9 @@ const handler = async (req, res) => {
     return res.status(400).json({ error: 'Missing one of the required parameters' })
   }
 
-  const roomRef = await db.collection('rooms').add({ name })
+  const roomRef = await db.collection('rooms').add({ name, created: serverTimestamp() })
   const { id: roomId } = roomRef
   const account = req.uid
-
-  console.log(roomId, req.uid)
 
   await db.collection('rooms').doc(roomId).collection('members').doc(account).set({
     account,
