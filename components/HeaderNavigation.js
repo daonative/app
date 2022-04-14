@@ -64,7 +64,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
 
   return (
     <div className="md:pl-64 flex flex-col ">
-      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16  shadow bg-daonative-dark-200">
+      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16">
         <button
           type="button"
           className="px-4 border-r border-daonative-component-bg text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
