@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { useWallet } from "use-wallet"
 import { PrimaryButton } from "../components/Button"
 import { UserName } from "../components/PFP"
-import { Modal, ModalBody } from "./Modal"
+import { Modal, ModalBody, ModalTitle } from "./Modal"
 
 import { classNames } from "../lib/utils"
 import { useForm } from "react-hook-form"
@@ -123,8 +123,44 @@ const ProfileModal = ({ show, onClose }) => {
 
   return (
     <Modal show={show} onClose={onClose}>
+      <ModalTitle>
+      <div className="4 mx-auto  flex flex-col ">
+          <div className='flex justify-between'>
+            <div className='flex flex-col gap-3'>
+              <h1 className="text-xl">
+                <UserName account={account} />
+              </h1>
+              <div className="relative flex flex-col">
+                <div className="flex flex-col justify-between w-full ">
+                  <span className="text-xs text-daonative-subtitle">Role</span>
+                  <h2 className="text-m">
+                    Guild Hero
+                  </h2>
+
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-end justify-between">
+              <div>
+                <span className="py-0.5 px-4 text-sm rounded-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space text-center inline">
+                  {kFormatter(verifiedXps)} XPs
+                </span>
+              </div>
+
+              <div className="text-daonative-subtitle text-sm flex">
+                <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                {submissionCount} Challenges Completed
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+      </ModalTitle>
       <ModalBody>
+        
         <Tab.Group>
+
           <Tab.List className={'flex gap-3'}>
 
             <Tab className={({ selected }) => (classNames(
@@ -151,50 +187,17 @@ const ProfileModal = ({ show, onClose }) => {
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel> <>
-              <div className="pt-4 mx-auto  flex flex-col gap-8">
-                <div className="flex justify-between w-full items-center">
-                  <div className="flex flex-col grow-0 gap-3">
-                    <h1 className="text-2xl">
-                      <UserName account={account} />
-                    </h1>
-                    <div>
-                      <span className="py-0.5 px-4 rounded-md text-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space text-center inline">
-                        {kFormatter(verifiedXps)} XPs
-                      </span>
-                    </div>  
-                  </div>
-                  <div className="flex flex-col items-end gap-3">
-                    <div className="text-daonative-subtitle text-sm flex">
-                      <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                      {submissionCount} Challenges Completed
-                    </div>
-                    <PrimaryButton disabled={true}>Claim</PrimaryButton>
-                  </div>
-                </div>
-              </div>
-              <div className="relative mx-auto py-8  flex flex-col gap-8">
-                <div className="flex justify-between w-full items-end">
-                  <div>
-                    <span className="text-sm text-daonative-subtitle">Role</span>
-                    <h2 className="text-xl">
-                      Guild Hero
-                    </h2>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="text-daonative-subtitle text-sm">3 Pending Rewards &amp; 1 Role</div>
-                  </div>
-                </div>
-                <div className="flex justify-between w-full items-end border-t pt-8 border-daonative-component-bg">
-                  <div>
-                    <h2 className="text-xl">Latest Rewards</h2>
 
-                  </div>
-                  <div className="flex gap-1">
-                    <span className="text-xl">{Math.floor(verifiedXps / 10)}</span>
-                    <span className="text-daonative-subtitle text-xl">$GREEN</span>
-                  </div>
+              <div className="flex justify-between w-full items-end pt-8 ">
+                <div>
+                  <h2 className="text-xl">Latest Rewards</h2>
+
                 </div>
-                <div className="flex gap-6 relative">
+
+              </div>
+
+              <div className="flex gap-6 relative justify-between">
+                <div className="flex gap-6 ">
                   <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
                     <div className="flex items-center justify-center text-3xl pt-20">
                       Coming soon
@@ -209,15 +212,21 @@ const ProfileModal = ({ show, onClose }) => {
                     <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
                     <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
                   </div>
+
+                </div>
+                <div className='flex flex-col gap-3'>
+                  <div className="flex gap-1">
+                    <span className="">{Math.floor(verifiedXps / 10)}</span>
+                    <span className="text-daonative-subtitle ">$GREEN</span>
+                  </div>
+                  <PrimaryButton disabled={true}>Claim</PrimaryButton>
                 </div>
               </div>
             </></Tab.Panel>
             <Tab.Panel>  <>
-              <div className="mx-auto pb-8 flex flex-col gap-8">
-   
-              </div>
+
               <form onSubmit={handleSubmit(handleUpdateProfile)}>
-                <div className="mx-auto   flex flex-col gap-4">
+                <div className="mx-auto   flex flex-col gap-4 pt-8">
                   <div>
                     <label className="block text-sm font-medium pb-2">
                       Nickname
