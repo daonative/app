@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "../lib/authenticate"
 import Spinner from "./Spinner"
 import { Tab } from '@headlessui/react'
+import { loadUserProfile } from '../lib/useUserProfile'
 
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
@@ -34,6 +35,7 @@ const ProfileModal = ({ show, onClose }) => {
   const handleUpdateProfile = async (data) => {
     await requireAuthentication()
     await updateProfile(data.name, data.discordHandle)
+    await loadUserProfile(account)
   }
 
 
