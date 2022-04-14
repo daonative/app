@@ -139,7 +139,7 @@ const Challenges = () => {
               {challenges?.map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
-                    <Card>
+                    <Card onClick={() => null}>
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
