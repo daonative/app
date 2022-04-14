@@ -4,7 +4,8 @@ export const SimpleCard = ({ onClick, children, className }) => {
   return (
     <div
       style={{
-        border: '1px solid rgba(49, 49, 74, 0.4)',
+
+        background: 'linear-gradient(156.58deg, rgba(34,34,53, 0.9) 1.21%, rgba(245, 239, 255, 0) 156.94%)'
       }}
       onClick={onClick} className={classNames("bg-daonative-component-bg rounded-lg ", className)}>
       {children}
@@ -13,7 +14,7 @@ export const SimpleCard = ({ onClick, children, className }) => {
 }
 export const SimpleCardBody = ({ children, className }) => {
   return (
-    <div className={classNames(" px-3 py-3 ", className)}>
+    <div className={classNames(" px-4 py-4 ", className)}>
       {children}
     </div >
   )
