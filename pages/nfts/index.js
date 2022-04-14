@@ -106,7 +106,7 @@ export const Gator = () => {
         openGraph={{
           images: [{ url: "https://app.daonative.xyz/DAOnativeSEOLogo.png" }],
           url: "https://app.daonative.xyz/nfts",
-          title: "NFT Collection Creator",
+          title: "NFT Membership Creator",
           description: "Create your NFT collection that you can easily send privately to your community members.",
           site_name: 'DAOnative',
         }}
