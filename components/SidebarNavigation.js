@@ -18,20 +18,17 @@ import Link from 'next/link'
 import { useConnectWalletModal } from './ConnectWalletModal'
 import { useWallet } from 'use-wallet'
 import { UserAvatar, UserName } from './PFP'
-import ProfileModal from './ProfileModal'
+import { useProfileModal } from './ProfileModal'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const ProfileButton = () => {
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const { openProfileModal } = useProfileModal()
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, status } = useWallet()
   const isConnected = status === "connected"
-
-  const handleOpenProfileModal = () => setIsProfileModalOpen(true)
-  const handleCloseProfileModal = () => setIsProfileModalOpen(false)
 
   if (!isConnected)
     return (
@@ -45,10 +42,9 @@ const ProfileButton = () => {
 
   return (
     <>
-      <ProfileModal show={isProfileModalOpen} onClose={handleCloseProfileModal} />
       <button
         className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4 gap-4"
-        onClick={handleOpenProfileModal}
+        onClick={openProfileModal}
       >
         <UserAvatar account={account} />
         <UserName account={account} />
