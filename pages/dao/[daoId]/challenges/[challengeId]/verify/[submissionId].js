@@ -1,6 +1,5 @@
 import { BanIcon, CheckIcon, ClockIcon } from "@heroicons/react/solid"
 import { arrayUnion, collection, doc, getDoc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
-import { reset } from "linkifyjs"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useMemo, useState } from "react"
