@@ -338,7 +338,10 @@ const Dashboard = ({ dao: initialDAO }) => {
       if (userDoc.exists() && user.name) return
 
       toast(() => (
-        <span className="text-center hover:cursor-pointer" onClick={handleOpenProfileSettings}>
+        <span className="text-center hover:cursor-pointer" onClick={(t) => {
+          openProfileModal("settings")
+          toast.dismiss(t.id)
+        }}>
           Looks like you {"don't"} have a name set. Click here to set one.
         </span>
       ), {
