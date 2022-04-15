@@ -20,8 +20,6 @@
     "ethers": "^5.5.3",
     "firebase": "^9.6.5",
     "firebase-admin": "^10.0.2",
-    "linkify-react": "^3.0.4",
-    "linkifyjs": "^3.0.5",
     "moment": "^2.29.1",
     "next": "12.0.8",
     "next-seo": "^5.4.0",
