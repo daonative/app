@@ -10,16 +10,16 @@ import { PrimaryButton, SecondaryButton } from '../../../../../components/Button
 import EmptyStateNoSubmissions from '../../../../../components/EmptyStateNoSubmissions'
 import { LayoutWrapper } from '../../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../../components/Modal'
-import { UserAvatar, UserName, UserRectangleAvatar } from '../../../../../components/PFP'
+import { UserName, UserRectangleAvatar } from '../../../../../components/PFP'
 import Spinner from '../../../../../components/Spinner'
 import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
 import useMembership from '../../../../../lib/useMembership'
-import Linkify from 'linkify-react'
 import Link from 'next/link'
 import { classNames } from '../../../../../lib/utils'
-import { SimpleCard, SimpleCardBody } from '../../../../../components/Card'
+import { SimpleCard } from '../../../../../components/Card'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -373,7 +373,7 @@ const ChallengeDetails = () => {
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
             <div className="prose prose-sm prose-daonative-text prose-invert text-daonative-text">
-              <ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {challenge?.description}
               </ReactMarkdown>
             </div>
