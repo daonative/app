@@ -147,9 +147,13 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                 </div>
               </Transition.Child>
               <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2 border-daonative-component-bg">
-                <div className="h-8 w-8 fill-daonative-white">
-                  <DAOnativeLogo />
-                </div>
+                <Link href="/">
+                  <a>
+                    <div className="h-8 w-8 fill-daonative-white">
+                      <DAOnativeLogo />
+                    </div>
+                  </a>
+                </Link>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
@@ -191,9 +195,13 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex-1 flex flex-col min-h-0 rounded-lg">
           <div className="flex-shrink-0 flex justify-center items-center p-4 mx-2  border-daonative-component-bg">
-            <div className="h-8 w-8 fill-daonative-white">
-              <DAOnativeLogo />
-            </div>
+            <Link href="/">
+              <a>
+                <div className="h-8 w-8 fill-daonative-white">
+                  <DAOnativeLogo />
+                </div>
+              </a>
+            </Link>
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
