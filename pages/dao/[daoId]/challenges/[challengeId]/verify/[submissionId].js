@@ -78,7 +78,7 @@ const InspectWork = ({ workproof }) => {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
           Author
         </p>
         <div className="text-sm font-medium text-daonative-white">
@@ -86,7 +86,15 @@ const InspectWork = ({ workproof }) => {
         </div>
       </div>
       <div>
-        <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+          XPs
+        </p>
+        <div className="text-sm font-medium text-daonative-white">
+          {workproof?.weight}
+        </div>
+      </div>
+      <div>
+        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
           Submission Date
         </p>
         <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
@@ -94,7 +102,7 @@ const InspectWork = ({ workproof }) => {
         </div>
       </div>
       <div>
-        <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
           Description
         </p>
         <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
@@ -103,7 +111,7 @@ const InspectWork = ({ workproof }) => {
       </div>
       {workproof?.imageUrls?.length > 0 && (
         <div>
-          <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
             Image
           </p>
           <div className="whitespace-pre-wrap text-sm font-medium">
@@ -114,7 +122,7 @@ const InspectWork = ({ workproof }) => {
         </div>
       )}
       <div>
-        <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
           Status
         </p>
         {isVerified && (
@@ -139,7 +147,7 @@ const InspectWork = ({ workproof }) => {
       {verifications.map((verification, idx) => (
         <>
           <div key={idx}>
-            <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+            <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
               Verified by
             </p>
             <div className="text-sm font-medium text-daonative-white">
@@ -148,7 +156,7 @@ const InspectWork = ({ workproof }) => {
           </div>
           {verification.reason && (
             <div>
-              <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
+            <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
                 Reason
               </p>
               <div className="whitespace-pre-wrap text-sm font-medium">
