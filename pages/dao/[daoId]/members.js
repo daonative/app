@@ -10,9 +10,9 @@ import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
 import { Card } from "../../../components/Card"
-import { getReadonlyProvider } from "../../../lib/chainSupport"
 import { useRouter } from "next/router"
 import { useRequireAuthentication } from "../../../lib/authenticate"
+import Moment from "react-moment"
 
 
 const MemberItem = ({ member }) => {
@@ -26,12 +26,17 @@ const MemberItem = ({ member }) => {
             <UserAvatar account={account} />
             <UserName account={account} />
           </div>
-          <div className="mt-2 sm:flex flex-col items-end gap-0.5">
-            {/*profile?.roles?.map((role, idx) => (
-              <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                {role}
-              </span>
-            ))*/}
+          <div className="flex justify-center items-center gap-2">
+            <div>
+              {/*member?.roles?.map((role, idx) => (
+                <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
+                  {role}
+                </span>
+              ))*/}
+            </div>
+            <p className="text-sm text-gray-500 pr-1">
+              {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} format="YYYY-MM-DD" />}
+            </p>
           </div>
         </div>
       </Card>
@@ -77,17 +82,18 @@ export const Members = () => {
       <InviteMemberModal open={open} onClose={closeModal} inviteLink={inviteLink} />
       <div className="mx-auto px-4 sm:px-6 md:px-8 ">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <h2 className="text-2xl">Members</h2>
-            {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
+            <div className="flex gap-2 items-center">
+              <span className="text-daonative-subtitle">{members?.length} members</span>
+              {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
+            </div>
           </div>
           <MemberList members={members} />
         </div>
       </div>
     </>
   )
-
-
 }
 
 const MembersPage = () => {
