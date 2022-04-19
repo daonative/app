@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import Moment from "react-moment"
 import { useWallet } from "use-wallet"
 import { PrimaryButton, SecondaryButton } from "../../../../../../components/Button"
-import { Card, SimpleCard, SimpleCardBody } from "../../../../../../components/Card"
+import {  SimpleCard, SimpleCardBody } from "../../../../../../components/Card"
 import { LayoutWrapper } from "../../../../../../components/LayoutWrapper"
 import { UserAvatar, UserName } from "../../../../../../components/PFP"
 import { useRequireAuthentication } from "../../../../../../lib/authenticate"
@@ -76,96 +76,105 @@ const InspectWork = ({ workproof }) => {
   const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
   const isVerified = !isPending && !isReverted
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-          Author
-        </p>
-        <div className="text-sm font-medium text-daonative-white">
-          <UserName account={workproof?.author} />
-        </div>
-      </div>
-      <div>
-        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-          XPs
-        </p>
-        <div className="text-sm font-medium text-daonative-white">
-          {workproof?.weight}
-        </div>
-      </div>
-      <div>
-        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-          Submission Date
-        </p>
-        <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
-          {workproof.created?.toDate().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-        </div>
-      </div>
-      <div>
-        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-          Description
-        </p>
-        <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
-          {workproof?.description}
-        </div>
-      </div>
-      {workproof?.imageUrls?.length > 0 && (
+    <div className="flex flex-col gap-5 justify-between">
+      <div className="grid grid-cols-4 gap-5 ">
         <div>
           <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-            Image
+            Author
           </p>
-          <div className="whitespace-pre-wrap text-sm font-medium">
-            <a href={workproof.imageUrls[0]} target="_blank" rel="noreferrer">
-              <img alt="Proof image" src={workproof.imageUrls[0]} width={64} />
-            </a>
+          <div className="text-sm font-medium text-daonative-white">
+            <UserName account={workproof?.author} />
           </div>
         </div>
-      )}
-      <div>
-        <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-          Status
-        </p>
-        {isVerified && (
-          <div className="inline-flex gap-1 items-center">
-            <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
-            <p className="text-sm">Verified</p>
+        <div>
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+            XPs
+          </p>
+          <div className="text-sm font-medium text-daonative-white">
+            {workproof?.weight}
           </div>
-        )}
-        {isPending && (
-          <div className="inline-flex gap-1 items-center text-daonative-white">
-            <ClockIcon className="w-5 h-5" />
-            <p className="text-sm">Pending</p>
+        </div>
+        <div>
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+            Submission Date
+          </p>
+          <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
+            {workproof.created?.toDate().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
-        )}
-        {isReverted && (
-          <div className="inline-flex gap-1 items-center text-daonative-white">
-            <BanIcon className="w-5 h-5" />
-            <p className="text-sm">Reverted</p>
-          </div>
-        )}
-      </div>
-      {verifications.map((verification, idx) => (
-        <>
-          <div key={idx}>
-            <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-              Verified by
-            </p>
-            <div className="text-sm font-medium text-daonative-white">
-              <UserName account={verification.verifier} />
-            </div>
-          </div>
-          {verification.reason && (
-            <div>
-            <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-                Reason
-              </p>
-              <div className="whitespace-pre-wrap text-sm font-medium">
-                {verification.reason}
-              </div>
+        </div>
+
+        <div>
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+            Status
+          </p>
+          {isVerified && (
+            <div className="inline-flex gap-1 items-center">
+              <CheckIcon className="w-5 h-5 text-daonative-primary-blue" />
+              <p className="text-sm">Verified</p>
             </div>
           )}
-        </>
-      ))}
+          {isPending && (
+            <div className="inline-flex gap-1 items-center text-daonative-white">
+              <ClockIcon className="w-5 h-5" />
+              <p className="text-sm">Pending</p>
+            </div>
+          )}
+          {isReverted && (
+            <div className="inline-flex gap-1 items-center text-daonative-white">
+              <BanIcon className="w-5 h-5" />
+              <p className="text-sm">Reverted</p>
+            </div>
+          )}
+        </div>
+        {verifications.map((verification, idx) => (
+          <>
+            <div key={idx}>
+              <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+                Verified by
+              </p>
+              <div className="text-sm font-medium text-daonative-white">
+                <UserName account={verification.verifier} />
+              </div>
+            </div>
+            {verification.reason && (
+              <div>
+                <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+                  Reason
+                </p>
+                <div className="whitespace-pre-wrap text-sm font-medium">
+                  {verification.reason}
+                </div>
+              </div>
+            )}
+          </>
+        ))}
+
+      </div>
+      <div className="flex flex-col gap-5">
+        <div>
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+            Description
+          </p>
+          <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white prose">
+            {workproof?.description}
+          </div>
+        </div>
+        {workproof?.imageUrls?.length > 0 && (
+          <div>
+            <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+              Image
+            </p>
+            <div className="whitespace-pre-wrap text-sm font-medium">
+              <a href={workproof.imageUrls[0]} target="_blank" rel="noreferrer">
+                <img alt="Proof image" src={workproof.imageUrls[0]} width={64} />
+              </a>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+
     </div>
   )
 }
@@ -188,7 +197,7 @@ const SubmissionsList = ({ submissions, currentSubmissionId, onCurrentSubmission
             >
               <SimpleCard
                 onClick={() => onCurrentSubmissionChanged(submission.workproofId)}
-                className={isCurrent && "outline outline-daonative-primary-blue"}
+                className={classNames(isCurrent && "outline outline-daonative-primary-blue ", 'cursor-pointer')}
               >
                 <SimpleCardBody>
                   <div className="flex items-center justify-between">
@@ -293,11 +302,11 @@ const VerifyList = ({ currentSubmission }) => {
   return (
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8">
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-col gap-4">
           {(!isAdmin || allSubmissions.length === 0) && !loading && <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />}
           {isAdmin && (
             <>
-              <div className="md:w-2/3">
+              <div className="">
                 <div className="sticky top-0">
                   <h1 className="text-xl py-4">{challenge?.title}</h1>
                   {currentWorkproof && canVerifyCurrentWorkproof && (
@@ -309,10 +318,10 @@ const VerifyList = ({ currentSubmission }) => {
 
                 </div>
               </div>
-              <div className="md:w-1/3">
+              <div className="max-h-[400px] h-[400px] overflow-y-scroll">
                 {reviewableSubmissions.length > 0 && (
                   <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">To Review</h2>
+                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">To Review</h2>
                     <div className="px-4">
                       <SubmissionsList submissions={reviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
                     </div>
@@ -320,7 +329,7 @@ const VerifyList = ({ currentSubmission }) => {
                 )}
                 {unreviewableSubmissions.length > 0 && (
                   <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">Reviewable by others</h2>
+                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewable by others</h2>
                     <div className="px-4">
                       <SubmissionsList submissions={unreviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
                     </div>
@@ -328,7 +337,7 @@ const VerifyList = ({ currentSubmission }) => {
                 )}
                 {reviewedSubmissions.length > 0 && (
                   <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 px-4">Reviewed</h2>
+                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewed</h2>
                     <div className="px-4">
                       <SubmissionsList submissions={reviewedSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
                     </div>
