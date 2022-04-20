@@ -17,8 +17,11 @@ import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenge
 import { useWallet } from 'use-wallet'
 import useMembership from '../../../../lib/useMembership'
 import { Card } from '../../../../components/Card'
+import { Input, TextField } from '../../../../components/Input'
+import { TextArea } from '../../../../components/TextArea'
 
 const db = getFirestore()
+
 
 const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
@@ -54,32 +57,20 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
         <ModalBody>
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium pb-2">
-                Title
-              </label>
-              <input type="text" {...register("title", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              <TextField label="Title" name="title" register={register} required />
               {errors.title && (
                 <span className="text-xs text-red-400">You need to set a title</span>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium pb-2">
-                Description
-              </label>
-              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              <TextArea label="Description" name="description" register={register} required />
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">
                 Weight
               </label>
               <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
-                <input
-                  type="text"
-                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 border-gray-300 rounded-md dark:bg-daonative-component-bg dark:border-transparent dark:text-daonative-gray-300"
-                  placeholder="100"
-                  aria-describedby="xp-amount"
-                  {...register('weight', { required: true })}
-                />
+                <Input register={register} name="weight" required placeholder />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 sm:text-sm" id="price-currency">
                     XPs
