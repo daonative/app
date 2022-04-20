@@ -3,7 +3,7 @@ import { CheckIcon } from "@heroicons/react/solid"
 import { collectionGroup, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useWallet } from "use-wallet"
-import { PrimaryButton } from "../components/Button"
+import { PrimaryButton, SecondaryButton } from "../components/Button"
 import { UserName } from "../components/PFP"
 import { Modal, ModalBody, ModalTitle } from "./Modal"
 
@@ -14,30 +14,137 @@ import Spinner from "./Spinner"
 import { Tab } from '@headlessui/react'
 import { loadUserProfile } from '../lib/useUserProfile'
 
+import axios from 'axios'
+import { useDocumentData } from 'react-firebase-hooks/firestore'
+
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
 
+const DiscordConnectButton = () => {
+  const [status, setStatus] = useState("connectable")
+  const [discordToken, setDiscordToken] = useState()
+  const [discordError, setDiscordError] = useState()
+  const requireAuthentication = useRequireAuthentication()
+  const { account } = useWallet()
 
+  useEffect(() => {
+    const getDiscordUser = async (accessToken, tokenType) => {
+      const discordAuthorization = `${tokenType} ${accessToken}`
+      try {
+        const { data } = await axios.get(`https://discord.com/api/users/@me`, {
+          headers: { authorization: `${discordAuthorization}` },
+        })
+        return data
+      } catch (error) {
+        return null
+      }
+    }
+
+    const updateProfile = async (discordUserId, discordHandle) => {
+      const db = getFirestore()
+      const userRef = doc(db, 'users', account)
+      await updateDoc(userRef, { discordUserId, discordHandle })
+    }
+
+    const linkDiscordAccount = async () => {
+      const user = await getDiscordUser(discordToken.accessToken, discordToken.tokenType)
+      const discordHandle = `${user.username}#${user.discriminator}`
+      setStatus("signing")
+      await requireAuthentication()
+      setStatus("saving")
+      await updateProfile(user.id, discordHandle)
+      setStatus("success")
+    }
+
+    if (!discordToken?.accessToken || !discordToken?.tokenType)
+      return
+
+    linkDiscordAccount()
+
+  }, [discordToken])
+
+  useEffect(() => {
+    if (!discordError)
+      return
+
+    setStatus("error")
+  }, [discordError])
+
+  const handleDiscordConnect = () => {
+    const discordClientId = "966363225576845352"
+    const discordRedirectUrl = encodeURIComponent(`${window.location.origin}/discord`)
+    const discordConnectURL = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirectUrl}&response_type=token&scope=identify`
+    setStatus("connecting")
+    window.open(discordConnectURL, 'popup', 'width=500,height=800')
+    window.setDiscordToken = setDiscordToken
+    window.setDiscordError = setDiscordError
+  }
+
+  if (status === "connectable")
+    return (
+      <SecondaryButton
+        onClick={handleDiscordConnect}
+      >
+        Connect with Discord
+      </SecondaryButton>
+    )
+
+  return (
+    <div className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-md text-daonative-white h-max bg-daonative-component-bg">
+      {status === "connecting" && (
+        <>
+          <span className="w-4 h-4 mr-4"><Spinner /></span>
+          Connecting with Discord
+        </>
+      )}
+      {status === "signing" && (
+        <>
+          <span className="w-4 h-4 mr-4"><Spinner /></span>
+          Sign to verify your account
+        </>
+      )}
+      {status === "saving" && (
+        <>
+          <span className="w-4 h-4 mr-4"><Spinner /></span>
+          Connecting with Discord
+        </>
+      )}
+      {status === "success" && (
+        <>
+          Connected with Discord!
+        </>
+      )}
+      {status === "error" && (
+        <>
+          Oops, something went wrong.
+        </>
+      )}
+    </div>
+  )
+}
 
 const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
+  const db = getFirestore()
   const { account } = useWallet()
   const [submissionCount, setSubmissionCount] = useState(0)
   const [verifiedXps, setVerifiedXps] = useState(0)
   const { register, handleSubmit, reset, formState: { isSubmitting, isSubmitSuccessful } } = useForm()
   const requireAuthentication = useRequireAuthentication()
+  const [user, userLoading] = useDocumentData(
+    doc(db, 'users', account || 'null')
+  )
 
-  const updateProfile = async (name, discordHandle) => {
+  const updateProfile = async (name) => {
     const db = getFirestore()
     const userRef = doc(db, 'users', account)
-    await updateDoc(userRef, { name, discordHandle })
+    await updateDoc(userRef, { name })
   }
 
   const handleUpdateProfile = async (data) => {
     await requireAuthentication()
-    await updateProfile(data.name, data.discordHandle)
+    await updateProfile(data.name)
     await loadUserProfile(account)
   }
-
 
   useEffect(() => {
     const retrieveUserProfile = async () => {
@@ -47,8 +154,9 @@ const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
 
       if (!userDoc.exists()) return
 
-      const { name, discordHandle } = userDoc.data()
-      reset({ name, discordHandle })
+      const { name } = userDoc.data()
+      reset({ name })
+
     }
 
     if (!account) return
@@ -184,9 +292,15 @@ const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium pb-2">
-                        Discord Handle
+                        Discord handle
                       </label>
-                      <input type="text" {...register("discordHandle", { required: false })} placeHolder="HanSolo#1244" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+                      {(!user?.discordHandle || !user?.discordUserId) ? (
+                        <DiscordConnectButton />
+                      ) : (
+                        <>
+                          <span className="font-mono">@{user.discordHandle}</span>
+                        </>
+                      )}
                     </div>
                     <div className="flex justify-end gap-4 items-center">
                       {isSubmitSuccessful && <CheckIcon className="h-6 w-6 text-green" />}

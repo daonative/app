@@ -150,10 +150,12 @@ const sendDiscordNotification = async (roomId, content) => {
   }
 
   await axios.post(roomData.discordNotificationWebhook, {
-    content,
-    embeds: null,
+    //content,
     username: "DAOnative",
-    avatar_url: "https://app.daonative.xyz/DAOnativeLogo.png"
+    avatar_url: "https://app.daonative.xyz/DAOnativeLogo.png",
+    embeds: [
+
+    ],
   })
 }
 
