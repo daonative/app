@@ -37,7 +37,7 @@ const DAOList = ({ rooms, isLoading }) => {
             <li key={room.roomId}>
               <Link href={`/dao/${room.roomId}`}>
                 <a>
-                  <Card >
+                  <Card onClick={() => null}>
                     <div className="flex gap-4 justify-between">
                       <p className="text-sm font-medium text-daonative-gray-100">{room.name}</p>
                       <div className="flex gap-2">
