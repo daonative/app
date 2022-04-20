@@ -161,7 +161,6 @@ const Challenges = () => {
               ))}
               <div className="flex justify-between">
                 <h2 className="text-2xl">Closed Challenges</h2>
-                {challenges?.length > 0 && isAdmin && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
               </div>
               {challenges?.length > 0 ? (
                 <ul role="list" className="flex flex-col gap-3">
