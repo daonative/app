@@ -1,18 +1,13 @@
 import { useState, useEffect } from 'react'
 import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
 import { useRouter } from 'next/router';
-import { useCollection, useCollectionData, useDocument } from 'react-firebase-hooks/firestore';
+import { useDocument } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 
-import useLocalStorage from '../../../lib/useLocalStorage'
 import { isFirestoreDate } from '../../../lib/utils';
 
-import SidebarNavigation from '../../../components/SidebarNavigation'
-import HeaderNavigation from '../../../components/HeaderNavigation'
 import KPIs from '../../../components/KPIs'
 import TasksTable from '../../../components/TasksTable'
-import Treasury from '../../../components/Treasury'
-import UpcomingEvents from '../../../components/UpcomingEvents'
 import useMembership from '../../../lib/useMembership';
 import { useWallet } from 'use-wallet';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
@@ -350,7 +345,7 @@ const Dashboard = ({ dao: initialDAO }) => {
       })
     }
 
-    if(!account) return
+    if (!account) return
 
     userNameBanner()
   }, [account])
