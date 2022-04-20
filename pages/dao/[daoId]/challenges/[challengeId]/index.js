@@ -348,6 +348,7 @@ const ChallengeDetails = () => {
 
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
+  const requireAuthentication = useRequireAuthentication()
   const isMember = !!membership
   const isAdmin = membership?.roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
@@ -369,18 +370,19 @@ const ChallengeDetails = () => {
     await updateDoc(doc(db, "challenges", challengeId), challenge)
   }
 
-
-
   const handleDeactivate = async () => {
     try {
+      await requireAuthentication()
       await updateChallenge('closed')
       toast.success('Challenge is now deactivated')
     } catch (e) {
       toast.error(`Something went wrong ${e.message}`,)
     }
   }
+
   const handleActivate = async () => {
     try {
+      await requireAuthentication()
       await updateChallenge('open')
       toast.success('Challenge is now active')
     } catch (e) {
