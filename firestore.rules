@@ -7,6 +7,9 @@ service cloud.firestore {
     function isAdmin(roomId) {
       return isAuthenticated() && 'admin' in get(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid)).data.roles;
     }
+    function isVerifier(roomId) {
+      return isAuthenticated() && 'verifier' in get(/databases/$(database)/documents/rooms/$(roomId)/members/$(request.auth.uid)).data.roles;
+    }
     function isAuthenticated() {
       return request.auth.uid != null;
     }
@@ -38,7 +41,7 @@ service cloud.firestore {
         && request.resource.data.author == request.auth.uid
         && request.resource.data.weight is int;
       allow update: if (
-          isAdmin(request.resource.data.roomId)
+          (isAdmin(resource.data.roomId) || isVerifier(resource.data.roomId))
           && resource.data.author != request.auth.uid
           && request.resource.data.diff(resource.data).affectedKeys() == ['verifiers', 'verifications'].toSet()
           && (

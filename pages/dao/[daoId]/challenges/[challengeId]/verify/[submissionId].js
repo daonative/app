@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import Moment from "react-moment"
 import { useWallet } from "use-wallet"
 import { PrimaryButton, SecondaryButton } from "../../../../../../components/Button"
-import {  SimpleCard, SimpleCardBody } from "../../../../../../components/Card"
+import { SimpleCard, SimpleCardBody } from "../../../../../../components/Card"
 import { LayoutWrapper } from "../../../../../../components/LayoutWrapper"
 import { UserAvatar, UserName } from "../../../../../../components/PFP"
 import { useRequireAuthentication } from "../../../../../../lib/authenticate"
@@ -303,49 +303,45 @@ const VerifyList = ({ currentSubmission }) => {
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex flex-col gap-4">
-          {(!isAdmin || allSubmissions.length === 0) && !loading && <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />}
-          {isAdmin && (
-            <>
-              <div className="">
-                <div className="sticky top-0">
-                  <h1 className="text-xl py-4">{challenge?.title}</h1>
-                  {currentWorkproof && canVerifyCurrentWorkproof && (
-                    <VerifyWork workproof={currentWorkproof} onVerified={() => { }} />
-                  )}
-                  {currentWorkproof && !canVerifyCurrentWorkproof && (
-                    <InspectWork workproof={currentWorkproof} />
-                  )}
+          {allSubmissions.length === 0 && !loading && <NothingToVerify challengeURL={`/dao/${roomId}/challenges/${challengeId}`} />}
+          <div className="">
+            <div className="sticky top-0">
+              <h1 className="text-xl py-4">{challenge?.title}</h1>
+              {currentWorkproof && canVerifyCurrentWorkproof && (
+                <VerifyWork workproof={currentWorkproof} onVerified={() => { }} />
+              )}
+              {currentWorkproof && !canVerifyCurrentWorkproof && (
+                <InspectWork workproof={currentWorkproof} />
+              )}
 
+            </div>
+          </div>
+          <div className="max-h-[400px] h-[400px] overflow-y-scroll">
+            {reviewableSubmissions.length > 0 && (
+              <>
+                <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">To Review</h2>
+                <div className="px-4">
+                  <SubmissionsList submissions={reviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
                 </div>
-              </div>
-              <div className="max-h-[400px] h-[400px] overflow-y-scroll">
-                {reviewableSubmissions.length > 0 && (
-                  <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">To Review</h2>
-                    <div className="px-4">
-                      <SubmissionsList submissions={reviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
-                    </div>
-                  </>
-                )}
-                {unreviewableSubmissions.length > 0 && (
-                  <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewable by others</h2>
-                    <div className="px-4">
-                      <SubmissionsList submissions={unreviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
-                    </div>
-                  </>
-                )}
-                {reviewedSubmissions.length > 0 && (
-                  <>
-                    <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewed</h2>
-                    <div className="px-4">
-                      <SubmissionsList submissions={reviewedSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
-                    </div>
-                  </>
-                )}
-              </div>
-            </>
-          )}
+              </>
+            )}
+            {unreviewableSubmissions.length > 0 && (
+              <>
+                <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewable by others</h2>
+                <div className="px-4">
+                  <SubmissionsList submissions={unreviewableSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
+                </div>
+              </>
+            )}
+            {reviewedSubmissions.length > 0 && (
+              <>
+                <h2 className="text-xl py-4 text-daonative-subtitle sticky top-0 z-10 bg-daonative-dark-300 ">Reviewed</h2>
+                <div className="px-4">
+                  <SubmissionsList submissions={reviewedSubmissions} currentSubmissionId={currentWorkproofId} onCurrentSubmissionChanged={setCurrentWorkproofId} />
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </LayoutWrapper>

@@ -353,6 +353,7 @@ const ChallengeDetails = () => {
   const isAdmin = membership?.roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
 
+  const canVerify = membership?.roles?.includes('admin') || membership?.roles?.includes('verifier')
   const hasWorkToVerify = submissions && submissions?.length > 0
 
   const handleOpenProofModal = () => setShowProofModal(true)
@@ -419,7 +420,7 @@ const ChallengeDetails = () => {
               </div>
               <div className="flex gap-4 items-center">
                 {isAdmin && <ExportSubmissionsCSV submissions={submissions} />}
-                {isAdmin && hasWorkToVerify && (
+                {canVerify && hasWorkToVerify && (
                   <Link href={`/dao/${roomId}/challenges/${challengeId}/verify`} passHref>
                     <a>
                       <PrimaryButton>Verify work</PrimaryButton>
