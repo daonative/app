@@ -130,13 +130,12 @@ const Challenges = () => {
       <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
-            <h2 className="text-2xl">Challenges</h2>
+            <h2 className="text-2xl">Latest Challenges</h2>
             {challenges?.length > 0 && isAdmin && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
           </div>
-
           {challenges?.length > 0 ? (
             <ul role="list" className="flex flex-col gap-3">
-              {challenges?.map((challenge) => (
+              {challenges?.filter(challenge => challenge.status !== 'closed').map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
                     <Card onClick={() => null}>
@@ -160,6 +159,58 @@ const Challenges = () => {
                   </li>
                 </Link>
               ))}
+              <div className="flex justify-between">
+                <h2 className="text-2xl">Closed Challenges</h2>
+                {challenges?.length > 0 && isAdmin && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
+              </div>
+              {challenges?.length > 0 ? (
+                <ul role="list" className="flex flex-col gap-3">
+                  {challenges?.filter(challenge => challenge.status === 'closed').map((challenge) => (
+                    <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
+                      <li>
+                        <Card>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              {challenge.weight} XP
+                            </span>
+                          </div>
+                          <div className="mt-2 sm:flex sm:justify-between">
+                            <div className="sm:flex">
+                            </div>
+                            <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+                              <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                              <p>
+                                {challenge?.meta?.submissionCount || 0} Completions
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      </li>
+                    </Link>
+                  ))}
+                </ul>
+              ) : (
+                <>
+                  {!loading && (
+                    <div className="mt-6">
+                      <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
+                        {isAdmin && (
+                          <>
+                            <p className="mt-1 text-sm text-gray-500">Get started by creating a new challange</p>
+                            <div className="mt-6">
+                              <PrimaryButton onClick={handleShowChallengeModal}>
+                                <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                                Add Challenge
+                              </PrimaryButton>
+                            </div>
+                          </>
+                        )}
+                      </EmptyStateNoChallenges>
+                    </div>
+                  )}
+                </>
+              )}
             </ul>
           ) : (
             <>
