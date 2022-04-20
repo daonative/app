@@ -20,6 +20,7 @@ import { classNames } from '../../../../../lib/utils'
 import { SimpleCard } from '../../../../../components/Card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import toast from 'react-hot-toast'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -356,8 +357,36 @@ const ChallengeDetails = () => {
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
 
+
   const handleOpenEditChallengeModal = () => setShowEditChallengeModal(true)
   const handleCloseEditChallengeModal = () => setShowEditChallengeModal(false)
+
+  const updateChallenge = async (status) => {
+    const db = getFirestore()
+    const challenge = {
+      status
+    }
+    await updateDoc(doc(db, "challenges", challengeId), challenge)
+  }
+
+
+
+  const handleDeactivate = async () => {
+    try {
+      await updateChallenge('closed')
+      toast.success('Challenge is now deactivated')
+    } catch (e) {
+      toast.error(`Something went wrong ${e.message}`,)
+    }
+  }
+  const handleActivate = async () => {
+    try {
+      await updateChallenge('open')
+      toast.success('Challenge is now active')
+    } catch (e) {
+      toast.error(`Something went wrong ${e.message}`,)
+    }
+  }
 
   return (
     <LayoutWrapper>
@@ -368,7 +397,10 @@ const ChallengeDetails = () => {
           <div className="flex justify-center w-full max-w-2xl mx-auto">
             <h1 className="text-2xl">{challenge?.title}</h1>
           </div>
-          {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
+          <div className='flex gap-3'>
+            {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
+            {isAdmin && isEnabled ? <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton> : <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+          </div>
         </div>
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
