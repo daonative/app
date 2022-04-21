@@ -184,7 +184,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
         <div className="flex flex-col w-full items-end">
           <div className='mt-3 text-lg'>
             <label className='font-bold text-white '>
-              Enter your DAO name
+              Enter your community name
             </label>
             <Input className="mt-2 text-xl" register={register} placeholder={"School DAO"} name="daoName" />
           </div>
