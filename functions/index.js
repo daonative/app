@@ -134,7 +134,7 @@ ${log.msg}`
     await axios.post(process.env.DAONATIVE_DISCORD_WEBHOOK_LOGS, { content })
   })
 
-const sendDiscordNotification = async (roomId, content) => {
+const sendDiscordNotification = async (roomId, message) => {
   const roomSnap = await db.collection('rooms').doc(roomId).get()
 
   if (!roomSnap.exists) {
@@ -149,15 +149,35 @@ const sendDiscordNotification = async (roomId, content) => {
     return
   }
 
-  await axios.post(roomData.discordNotificationWebhook, {
-    //content,
+  const data = {
     username: "DAOnative",
     avatar_url: "https://app.daonative.xyz/DAOnativeLogo.png",
-    embeds: [
+    content: null,
+    embeds: [],
+    attachments: [],
+    ...message
+  }
 
-    ],
-  })
+  await axios.post(roomData.discordNotificationWebhook, data)
 }
+
+const shortAddress = (address, length = 6) => `${address.substring(0, (length / 2) + 2)}...${address.substring(address.length - length / 2)}`
+const getDiscordDisplayName = async (account) => {
+  const userSnap = await db.collection('users').doc(account).get()
+  const user = userSnap.data()
+
+  if (!user)
+    return shortAddress(account)
+
+  if (user?.discordUserId)
+    return `<@${user.discordUserId}>`
+
+  if (!user?.name)
+    return shortAddress(account)
+
+  return user.name
+}
+
 
 exports.newChallengeDiscordNotification = functions.firestore
   .document('challenges/{challengeId}')
@@ -165,9 +185,16 @@ exports.newChallengeDiscordNotification = functions.firestore
     const challenge = snap.data()
     const roomId = challenge.roomId
     const challengeId = context.params.challengeId
-    const message =
-      `:sparkles: **New Challenge!**
-[${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})`
+    const message = {
+      embeds: [
+        {
+          title: challenge.title,
+          description: "New challenge!",
+          url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+          color: 5814783
+        }
+      ]
+    }
     await sendDiscordNotification(roomId, message)
   })
 
@@ -179,11 +206,30 @@ exports.newProofOfWorkDiscordNotification = functions.firestore
     const challengeId = proofOfWork.challengeId
     const challengeSnap = await db.collection('challenges').doc(challengeId).get()
     const challenge = challengeSnap.data()
-    const message =
-      `:pick: **New Proof of Work!**
 
-Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
-Author: ${proofOfWork.author}`
+    const authorName = await getDiscordDisplayName(proofOfWork.author)
+    const message = {
+      embeds: [
+        {
+          title: challenge.title,
+          description: "New proof of work!",
+          url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+          color: 5814783,
+          fields: [
+            {
+              name: "Author",
+              value: authorName,
+              inline: true
+            },
+            {
+              name: "Status",
+              value: "Pending",
+              inline: true
+            }
+          ]
+        }
+      ]
+    }
     await sendDiscordNotification(roomId, message)
   })
 
@@ -205,22 +251,58 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
     if (isPending)
       return
 
-    if (isReverted) {
-      const message =
-        `:x: **Proof of Work reverted!**
+    const authorName = await getDiscordDisplayName(proofOfWork.author)
 
-Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
-Author: ${proofOfWork.author}`
+    if (isReverted) {
+      const message = {
+        embeds: [
+          {
+            title: challenge.title,
+            description: "Proof of work is reverted",
+            url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+            color: 5814783,
+            fields: [
+              {
+                name: "Author",
+                value: authorName,
+                inline: true
+              },
+              {
+                name: "Status",
+                value: "Reverted",
+                inline: true
+              }
+            ]
+          }
+        ]
+      }
       await sendDiscordNotification(roomId, message)
       return
     }
 
     if (isVerified) {
-      const message =
-        `:ballot_box_with_check: **Proof of Work verified!**
-
-Challenge: [${challenge.title}](https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId})
-Author: ${proofOfWork.author}`
+      const message = {
+        embeds: [
+          {
+            title: challenge.title,
+            description: "Proof of work is verfied!",
+            url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+            color: 5814783,
+            fields: [
+              {
+                name: "Author",
+                value: authorName,
+                inline: true
+              },
+              {
+                name: "Status",
+                value: "Verified",
+                inline: true
+              }
+            ]
+          }
+        ]
+      }
       await sendDiscordNotification(roomId, message)
       return
     }
