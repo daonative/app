@@ -181,7 +181,7 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   return (
     <>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
-        <div className="flex flex-col md:flex-row w-full items-end">
+        <div className="flex flex-col w-full items-end">
           <div className='mt-3 text-lg'>
             <label className='font-bold text-white '>
               Enter your DAO name
@@ -190,7 +190,8 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
           </div>
           <PrimaryButton
             type="submit"
-            className='sm:ml-3 mt-3 sm:mt-0 text-xl justify-center w-full sm:min-w-max '
+            full
+            className='sm:ml-3 mt-3 text-xl justify-center w-full sm:min-w-max '
           >
             Create your community
           </PrimaryButton>
@@ -302,13 +303,12 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
     <>
       <h1 className="text-2xl font-semibold pb-2 font-space">{dao?.name}</h1>
       <form onSubmit={handleSubmit(handleJoinDAO)}>
-        <div className="flex flex-col md:flex-row w-full items-end">
-          <div>
-            <Input className="text-xl" register={register} name="memberName" placeholder={"How should we call you?"} />
-          </div>
+        <div className="flex flex-col w-full items-end">
+          <Input className="text-xl" register={register} name="memberName" placeholder={"How should we call you?"} />
           <PrimaryButton
             type="submit"
-            className='sm:ml-3 mt-3 sm:mt-0 text-xl justify-center w-full sm:min-w-max '
+            full
+            className='sm:ml-3 mt-3 text-xl justify-center w-full sm:min-w-max'
           >
             Join
           </PrimaryButton>

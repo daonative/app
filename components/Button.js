@@ -23,7 +23,7 @@ export const PrimaryButton = ({ children, onClick = () => null, type = "button",
       "bg-daonative-primary-blue",
       "shadow-daonative-blue",
       className,
-      "w-max",
+      full ? "w-full" : "w-max",
       disabled && "opacity-50 hover:opacity-50 hover:cursor-default",
     )}
     diabled={disabled}
