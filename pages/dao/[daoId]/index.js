@@ -58,9 +58,10 @@ export const getRoom = async (roomId) => {
 export const getServerSideProps = async ({ params }) => {
   const { daoId: roomId } = params
   const room = await getRoom(roomId)
+  const { created, ...dao } = room;
 
   return {
-    props: { dao: room }
+    props: { dao }
   }
 }
 

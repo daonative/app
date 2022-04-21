@@ -15,16 +15,16 @@ export const Button = ({ children, onClick, type = "button", className = "" }) =
   </button >
 )
 
-export const PrimaryButton = ({ children, onClick = () => null, type = "button", className = "", disabled = false }) => (
+export const PrimaryButton = ({ children, onClick = () => null, type = "button", className = "", disabled = false, full = false }) => (
   <Button
     onClick={onClick}
     type={type}
     className={classNames(
       "bg-daonative-primary-blue",
       "shadow-daonative-blue",
+      className,
       "w-max",
       disabled && "opacity-50 hover:opacity-50 hover:cursor-default",
-      className,
     )}
     diabled={disabled}
   >

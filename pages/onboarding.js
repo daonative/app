@@ -23,6 +23,7 @@ import { useRequireAuthentication } from '../lib/authenticate'
 import { PrimaryButton } from '../components/Button'
 import { guild as guild } from '@guildxyz/sdk'
 import Link from 'next/link'
+import { Input } from '../components/Input'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -37,7 +38,7 @@ const MINT_NFT_MEMBERSHIP = false
 
 const Steps = ({ children }) => (
   <nav aria-label="Progress" className="p-4 md:p-10">
-    <ol role="list" className="md:flex justify-center">
+    <ol role="list" className="flex justify-center">
       {children}
     </ol>
   </nav>
@@ -181,22 +182,17 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
     <>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
         <div className="flex flex-col md:flex-row w-full items-end">
-          <div className='mt-3'>
-            <label className='text-lg font-bold text-daonative-white'>
+          <div className='mt-3 text-lg'>
+            <label className='font-bold text-white '>
               Enter your DAO name
             </label>
-            <input
-              {...register("daoName")}
-              type="text"
-              className="shadow-sm focus:ring-daonative-primary-blue focus:border-indigo-500 block w-full border-transparent rounded-md bg-daonative-component-bg  text-lg"
-              placeholder="School DAO"
-            />
+            <Input className="mt-2 text-xl" register={register} placeholder={"School DAO"} name="daoName" />
           </div>
           <PrimaryButton
             type="submit"
-            className='ml-3 text-lg'
+            className='sm:ml-3 mt-3 sm:mt-0 text-xl justify-center w-full sm:min-w-max '
           >
-            Create your DAO
+            Create your community
           </PrimaryButton>
         </div>
       </form>
@@ -304,20 +300,17 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
   return (
     <>
-      <h1 className="text-xl text-daonative-gray-300 pb-2">{dao?.name}</h1>
+      <h1 className="text-2xl font-semibold pb-2 font-space">{dao?.name}</h1>
       <form onSubmit={handleSubmit(handleJoinDAO)}>
-        <div className="flex flex-col md:flex-row w-full mt-3">
-          <input
-            {...register("memberName")}
-            type="text"
-            className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
-            placeholder="How should we call you?"
-          />
+        <div className="flex flex-col md:flex-row w-full items-end">
+          <div>
+            <Input className="text-xl" register={register} name="memberName" placeholder={"How should we call you?"} />
+          </div>
           <PrimaryButton
             type="submit"
-            className='ml-3'
+            className='sm:ml-3 mt-3 sm:mt-0 text-xl justify-center w-full sm:min-w-max '
           >
-            Join the DAO
+            Join
           </PrimaryButton>
         </div>
       </form>
@@ -394,14 +387,14 @@ const Onboarding = () => {
           <StepDescription></StepDescription>
         </Step>
       </Steps>
-      <main className="flex justify-center items-center">
+      <main className="flex justify-center items-center px-4 sm:px-0">
         <div className="flex flex-col items-center ">
           <div className={classNames("fill-daonative-white w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
           {!isConnected && !isConnecting && (
             <>
-              <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create your DAO</p>
+              <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create a new home for your community</p>
               <div className="w-36 h-16">
                 <ConnectWalletButton >
                   <PrimaryButton className='h-min'>
@@ -417,7 +410,7 @@ const Onboarding = () => {
               <Link passHref href="/nfts/137/0x6b362FE1445DBAC80B064DD13b77403d4f17EE17/mint?inviteCode=kypymbk4tk&inviteMaxUse=0&inviteSig=0x0fa2306b57e7d2f0a95c4dc59b7439a0ec088ef1c58e42f3628cbed6034a53db6cf0e232f0535e7946e9f6ee67df0b6dcd81300d225d4e4b0207c164a5d08ece1c">
                 <PrimaryButton className='h-min'>
                   Mint your NFT
-               </PrimaryButton>
+                </PrimaryButton>
               </Link>
             </>
           )}

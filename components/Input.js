@@ -1,8 +1,10 @@
-export const Input = ({ name, register, required, placeholder }) => {
+import { classNames } from "../lib/utils"
+
+export const Input = ({ name, register, required, placeholder, className }) => {
   return <input
     type="text"
     placeholder={placeholder}
-    className="w-full rounded-md bg-daonative-component-bg border-transparent text-daonative-text"
+    className={classNames("w-full rounded-md bg-daonative-component-bg border-transparent text-daonative-text", className)}
     {...register(name, { required })}
   />
 
