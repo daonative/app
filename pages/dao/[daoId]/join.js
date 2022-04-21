@@ -25,9 +25,10 @@ export const getServerSideProps = async ({ res, params }) => {
   if (!room) {
     res.statusCode = 404
   }
+  const { created, ...dao } = room
 
   return {
-    props: { dao: room }
+    props: { dao }
   }
 }
 
