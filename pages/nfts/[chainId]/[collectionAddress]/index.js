@@ -6,7 +6,7 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../com
 import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
 import useProvider from '../../../../lib/useProvider'
 import toast from 'react-hot-toast'
-import { useWallet } from 'use-wallet'
+import { useWallet } from '@/lib/useWallet'
 import Spinner from '../../../../components/Spinner'
 import axios from 'axios'
 import ShortAddress from '../../../../components/ShortAddress'

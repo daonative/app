@@ -2,7 +2,7 @@ import { arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Moment from 'react-moment';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import useMembership from '../lib/useMembership';
 import { mergeKPIsAndDefaults } from './KPIs';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';

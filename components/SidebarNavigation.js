@@ -16,7 +16,7 @@ import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useConnectWalletModal } from './ConnectWalletModal'
-import { useWallet } from 'use-wallet'
+import { useWallet } from '@/lib/useWallet'
 import { UserAvatar, UserName } from './PFP'
 import { useProfileModal } from './ProfileModal'
 
@@ -28,7 +28,7 @@ const ProfileButton = () => {
   const { openProfileModal } = useProfileModal()
   const { openConnectWalletModal } = useConnectWalletModal()
   const { account, status } = useWallet()
-  const isConnected = status === "connected"
+  const isConnected = !!account
 
   if (!isConnected)
     return (

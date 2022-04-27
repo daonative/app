@@ -9,7 +9,7 @@ import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import { useRequireAuthentication } from '../lib/authenticate';
 import useMembership from '../lib/useMembership';
 import { classNames } from "../lib/utils";

@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react'
 import { CheckIcon } from "@heroicons/react/solid"
 import { collectionGroup, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton, SecondaryButton } from "../components/Button"
 import { UserName } from "../components/PFP"
 import { Modal, ModalBody, ModalTitle } from "./Modal"

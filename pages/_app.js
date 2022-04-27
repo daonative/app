@@ -9,6 +9,8 @@ import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { useEffect } from 'react'
 import ProfileModal, { ProfileModalProvider } from '../components/ProfileModal'
 import { Provider, createClient } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -28,7 +30,22 @@ function MyApp({ Component, pageProps }) {
     getAnalytics()
   }, [])
 
-  const client = createClient()
+  const client = createClient({
+    autoConnect: true,
+    connectors: [
+      new InjectedConnector(),
+      new WalletConnectConnector({
+        options: {
+          qrcode: true,
+          rpc: {
+            1: process.env.NEXT_PUBLIC_RPC_MAINNET,
+            4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
+            137: process.env.NEXT_PUBLIC_RPC_POLYGON
+          }
+        },
+      })
+    ]
+  })
 
   return (
     <>
@@ -36,27 +53,12 @@ function MyApp({ Component, pageProps }) {
         <title>DAOnative</title>
       </Head>
       <Provider client={client}>
-        <UseWalletProvider
-          autoConnect={true}
-          chainId={137}
-          connectors={{
-            walletconnect: {
-              bridge: 'https://bridge.walletconnect.org',
-              rpc: {
-                1: process.env.NEXT_PUBLIC_RPC_MAINNET,
-                4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
-                137: process.env.NEXT_PUBLIC_RPC_POLYGON
-              }
-            }
-          }}
-        >
-          <ConnectWalletModalProvider>
-            <ProfileModalProvider>
-              <Toaster position="bottom-center" />
-              <Component {...pageProps} />
-            </ProfileModalProvider>
-          </ConnectWalletModalProvider>
-        </UseWalletProvider>
+        <ConnectWalletModalProvider>
+          <ProfileModalProvider>
+            <Toaster position="bottom-center" />
+            <Component {...pageProps} />
+          </ProfileModalProvider>
+        </ConnectWalletModalProvider>
       </Provider>
     </>
   )

@@ -1,8 +1,9 @@
-import { useWallet } from 'use-wallet'
-import { createContext, Fragment, useEffect, useState, useContext } from 'react'
+import { useConnect } from 'wagmi'
+import { createContext, Fragment, useEffect, useState, useContext, useMemo } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from './Spinner';
 import { Modal, ModalBody, ModalTitle } from './Modal';
+import { useWallet } from '@/lib/useWallet';
 
 const MetaMaskButton = ({ onClick }) => (
   <button
@@ -28,10 +29,10 @@ const WalletConnectButton = ({ onClick }) => (
 
 const ConnectWalletModal = ({ open, onClose }) => {
   const [showConnecting, setShowConnecting] = useState(false)
-  const wallet = useWallet();
+  const {account} = useWallet()
+  const {connect, connectors, isConnecting} = useConnect()
 
-  const isConnecting = wallet.status === "connecting"
-  const isConnected = wallet.status === "connected"
+  const isConnected = !!account
 
   // Close the modal when the status becomes "connected"
   useEffect(() => {
@@ -48,8 +49,11 @@ const ConnectWalletModal = ({ open, onClose }) => {
     setShowConnecting(false)
   }, [open])
 
-  const handleMetaMask = () => wallet.connect('injected')
-  const handleWalletConnect = () => wallet.connect('walletconnect')
+  const metamaskConnector = useMemo(() => connectors.find(connector => connector.name === "MetaMask"), [connectors])
+  const walletConnectConnector = useMemo(() => connectors.find(connector => connector.name === "WalletConnect"), [connectors])
+
+  const handleMetaMask = () => connect(metamaskConnector)
+  const handleWalletConnect = () => connect(walletConnectConnector)
 
   return (
     <Modal show={open} onClose={onClose}>

@@ -9,7 +9,7 @@ import { isFirestoreDate } from '../../../lib/utils';
 import KPIs from '../../../components/KPIs'
 import TasksTable from '../../../components/TasksTable'
 import useMembership from '../../../lib/useMembership';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
 import Spinner from '../../../components/Spinner';
 import { useRequireAuthentication } from '../../../lib/authenticate';

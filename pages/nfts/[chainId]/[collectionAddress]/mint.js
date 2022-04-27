@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useWallet } from "use-wallet";
+import { useWallet } from "@/lib/useWallet";
 import { CollectionNotFound } from ".";
 import { PrimaryButton } from "../../../../components/Button";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../../../components/ChainWarning";

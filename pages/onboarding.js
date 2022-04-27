@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useWallet } from 'use-wallet'
+import { useWallet } from '@/lib/useWallet'
 import { useForm } from 'react-hook-form'
 
 import { classNames } from '../lib/utils'

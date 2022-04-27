@@ -1,4 +1,4 @@
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import ConnectWalletButton from "../components/ConnectWalletButton"
 import Link from "next/link"
 import EmptyStateNoDAOs from "../components/EmptyStateNoDAOs"

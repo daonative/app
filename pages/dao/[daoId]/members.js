@@ -1,7 +1,7 @@
 import { CheckCircleIcon } from "@heroicons/react/solid"
 import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../../../components/Button"
 import { InviteMemberModal } from "../../../components/InviteMemberModal"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"

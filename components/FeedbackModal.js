@@ -4,7 +4,7 @@ import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import Spinner from './Spinner';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import useMembership from '../lib/useMembership';
 import toast from 'react-hot-toast';
 import { PrimaryButton } from './Button';

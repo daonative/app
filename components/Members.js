@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import useMembership from "../lib/useMembership"
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import { InviteMemberModal } from "./InviteMemberModal"
 
 const Members = ({ members }) => {

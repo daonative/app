@@ -1,4 +1,4 @@
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import PolygonLogo from "../public/PolygonLogo.svg"
 import EthereumLogo from "../public/EthereumLogo.svg"
 import { classNames } from "../lib/utils"

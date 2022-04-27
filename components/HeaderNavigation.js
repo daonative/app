@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, CheckCircleIcon, MenuAlt2Icon } from '@heroicons/react/solid';
 import { useConnectWalletModal } from './ConnectWalletModal';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import useIsConnected from '../lib/useIsConnected';
 import { useForm } from 'react-hook-form';
 import { useRequireAuthentication } from '../lib/authenticate';

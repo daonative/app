@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { isFirestoreDate } from '../../../lib/utils';
 import TasksTable from '../../../components/TasksTable';
 import useMembers from '../../../lib/useMembers';
-import { useWallet } from 'use-wallet';
+import { useWallet } from '@/lib/useWallet';
 import useMembership from '../../../lib/useMembership';
 
 const db = getFirestore()

@@ -1,7 +1,7 @@
 import { CheckIcon } from "@heroicons/react/solid"
 import { collectionGroup, getDocs, getFirestore, query, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../components/Button"
 import { LayoutWrapper } from "../components/LayoutWrapper"
 import { UserName } from "../components/PFP"

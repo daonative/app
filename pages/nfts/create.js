@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { useWallet } from "use-wallet"
+import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../../components/Button"
 import { ethers } from 'ethers';
 import { useEffect, useState } from "react"
