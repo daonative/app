@@ -8,6 +8,7 @@ import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { useEffect } from 'react'
 import ProfileModal, { ProfileModalProvider } from '../components/ProfileModal'
+import { Provider, createClient } from 'wagmi'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -27,32 +28,36 @@ function MyApp({ Component, pageProps }) {
     getAnalytics()
   }, [])
 
+  const client = createClient()
+
   return (
     <>
       <Head>
         <title>DAOnative</title>
       </Head>
-      <UseWalletProvider
-        autoConnect={true}
-        chainId={137}
-        connectors={{
-          walletconnect: {
-            bridge: 'https://bridge.walletconnect.org',
-            rpc: {
-              1: process.env.NEXT_PUBLIC_RPC_MAINNET,
-              4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
-              137: process.env.NEXT_PUBLIC_RPC_POLYGON
+      <Provider client={client}>
+        <UseWalletProvider
+          autoConnect={true}
+          chainId={137}
+          connectors={{
+            walletconnect: {
+              bridge: 'https://bridge.walletconnect.org',
+              rpc: {
+                1: process.env.NEXT_PUBLIC_RPC_MAINNET,
+                4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
+                137: process.env.NEXT_PUBLIC_RPC_POLYGON
+              }
             }
-          }
-        }}
-      >
-        <ConnectWalletModalProvider>
-          <ProfileModalProvider>
-            <Toaster position="bottom-center" />
-            <Component {...pageProps} />
-          </ProfileModalProvider>
-        </ConnectWalletModalProvider>
-      </UseWalletProvider>
+          }}
+        >
+          <ConnectWalletModalProvider>
+            <ProfileModalProvider>
+              <Toaster position="bottom-center" />
+              <Component {...pageProps} />
+            </ProfileModalProvider>
+          </ConnectWalletModalProvider>
+        </UseWalletProvider>
+      </Provider>
     </>
   )
 }
