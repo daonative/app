@@ -3,10 +3,6 @@ import { classNames } from "../lib/utils"
 export const SimpleCard = ({ onClick, children, className }) => {
   return (
     <div
-      style={{
-
-        background: 'linear-gradient(156.58deg, rgba(34,34,53, 1) 1.21%, rgba(245, 239, 255, 0) 156.94%)'
-      }}
       onClick={onClick} className={classNames("bg-daonative-component-bg rounded-lg ", className)}>
       {children}
     </div >

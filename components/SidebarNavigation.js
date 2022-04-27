@@ -80,8 +80,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
       {disabled ? (
         <a
           className={classNames(
-            current ? 'text-daonative-gray-100 scale-110 font-semibold' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-            ' group flex justify-between px-2 py-2 text-sm  rounded-md opacity-50 ease-in	 hover:bg-daonative-dark-300 tracking-wider'
+            current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+            'group flex justify-between px-2 py-2 text-sm font-medium rounded-md opacity-50'
           )}
         >
           {children}
@@ -90,9 +90,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         <Link href={href} >
           <a
             className={classNames(
-              current ? 'text-daonative-gray-100 scale-110 font-semibold' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 0',
-              'tracking-wider group flex justify-between px-2 py-2 text-sm  rounded-md ease-in hover:bg-daonative-component-bg max-w-min'
-
+              current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
+              'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
             )}
           >
             {children}

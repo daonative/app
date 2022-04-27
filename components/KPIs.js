@@ -13,6 +13,7 @@ import { useWallet } from '@/lib/useWallet';
 import { useRequireAuthentication } from '../lib/authenticate';
 import useMembership from '../lib/useMembership';
 import { classNames } from "../lib/utils";
+import { SimpleCard, SimpleCardBody } from './Card';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 
 const kpiDefaults = {
@@ -88,40 +89,39 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
   }
 
   return (
-    <div
-      className={classNames(
-        "relative  pt-5 px-4 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden bg-daonative-component-bg shadow-lg shadow-daonative-gray-400/10",
-        isEditable && "hover:cursor-pointer"
-      )}
+    <SimpleCard
       onClick={() => { isEditable && handleOpenMetricModal() }}
+      className="cursor-pointer"
     >
-      <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
-      <dt>
-        <div className="absolute bg-blue-100 rounded-full p-3">
-          <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
-        </div>
-        <p className="ml-16 text-sm font-medium text-gray-500 truncate text-daonative-gray-300">{name || "Click to set KPI"}</p>
-      </dt>
-      <dd className="ml-16 pb-6 flex items-baseline sm:pb-7">
-        <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
-        {change && (
-          <p
-            className={classNames(
-              changeType === 'increase' ? 'text-green-600' : 'text-red-600',
-              'ml-2 flex items-baseline text-sm font-semibold'
-            )}
-          >
-            {changeType === 'increase' ? (
-              <ArrowSmUpIcon className="self-center flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-            ) : (
-              <ArrowSmDownIcon className="self-center flex-shrink-0 h-5 w-5 text-red-500" aria-hidden="true" />
-            )}
-            <span className="sr-only">{changeType === 'increase' ? 'Increased' : 'Decreased'} by</span>
-            {change}
-          </p>
-        )}
-      </dd>
-    </div>
+      <SimpleCardBody>
+        <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
+        <dt>
+          <div className="absolute bg-blue-100 rounded-full p-3">
+            <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
+          </div>
+          <p className="ml-16 text-sm font-medium text-gray-500 truncate text-daonative-gray-300">{name || "Click to set KPI"}</p>
+        </dt>
+        <dd className="ml-16 flex items-baseline ">
+          <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
+          {change && (
+            <p
+              className={classNames(
+                changeType === 'increase' ? 'text-green-600' : 'text-red-600',
+                'ml-2 flex items-baseline text-sm font-semibold'
+              )}
+            >
+              {changeType === 'increase' ? (
+                <ArrowSmUpIcon className="self-center flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
+              ) : (
+                <ArrowSmDownIcon className="self-center flex-shrink-0 h-5 w-5 text-red-500" aria-hidden="true" />
+              )}
+              <span className="sr-only">{changeType === 'increase' ? 'Increased' : 'Decreased'} by</span>
+              {change}
+            </p>
+          )}
+        </dd>
+      </SimpleCardBody>
+    </SimpleCard >
   )
 }
 
