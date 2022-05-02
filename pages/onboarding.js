@@ -324,9 +324,8 @@ const Onboarding = () => {
   const [dao, setDAO] = useState()
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
-  const isConnected = useIsConnected()
-  const { account, status } = useWallet()
-  const isConnecting = status === 'connecting'
+  const { account } = useWallet()
+  const isConnected = !!account
 
   //const hasFreePass = router?.query?.ref === "PolygonBounty"
   const isAllowed = true //hasFreePass || isGuildMember
@@ -392,7 +391,7 @@ const Onboarding = () => {
           <div className={classNames("fill-daonative-white w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
-          {!isConnected && !isConnecting && (
+          {!isConnected && (
             <>
               <p className="p-6 text-gray-200 font-bold text-center">You need to connect your wallet before you can create a new home for your community</p>
               <div className="w-36 h-16">
