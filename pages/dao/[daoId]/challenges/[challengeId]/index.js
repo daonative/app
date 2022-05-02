@@ -317,10 +317,10 @@ const ExportSubmissionsCSV = ({ submissions }) => {
         const created = submission?.created?.toDate()
         const description = submission?.description
         const image = submission?.imageUrls?.length > 0 ? submission.imageUrls[0] : ""
-        return `"${author}","${created}","${description}","${image}"`
+        return `"${author}";"${created}";"${description.replaceAll('"', '""')}";"${image}"`
       })
       .join('\n') : ""
-    const URI = encodeURI(`data:text/csv;charset=utf-8,${CSV}`)
+    const URI = `data:text/csv;charset=utf-8,${encodeURI(CSV)}`
     setCsvUri(URI)
   }, [submissions])
 
