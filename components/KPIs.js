@@ -95,31 +95,15 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
     >
       <SimpleCardBody>
         <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
-        <dt>
-          <div className="absolute bg-blue-100 rounded-full p-3">
+        <div className="flex gap-6">
+          <div className="bg-blue-100 rounded-full p-3">
             <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
           </div>
-          <p className="ml-16 text-sm font-medium text-gray-500 truncate text-daonative-gray-300">{name || "Click to set KPI"}</p>
-        </dt>
-        <dd className="ml-16 flex items-baseline ">
-          <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
-          {change && (
-            <p
-              className={classNames(
-                changeType === 'increase' ? 'text-green-600' : 'text-red-600',
-                'ml-2 flex items-baseline text-sm font-semibold'
-              )}
-            >
-              {changeType === 'increase' ? (
-                <ArrowSmUpIcon className="self-center flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-              ) : (
-                <ArrowSmDownIcon className="self-center flex-shrink-0 h-5 w-5 text-red-500" aria-hidden="true" />
-              )}
-              <span className="sr-only">{changeType === 'increase' ? 'Increased' : 'Decreased'} by</span>
-              {change}
-            </p>
-          )}
-        </dd>
+          <div className="flex flex-col items-baseline ">
+            <p className="text-sm font-medium text-gray-500 truncate text-daonative-gray-300">{name || "Click to set KPI"}</p>
+            <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
+          </div>
+        </div>
       </SimpleCardBody>
     </SimpleCard >
   )
