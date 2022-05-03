@@ -99,8 +99,8 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
           <div className="bg-blue-100 rounded-full p-3 w-min h-min">
             <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
           </div>
-          <div className="flex flex-col items-baseline ">
-            <p className="text-sm font-medium text-gray-500 truncate text-daonative-gray-300">{name || "Click to set KPI"}</p>
+          <div className="flex flex-col items-baseline">
+            <p className="text-sm font-medium text-gray-500 text-daonative-gray-300">{name || "Click to set KPI"}</p>
             <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
           </div>
         </div>
