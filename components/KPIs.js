@@ -96,7 +96,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
       <SimpleCardBody>
         <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
         <div className="flex gap-6">
-          <div className="bg-blue-100 rounded-full p-3">
+          <div className="bg-blue-100 rounded-full p-3 w-min h-min">
             <MetricIcon className="h-6 w-6 text-blue-500" aria-hidden="true" />
           </div>
           <div className="flex flex-col items-baseline ">
