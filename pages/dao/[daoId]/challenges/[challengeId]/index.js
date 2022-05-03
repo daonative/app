@@ -307,30 +307,6 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
   )
 }
 
-const ExportSubmissionsCSV = ({ submissions }) => {
-  const [csvUri, setCsvUri] = useState()
-
-  useEffect(() => {
-    const CSV = submissions ? submissions
-      .map(submission => {
-        const author = submission?.author
-        const created = submission?.created?.toDate()
-        const description = submission?.description
-        const image = submission?.imageUrls?.length > 0 ? submission.imageUrls[0] : ""
-        return `"${author}";"${created}";"${description.replaceAll('"', '""')}";"${image}"`
-      })
-      .join('\n') : ""
-    const URI = `data:text/csv;charset=utf-8,${encodeURI(CSV)}`
-    setCsvUri(URI)
-  }, [submissions])
-
-  return (
-    <a href={csvUri} download>
-      <PrimaryButton>Export to CSV</PrimaryButton>
-    </a>
-  )
-}
-
 const ChallengeDetails = () => {
   const [showProofModal, setShowProofModal] = useState(false)
   const [showEditChallengeModal, setShowEditChallengeModal] = useState(false)
@@ -419,7 +395,11 @@ const ChallengeDetails = () => {
                 <h2 className="text-xl text-daonative-white">Submissions</h2>
               </div>
               <div className="flex gap-4 items-center">
-                {isAdmin && <ExportSubmissionsCSV submissions={submissions} />}
+                {isAdmin &&
+                  <a href={`/api/csv/proof-of-works?challengeId=${challengeId}`} download>
+                    <PrimaryButton>Export to CSV</PrimaryButton>
+                  </a>
+                }
                 {canVerify && hasWorkToVerify && (
                   <Link href={`/dao/${roomId}/challenges/${challengeId}/verify`} passHref>
                     <a>
