@@ -22,6 +22,23 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig)
 
+const client = createClient({
+  autoConnect: true,
+  connectors: [
+    new InjectedConnector(),
+    new WalletConnectConnector({
+      options: {
+        qrcode: true,
+        rpc: {
+          1: process.env.NEXT_PUBLIC_RPC_MAINNET,
+          4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
+          137: process.env.NEXT_PUBLIC_RPC_POLYGON
+        }
+      },
+    })
+  ]
+})
+
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (typeof window === "undefined")
@@ -29,23 +46,6 @@ function MyApp({ Component, pageProps }) {
 
     getAnalytics()
   }, [])
-
-  const client = createClient({
-    autoConnect: true,
-    connectors: [
-      new InjectedConnector(),
-      new WalletConnectConnector({
-        options: {
-          qrcode: true,
-          rpc: {
-            1: process.env.NEXT_PUBLIC_RPC_MAINNET,
-            4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
-            137: process.env.NEXT_PUBLIC_RPC_POLYGON
-          }
-        },
-      })
-    ]
-  })
 
   return (
     <>
