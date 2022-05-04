@@ -391,7 +391,8 @@ const ChallengeDetails = () => {
           </div>
           <div className='flex gap-3'>
             {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
-            {isAdmin && isEnabled ? <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton> : <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+            {isAdmin && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
+            {isAdmin && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
           </div>
         </div>
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
