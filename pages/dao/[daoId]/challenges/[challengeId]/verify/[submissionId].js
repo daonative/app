@@ -15,7 +15,7 @@ import { useRequireAuthentication } from "../../../../../../lib/authenticate"
 import useMembership from "../../../../../../lib/useMembership"
 import { classNames } from "../../../../../../lib/utils"
 
-const VerifyWork = ({ workproof, onVerified }) => {
+const VerifyWork = ({ workproof, challenge, onVerified }) => {
   const db = getFirestore()
   const [isLoading, setIsLoading] = useState(false)
   const requireAuthentication = useRequireAuthentication()
@@ -53,7 +53,7 @@ const VerifyWork = ({ workproof, onVerified }) => {
   return (
     <form>
       <div className="flex flex-col gap-4">
-        <InspectWork workproof={workproof} />
+        <InspectWork workproof={workproof} challenge={challenge} />
         <div>
           <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
             Reason
@@ -70,7 +70,7 @@ const VerifyWork = ({ workproof, onVerified }) => {
 }
 
 
-const InspectWork = ({ workproof }) => {
+const InspectWork = ({ workproof, challenge }) => {
   const verifications = workproof?.verifications ? Object.entries(workproof.verifications).map((verification) => ({ ...verification[1], verifier: verification[0] })) : []
   const isPending = verifications.length === 0
   const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
@@ -102,7 +102,6 @@ const InspectWork = ({ workproof }) => {
             {workproof.created?.toDate().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
-
         <div>
           <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
             Status
@@ -159,6 +158,7 @@ const InspectWork = ({ workproof }) => {
             {workproof?.description}
           </div>
         </div>
+
         {workproof?.imageUrls?.length > 0 && (
           <div>
             <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
@@ -171,10 +171,12 @@ const InspectWork = ({ workproof }) => {
             </div>
           </div>
         )}
-
+        {challenge?.rules?.imageRequired && workproof?.imageUrls?.length === 0 && (
+          <div>
+            <span className="text-xs text-red-400">A screenshot was required for this challenge. There is none provided in the proof of work.</span>
+          </div>
+        )}
       </div>
-
-
     </div>
   )
 }
@@ -308,10 +310,10 @@ const VerifyList = ({ currentSubmission }) => {
             <div className="sticky top-0">
               <h1 className="text-xl py-4">{challenge?.title}</h1>
               {currentWorkproof && canVerifyCurrentWorkproof && (
-                <VerifyWork workproof={currentWorkproof} onVerified={() => { }} />
+                <VerifyWork workproof={currentWorkproof} challenge={challenge} onVerified={() => { }} />
               )}
               {currentWorkproof && !canVerifyCurrentWorkproof && (
-                <InspectWork workproof={currentWorkproof} />
+                <InspectWork workproof={currentWorkproof} challenge={challenge} />
               )}
 
             </div>

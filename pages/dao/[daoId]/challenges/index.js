@@ -29,11 +29,13 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
   const roomId = useRoomId()
 
   const createChallenge = async (data) => {
+    const rules = { imageRequired: data?.imageRequired || false }
     const challenge = {
       title: data.title,
       description: data.description,
       weight: Number(data.weight),
       created: serverTimestamp(),
+      rules,
       roomId,
     }
     await addDoc(collection(db, 'challenges'), challenge)
@@ -77,6 +79,12 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
                   </span>
                 </div>
               </div>
+            </div>
+            <div>
+              <input type="checkbox" {...register("imageRequired", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
+              <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="imageRequired">
+                Require each submission to upload an image
+              </label>
             </div>
           </div>
         </ModalBody>

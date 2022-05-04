@@ -245,13 +245,20 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
   const requireAuthentication = useRequireAuthentication()
 
-  useEffect(() => reset(challenge), [reset, challenge])
+  useEffect(() => {
+    reset({
+      title: challenge.title,
+      description: challenge.description,
+      imageRequired: challenge?.rules?.imageRequired || false
+    })
+  }, [reset, challenge])
 
-  const updateChallenge = async (title, description, challengeId) => {
+  const updateChallenge = async (title, description, imageRequired, challengeId) => {
     const db = getFirestore()
     const challenge = {
       title: title,
       description: description,
+      'rules.imageRequired': imageRequired,
       updated: serverTimestamp()
     }
     await updateDoc(doc(db, "challenges", challengeId), challenge)
@@ -263,7 +270,7 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
 
   const handleSaveChallenge = async (data) => {
     await requireAuthentication()
-    await updateChallenge(data.title, data.description, challenge.challengeId)
+    await updateChallenge(data.title, data.description, data.imageRequired || false, challenge.challengeId)
     handleCloseModal()
   }
 
@@ -288,6 +295,12 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
               </label>
               <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
             </div>
+          </div>
+          <div>
+            <input type="checkbox" {...register("imageRequired")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
+            <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="imageRequired">
+              Require each submission to upload an image
+            </label>
           </div>
         </ModalBody>
         <ModalActionFooter>
