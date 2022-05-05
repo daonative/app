@@ -269,6 +269,8 @@ export const GatorCollection = () => {
   const [collectionPaused, setCollectionPaused] = useState(null)
   const [collectionHasError, setCollectionHasError] = useState(false)
   const [tokenGateCount, setTokenGateCount] = useState(0)
+  const [collectionMaxSupply, setCollectionMaxSupply] = useState(0)
+  const [collectionTotalSupply, setCollectionTotalSupply] = useState(null)
   // Modals
   const [showCreateDAOModal, setShowCreateDAOModal] = useState(false)
   const [showInviteModal, setShowInviteModal] = useState(false)
@@ -338,6 +340,14 @@ export const GatorCollection = () => {
       setCollectionPaused(paused)
     }
 
+    const retrieveCollectionSupply = async (address) => {
+      const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
+      const totalSupply = await contract.totalSupply()
+      const maxSupply = await contract.maxSupply()
+      setCollectionMaxSupply(maxSupply.toNumber())
+      setCollectionTotalSupply(totalSupply.toNumber())
+    }
+
     const getTokenURI = async (address, tokenId) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const uri = await contract.tokenURI(tokenId)
@@ -404,7 +414,8 @@ export const GatorCollection = () => {
           retrieveCollectionOwner(collectionAddress),
           retrieveCollectionImageURI(collectionAddress),
           retrieveCollectionPaused(collectionAddress),
-          retrieveCollectionDAOs(collectionAddress)
+          retrieveCollectionDAOs(collectionAddress),
+          retrieveCollectionSupply(collectionAddress)
         ])
       } catch (e) {
         console.log(e)
@@ -423,14 +434,14 @@ export const GatorCollection = () => {
       <CreateDAOModal show={showCreateDAOModal} onClose={handleCloseCreateDAOModal} chainId={chainId} collectionAddress={collectionAddress} />
       <InviteModal show={showInviteModal} onClose={handleCloseInviteModal} inviteLink={inviteLink} />
       <div className="flex flex-col gap-8 w-full lg:w-3/4 items-center">
-        <div className="flex justify-center items-center w-full max-w-2xl">
-          {!isLoading && (
-            <>
-              <h2 className="text-2xl text-daonative-white">{collectionName} Collection</h2>
-            </>
-          )}
-        </div>
-
+        {!isLoading && (
+          <div className="flex flex-col justify-center items-center w-full max-w-2xl">
+            <h2 className="text-2xl text-daonative-white">{collectionName} Collection</h2>
+            <span>
+              {collectionTotalSupply !== 0 && collectionTotalSupply}{collectionMaxSupply !== 0 && ` / ${collectionMaxSupply}`}
+            </span>
+          </div>
+        )}
         <div>
           <div className="flex shadow-daonative justify-center border border-daonative-border  rounded-lg w-64 h-[18em] overflow-hidden ">
             <ImagePreview uri={collectionImageURI} />

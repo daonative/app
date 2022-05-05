@@ -78,8 +78,6 @@ const Mint = (props) => {
   useEffect(() => {
     const readonlyProvider = getReadonlyProvider(Number(chainId))
 
-
-
     const retrieveCollectionSupply = async (address) => {
       const contract = new ethers.Contract(address, collectionAbi, readonlyProvider)
       const totalSupply = await contract.totalSupply()
