@@ -27,7 +27,7 @@ async function handler(req, res) {
       const proofOfWork = proofOfWorkSnapshot.data()
       const author = proofOfWork?.author
       const created = proofOfWork?.created?.toDate()
-      const description = proofOfWork?.description?.replace(/\"/g, '""')
+      const description = proofOfWork?.description?.replace(/"/g, '""')
       const image = proofOfWork?.imageUrls?.length > 0 ? proofOfWork.imageUrls[0] : ""
       const weight = proofOfWork?.weight
       const verifications = proofOfWork?.verifications || {}
