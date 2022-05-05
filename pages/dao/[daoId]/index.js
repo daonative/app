@@ -25,7 +25,6 @@ import Head from 'next/head';
 import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
 import { TextField } from '@/components/Input';
-import { SocialIcon } from 'react-social-icons';
 import Image from 'next/image';
 
 const db = getFirestore()
