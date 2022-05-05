@@ -1,8 +1,8 @@
 import { classNames } from "../lib/utils"
 
-export const Input = ({ name, register, required, placeholder, className }) => {
+export const Input = ({ name, register, required, placeholder, className, type = "text" }) => {
   return <input
-    type="text"
+    type={type}
     placeholder={placeholder}
     className={classNames("w-full rounded-md bg-daonative-component-bg border-transparent text-daonative-text", className)}
     {...register(name, { required })}
@@ -10,13 +10,13 @@ export const Input = ({ name, register, required, placeholder, className }) => {
 
 
 }
-export const TextField = ({ label, name, register, required, placeholder }) => (
+export const TextField = ({ label, name, register, required, placeholder, type }) => (
   <>
     <label
       className="block text-sm font-medium pb-2"
     >
       {label}
     </label>
-    <Input name={name} register={register} required={required} placeholder={placeholder} />
+    <Input name={name} register={register} required={required} placeholder={placeholder} type={type} />
   </>
 );

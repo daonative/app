@@ -25,6 +25,8 @@ import Head from 'next/head';
 import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
 import { TextField } from '@/components/Input';
+import { SocialIcon } from 'react-social-icons';
+import Image from 'next/image';
 
 const db = getFirestore()
 
@@ -257,13 +259,13 @@ const DAOProfileModal = ({ room, roomId, show, onClose }) => {
               <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
             </div>
             <div>
-              <TextField label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
+              <TextField type="url" label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
             </div>
             <div>
               <TextField label="Twitter Handle" name="twitterHandle" register={register} placeholder="@DAOnative" />
             </div>
             <div>
-              <TextField label="Discord Server" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
+              <TextField type="url" label="Discord Server" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
             </div>
           </div>
         </ModalBody>
@@ -298,6 +300,20 @@ const DAOProfilePicture = ({ roomId, profilePictureURI }) => (
     {!profilePictureURI && <PFP address={roomId} size={64} />}
   </>
 )
+const Socials = ({ room }) =>
+  <div className='flex items-center justify-center gap-2'>
+    {room.twitterHandle &&
+      <a className="flex" target="_blank" rel="noreferrer" href={`https://twitter.com/${room.twitterHandle?.replace('@', '')}`}  >
+        <Image height="18" width="18" src="/twitter.svg" alt="twitter-link"></Image>
+      </a>
+    }
+    {room.discordServer &&
+      <a className="flex" target="_blank" rel="noreferrer" href={room.discordServer} >
+        <Image height="18" width="18" src="/discord.svg" alt="discord-link"></Image>
+      </a>
+    }
+  </div >
+
 
 const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
@@ -375,9 +391,15 @@ const Dashboard = ({ dao: initialDAO }) => {
       <LayoutWrapper>
         <div className="mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex gap-4 items-center">
-            {roomId && dao && <DAOProfileButton roomId={roomId} room={dao} canEditProfile={isAdmin} />}
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+              {roomId && dao && <DAOProfileButton roomId={roomId} room={dao} canEditProfile={isAdmin} />}
+
+            </div>
+            <div>
+              <div className='flex items-center gap-3'>
+                <h1 className="text-3xl font-semibold text-gray-900 text-daonative-gray-200">{dao.name}</h1>
+                <Socials room={dao} />
+              </div>
               <Mission roomId={roomId} mission={dao.mission} />
             </div>
           </div>
@@ -389,16 +411,7 @@ const Dashboard = ({ dao: initialDAO }) => {
           <Members />
         </div>
       </LayoutWrapper>
-      {/*
-      <aside className="w-full md:max-w-xs md:py-6">
-        <div className="px-4">
-          <UpcomingEvents />
-        </div>
-        <div className="py-4 px-4">
-          <Treasury address={dao.treasury} enabled={false} />
-        </div>
-      </aside>
-      */}
+
     </>
   )
 }
