@@ -24,6 +24,7 @@ import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
+import { TextField } from '@/components/Input';
 
 const db = getFirestore()
 
@@ -211,18 +212,13 @@ const OpenTasks = ({ openTasks }) => {
 }
 
 const DAOProfileModal = ({ room, roomId, show, onClose }) => {
-  const { handleSubmit, register, watch, reset } = useForm()
+  const { discordNotificationWebhook, twitterHandle, discordServer } = room
+  const { handleSubmit, register, watch } = useForm({ defaultValues: { discordNotificationWebhook, twitterHandle, discordServer } })
   const imageFile = watch('image')
   const imageUri = imageFile?.length > 0 ? URL.createObjectURL(imageFile[0]) : ""
   const requireAuthentication = useRequireAuthentication()
 
-  useEffect(() => {
-    const { discordNotificationWebhook } = room
 
-    if (!discordNotificationWebhook) return
-
-    reset({ discordNotificationWebhook })
-  }, [room, reset])
 
   const uploadProfilePicture = async (image) => {
     if (image?.length !== 1)
@@ -232,17 +228,18 @@ const DAOProfileModal = ({ room, roomId, show, onClose }) => {
     return profilePictureURI
   }
 
-  const updateDAOProfile = async (image, discordNotificationWebhook) => {
+  const updateDAOProfile = async (image, daoData) => {
     const db = getFirestore()
     const roomRef = doc(db, 'rooms', roomId)
     const profilePictureURI = await uploadProfilePicture(image)
-    const daoProfile = profilePictureURI ? { profilePictureURI, discordNotificationWebhook } : { discordNotificationWebhook }
+    const daoProfile = profilePictureURI ? { profilePictureURI, ...daoData } : { ...daoData }
     await updateDoc(roomRef, daoProfile)
   }
 
   const handleUpdateDAOProfile = async (data) => {
     await requireAuthentication()
-    await updateDAOProfile(data.image, data.discordNotificationWebhook)
+    const { image, ...daoProfile } = data
+    await updateDAOProfile(image, daoProfile)
     onClose()
   }
 
@@ -251,7 +248,7 @@ const DAOProfileModal = ({ room, roomId, show, onClose }) => {
       <ModalTitle>DAO profile</ModalTitle>
       <form onSubmit={handleSubmit(handleUpdateDAOProfile)}>
         <ModalBody>
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center justify-center">
               <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
             </div>
@@ -260,10 +257,13 @@ const DAOProfileModal = ({ room, roomId, show, onClose }) => {
               <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
             </div>
             <div>
-              <label className="block text-sm font-medium pb-2">
-                Discord Webhook URL
-              </label>
-              <input type="text" {...register("discordNotificationWebhook", { required: false })} placeholder="https://discord.com/api/webhooks/..." className="shadow-sm focus:ring-indigo-500 focus:border-daonative-border block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-white" />
+              <TextField label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
+            </div>
+            <div>
+              <TextField label="Twitter Handle" name="twitterHandle" register={register} placeholder="@DAOnative" />
+            </div>
+            <div>
+              <TextField label="Discord Server" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
             </div>
           </div>
         </ModalBody>
