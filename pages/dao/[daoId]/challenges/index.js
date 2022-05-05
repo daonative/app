@@ -46,13 +46,13 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 
   const handleCloseModal = () => {
     onClose()
-    reset()
   }
 
   const handleSaveChallenge = async (data) => {
     await requireAuthentication()
     await createChallenge(data)
     handleCloseModal()
+    reset()
   }
 
   return (
@@ -75,7 +75,7 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
                 Weight
               </label>
               <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
-                <Input register={register} name="weight" required placeholder />
+                <Input register={register} name="weight" required placeholder="100" />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 sm:text-sm" id="price-currency">
                     XPs
