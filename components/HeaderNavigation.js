@@ -14,6 +14,7 @@ import { UserAvatar, UserName } from './PFP';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
+import { useProfileModal } from './ProfileModal';
 
 const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
@@ -38,6 +39,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
   const { chainId, account, reset: disconnect } = useWallet()
   const isConnected = useIsConnected()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
+  const { openProfileModal } = useProfileModal()
   const { query: params } = useRouter()
   const roomId = params?.daoId
   const requireAuthentication = useRequireAuthentication()
@@ -151,6 +153,17 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
                     }}
                     className=" origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1  ring-1 ring-black ring-opacity-5 focus:outline-none bg-daonative-dark-300 border-[1px] border-daonative-border">
                     <Menu.Item>
+
+                      <button
+                        className="font-sans block px-4 py-2 text-sm text-daonative-gray-100 w-full h-full"
+                        onClick={openProfileModal}
+                      >
+                        Profile
+                      </button>
+                    </Menu.Item>
+
+                    <Menu.Item>
+
                       <button
                         className="font-sans block px-4 py-2 text-sm text-daonative-gray-100 w-full h-full"
                         onClick={disconnect}
