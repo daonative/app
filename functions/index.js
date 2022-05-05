@@ -178,24 +178,46 @@ const getDiscordDisplayName = async (account) => {
   return user.name
 }
 
-
 exports.newChallengeDiscordNotification = functions.firestore
   .document('challenges/{challengeId}')
-  .onCreate(async (snap, context) => {
-    const challenge = snap.data()
+  .onWrite(async (change, context) => {
+    // Don't do anything when a challenge is deleted
+    if (!change.after.exists) return
+
+    const challenge = change.after.data()
     const roomId = challenge.roomId
     const challengeId = context.params.challengeId
-    const message = {
-      embeds: [
-        {
-          title: challenge.title,
-          description: "New challenge!",
-          url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
-          color: 5814783
-        }
-      ]
+
+    // Notify when a challenge is created
+    if (!change.before.exists) {
+      await sendDiscordNotification(roomId, {
+        embeds: [
+          {
+            title: challenge.title,
+            description: "New challenge!",
+            url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+            color: 5814783
+          }
+        ]
+      })
     }
-    await sendDiscordNotification(roomId, message)
+
+    // Don't do anything when the status hasn't changed
+    if (change.before.data().status === change.after.data().status) return
+
+    // Notify when a challenge has closed
+    if (challenge.status === "closed") {
+      await sendDiscordNotification(roomId, {
+        embeds: [
+          {
+            title: challenge.title,
+            description: "Challenge has been closed!",
+            url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
+            color: 5814783
+          }
+        ]
+      })
+    }
   })
 
 exports.newProofOfWorkDiscordNotification = functions.firestore
