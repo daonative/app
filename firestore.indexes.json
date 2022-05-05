@@ -15,6 +15,20 @@
       ]
     },
     {
+      "collectionGroup": "challenges",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "deadline",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "feed",
       "queryScope": "COLLECTION",
       "fields": [

@@ -394,3 +394,14 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
       return
     }
   })
+
+exports.closeExpiredChallenges = functions.pubsub
+  .schedule('every 5 minutes')
+  .onRun(async (context) => {
+    const openChallengesQuery = db.collection('challenges').where('deadline', '<=', new Date()).where('status', '==', 'open')
+    const openChallengesSnap = await openChallengesQuery.get()
+    openChallengesSnap.forEach(doc => {
+      console.log(doc.id)
+      doc.ref.update({status: "closed"})
+    })
+  })
