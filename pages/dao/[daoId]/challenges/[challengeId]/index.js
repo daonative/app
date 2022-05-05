@@ -16,7 +16,7 @@ import { useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
 import useMembership from '../../../../../lib/useMembership'
 import Link from 'next/link'
-import { classNames } from '../../../../../lib/utils'
+import { classNames, formatDate } from '../../../../../lib/utils'
 import { SimpleCard } from '../../../../../components/Card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -249,17 +249,19 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
     reset({
       title: challenge.title,
       description: challenge.description,
-      imageRequired: challenge?.rules?.imageRequired || false
+      imageRequired: challenge?.rules?.imageRequired || false,
+      deadline: challenge?.deadline ? formatDate(challenge?.deadline?.toDate()) : null
     })
   }, [reset, challenge])
 
-  const updateChallenge = async (title, description, imageRequired, challengeId) => {
+  const updateChallenge = async (title, description, imageRequired, deadline, challengeId) => {
     const db = getFirestore()
     const challenge = {
       title: title,
       description: description,
       'rules.imageRequired': imageRequired,
-      updated: serverTimestamp()
+      updated: serverTimestamp(),
+      deadline
     }
     await updateDoc(doc(db, "challenges", challengeId), challenge)
   }
@@ -269,8 +271,10 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
   }
 
   const handleSaveChallenge = async (data) => {
+    const deadline = data?.deadline ? new Date(data.deadline) : null
+    const imageRequired = data?.imageRequired || false
     await requireAuthentication()
-    await updateChallenge(data.title, data.description, data.imageRequired || false, challenge.challengeId)
+    await updateChallenge(data.title, data.description, imageRequired, deadline, challenge.challengeId)
     handleCloseModal()
   }
 
@@ -295,6 +299,12 @@ const EditChallengeModal = ({ show, onClose, challenge = {} }) => {
               </label>
               <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium py-2">
+              Submission deadline (optional)
+            </label>
+            <input type="datetime-local" {...register("deadline", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
           </div>
           <div>
             <input type="checkbox" {...register("imageRequired")} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />

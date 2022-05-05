@@ -19,6 +19,7 @@ import useMembership from '../../../../lib/useMembership'
 import { Card } from '../../../../components/Card'
 import { Input, TextField } from '../../../../components/Input'
 import { TextArea } from '../../../../components/TextArea'
+import Moment from 'react-moment'
 
 const db = getFirestore()
 
@@ -30,12 +31,14 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 
   const createChallenge = async (data) => {
     const rules = { imageRequired: data?.imageRequired || false }
+    const deadline = data?.deadline ? new Date(data.deadline) : null
     const challenge = {
       title: data.title,
       description: data.description,
       weight: Number(data.weight),
       created: serverTimestamp(),
       rules,
+      deadline,
       roomId,
     }
     await addDoc(collection(db, 'challenges'), challenge)
@@ -79,6 +82,12 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
                   </span>
                 </div>
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium py-2">
+                Submission deadline (optional)
+              </label>
+              <input type="datetime-local" {...register("deadline", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
             </div>
             <div>
               <input type="checkbox" {...register("imageRequired", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
@@ -144,8 +153,11 @@ const Challenges = () => {
                           {challenge.weight} XP
                         </span>
                       </div>
-                      <div className="mt-2 sm:flex sm:justify-between">
-                        <div className="sm:flex">
+                      <div className="mt-2 sm:flex sm:justify-between items-center">
+                        <div className="text-xs text-daonative-subtitle">
+                          {challenge?.deadline?.toMillis() && new Date().getTime() < challenge?.deadline?.toMillis() && (
+                            <>Expires <Moment date={challenge?.deadline?.toMillis()} fromNow={true} /></>
+                          )}
                         </div>
                         <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
                           <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
