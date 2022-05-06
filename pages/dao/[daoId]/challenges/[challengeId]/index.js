@@ -189,14 +189,12 @@ const SubmissionsList = ({ submissions, isAdmin }) => {
           const isPending = verifications.length === 0
           const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
           const isVerified = !isPending && !isReverted
-          const isAuthor = submission?.author === account
-          const canInspect = isAuthor || isAdmin
           return (
             <li key={idx} >
               <SimpleCard
-                onClick={() => canInspect && handleOpenEditModal(submission)}
+                onClick={() => handleOpenEditModal(submission)}
                 className={classNames(
-                  canInspect && "hover:cursor-pointer",
+                  "hover:cursor-pointer",
                   "hover:cursor-pointer opacity-[75%] hover:opacity-100")}
               >
                 <div className=' py-2 px-3'>
