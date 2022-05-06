@@ -147,14 +147,14 @@ const Challenges = () => {
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
                     <Card onClick={() => null}>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-daonative-gray-100 truncate">{challenge.title}</p>
+                      <div className="flex items-center justify-between py-2">
+                        <p className=" font-semibold text-daonative-white truncate">{challenge.title}</p>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           {challenge.weight} XP
                         </span>
                       </div>
                       <div className="mt-2 sm:flex sm:justify-between items-center">
-                        <div className="text-xs text-daonative-subtitle">
+                        <div className="text-daonative-subtitle">
                           {challenge?.deadline?.toMillis() && new Date().getTime() < challenge?.deadline?.toMillis() && (
                             <>Expires <Moment date={challenge?.deadline?.toMillis()} fromNow={true} /></>
                           )}

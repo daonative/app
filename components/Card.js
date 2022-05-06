@@ -19,7 +19,7 @@ export const SimpleCardBody = ({ children, className }) => {
 
 export const Card = ({ onClick, children, className }) => {
   return (
-    <SimpleCard onClick={onClick} className={classNames(className, onClick && 'opacity-75 hover:opacity-100', 'cursor-pointer')}>
+    <SimpleCard onClick={onClick} className={classNames(className, onClick && 'hover:brightness-105', 'cursor-pointer')}>
       <SimpleCardBody>
         {children}
       </SimpleCardBody>
