@@ -101,7 +101,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
           </div>
           <div className="flex flex-col items-baseline">
             <p className="text-sm font-medium text-gray-500 text-daonative-gray-300">{name || "Click to set KPI"}</p>
-            <p className="text-2xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
+            <p className="text-xl font-semibold text-gray-900 text-daonative-gray-200">{indicator || "n/a"}</p>
           </div>
         </div>
       </SimpleCardBody>
