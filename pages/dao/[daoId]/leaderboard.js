@@ -33,7 +33,7 @@ const LeaderboardList = ({ leaders }) => {
 
                 </div>
                 <div className="flex flex-col justify-between max-w-[100%] overflow-none gap-1">
-                  <p className="text-sm font-medium text-daonative-gray-100">
+                  <p className="text-sm font-semibold text-daonative-gray-100">
                     <UserName account={leader?.userAccount} />
                   </p>
 

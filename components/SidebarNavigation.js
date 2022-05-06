@@ -209,11 +209,11 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                 const current = !item.disabled && !!path.match(item.match)
                 return (
                   <NavLink key={item.name} current={current} disabled={item.disabled} href={item.href}>
-                    <div className="flex items-center">
+                    <div className="flex items-center font-semibold">
                       <item.icon
                         className={classNames(
                           current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                          'mr-3 flex-shrink-0 h-6 w-6'
+                          'mr-3 flex-shrink-0 h-6 w-6 font-bold'
                         )}
                         aria-hidden="true"
                       />
