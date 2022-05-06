@@ -15,10 +15,10 @@ import DAOnativeLogo from '../public/DAOnativeLogo.svg'
 import ComingSoonBadge from './ComingSoonBadge'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useConnectWalletModal } from './ConnectWalletModal'
 import { useWallet } from '@/lib/useWallet'
 import { UserAvatar, UserName } from './PFP'
 import { useProfileModal } from './ProfileModal'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -26,18 +26,21 @@ function classNames(...classes) {
 
 const ProfileButton = () => {
   const { openProfileModal } = useProfileModal()
-  const { openConnectWalletModal } = useConnectWalletModal()
-  const { account, status } = useWallet()
+  const { account } = useWallet()
   const isConnected = !!account
 
   if (!isConnected)
     return (
-      <button
-        className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4"
-        onClick={openConnectWalletModal}
-      >
-        Connect
-      </button>
+      <ConnectButton.Custom>
+        {({ openConnectModal }) => (
+          <button
+            className="font-sans rounded-lg text-gray-100 bg-daonative-dark-900 hover:bg-daonative-dark-300 hover:text-daonative-gray-200 flex items-center h-full w-full p-4"
+            onClick={openConnectModal}
+          >
+            Connect
+          </button>
+        )}
+      </ConnectButton.Custom>
     )
 
   return (

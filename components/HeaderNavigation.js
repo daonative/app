@@ -11,10 +11,11 @@ import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useMembership from '../lib/useMembership';
 import { UserAvatar, UserName } from './PFP';
+import { useProfileModal } from './ProfileModal';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 import PolygonLogo from '../public/PolygonLogo.svg'
 import EthereumLogo from '../public/EthereumLogo.svg'
-import { useProfileModal } from './ProfileModal';
 
 const ChainLogo = ({ chainId, className }) => {
   if (chainId === 137)
@@ -112,12 +113,16 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
             </button>
 
             {!isConnected && (
-              <button
-                className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-component-bg text-daonative-gray-100 rounded-full"
-                onClick={openConnectWalletModal}
-              >
-                Connect
-              </button>
+              <ConnectButton.Custom>
+                {({ openConnectModal }) => (
+                  <button
+                    className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-component-bg text-daonative-gray-100 rounded-full"
+                    onClick={openConnectModal}
+                  >
+                    Connect
+                  </button>
+                )}
+              </ConnectButton.Custom>
             )}
 
             {isConnected && (

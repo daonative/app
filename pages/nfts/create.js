@@ -4,7 +4,6 @@ import { PrimaryButton } from "../../components/Button"
 import { ethers } from 'ethers';
 import { useEffect, useState } from "react"
 import { collectionCreatorAbi } from "../../lib/abi"
-import useProvider from "../../lib/useProvider"
 import toast from "react-hot-toast"
 import Link from "next/link"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
@@ -26,10 +25,11 @@ import EthereumLogo from '../../public/EthereumLogo.svg'
 import { getCollectionCreatorAddress, isSupportedChain, switchToMainnet, switchToPolygon, switchToRinkeby } from "../../lib/chainSupport";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
 import { uploadToIPFS } from "../../lib/uploadToIPFS";
+import { useSigner } from "wagmi";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()
-  const provider = useProvider()
+  const { data: signer } = useSigner()
   const { register, handleSubmit, watch, reset, getValues, formState: { errors, isSubmitting } } = useForm()
   const router = useRouter()
 
@@ -71,7 +71,6 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
       throw Error("Unsupported chain")
     }
 
-    const signer = provider.getSigner(account)
     const contractAddress = getCollectionCreatorAddress(chainId)
     const contract = new ethers.Contract(contractAddress, collectionCreatorAbi, signer)
     const metadataUri = metadata ? (

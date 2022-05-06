@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import '@rainbow-me/rainbowkit/styles.css';
 
 import { Toaster } from 'react-hot-toast'
 import { initializeApp } from 'firebase/app'
@@ -7,9 +8,16 @@ import Head from 'next/head';
 import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { useEffect, useMemo } from 'react'
 import { ProfileModalProvider } from '../components/ProfileModal'
-import { Provider, createClient } from 'wagmi'
+import { WagmiProvider, createClient, chain } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+
+import {
+  apiProvider,
+  configureChains,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,6 +29,19 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig)
 
+const { chains, provider } = configureChains(
+  [chain.mainnet, chain.rinkeby, chain.polygon, chain.optimism, chain.arbitrum],
+  [
+    apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_API_KEY),
+    apiProvider.fallback()
+  ]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: 'DAOnative',
+  chains
+});
+
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (typeof window === "undefined")
@@ -29,21 +50,10 @@ function MyApp({ Component, pageProps }) {
     getAnalytics()
   }, [])
 
-  const client = useMemo(() => createClient({
+  const wagmiClient = useMemo(() => createClient({
     autoConnect: true,
-    connectors: [
-      new InjectedConnector(),
-      new WalletConnectConnector({
-        options: {
-          qrcode: true,
-          rpc: {
-            1: process.env.NEXT_PUBLIC_RPC_MAINNET,
-            4: process.env.NEXT_PUBLIC_RPC_RINKEBY,
-            137: process.env.NEXT_PUBLIC_RPC_POLYGON
-          }
-        },
-      })
-    ]
+    connectors,
+    provider
   }), [])
 
   return (
@@ -51,14 +61,16 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>DAOnative</title>
       </Head>
-      <Provider client={client}>
-        <ConnectWalletModalProvider>
-          <ProfileModalProvider>
-            <Toaster position="bottom-center" />
-            <Component {...pageProps} />
-          </ProfileModalProvider>
-        </ConnectWalletModalProvider>
-      </Provider>
+      <WagmiProvider client={wagmiClient}>
+        <RainbowKitProvider chains={chains}>
+          <ConnectWalletModalProvider>
+            <ProfileModalProvider>
+              <Toaster position="bottom-center" />
+              <Component {...pageProps} />
+            </ProfileModalProvider>
+          </ConnectWalletModalProvider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </>
   )
 }

@@ -9,11 +9,11 @@ import { PrimaryButton } from "../../../../components/Button";
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../../../components/ChainWarning";
 import ConnectWalletButton from "../../../../components/ConnectWalletButton";
 import { collectionAbi } from "../../../../lib/abi";
-import useProvider from "../../../../lib/useProvider";
 import { ImagePreview } from "../../create";
 import { getReadonlyProvider } from "../../../../lib/chainSupport";
 import { NextSeo } from "next-seo";
 import Head from "next/head";
+import { useSigner } from "wagmi";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
@@ -24,7 +24,6 @@ const InvalidInviteCode = () => (
 const Mint = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const { collectionName, collectionImageURI } = props
-  console.log('props', props)
   // Collection
   const [collectionHasError, setCollectionHasError] = useState(false)
   const [collectionMaxSupply, setCollectionMaxSupply] = useState(null)
@@ -35,7 +34,7 @@ const Mint = (props) => {
 
   const { push: routerPush, query: { chainId, collectionAddress, inviteCode, inviteMaxUse, inviteSig } } = useRouter()
   const { account, chainId: injectedChainId } = useWallet()
-  const injectedProvider = useProvider()
+  const { data: signer } = useSigner()
   const isMainnetNFT = Number(chainId) === 1
   const isPolygonNFT = Number(chainId) === 137
   const isRinkebyNFT = Number(chainId) === 4
@@ -48,7 +47,6 @@ const Mint = (props) => {
   )
 
   const mintNFT = async (collectionAddress, inviteCode, inviteMaxUse, inviteSig) => {
-    const signer = injectedProvider.getSigner()
     const contract = new ethers.Contract(collectionAddress, collectionAbi, signer)
     return await contract.safeMint(inviteCode, inviteMaxUse, inviteSig)
   }

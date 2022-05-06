@@ -16,6 +16,7 @@ import DAOnativeLogo from '/public/DAOnativeLogo.svg'
 import { getRoom } from '.'
 import { NextSeo } from 'next-seo'
 import Head from 'next/head'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 
 export const getServerSideProps = async ({ res, params }) => {
@@ -85,7 +86,7 @@ const Join = ({ dao }) => {
         <meta property="twitter:image" content={SEOImage} />
       </Head>
       <NextSeo
-        title="DAONative"
+        title="DAOnative"
         description=""
         canonical={SEOUrl}
         openGraph={{
@@ -101,41 +102,38 @@ const Join = ({ dao }) => {
         }}
       />
       <div className="overflow-hidden w-full h-screen">
-        <main className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center">
+        <main className="flex justify-center items-center h-screen w-full">
+          <div className="flex flex-col items-center w-full">
+
+            <ConnectWalletButton />
+
+            {!isConnected && (
+              <p className="p-6 text-gray-200 font-bold">You need to connect your wallet before you can join</p>
+            )}
+
             <div className={classNames("fill-daonative-white w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
               <DAOnativeLogo />
             </div>
-            {isConnected && !isLoading && (
 
+            {isConnected && !isLoading && (
               <>
-                <h1 className="text-xl text-daonative-gray-300 pb-2">{dao?.name}</h1>
-                <form onSubmit={handleSubmit(handleJoinDAO)}>
-                  <div className="flex flex-col md:flex-row w-full">
+                <h1 className="text-xl text-daonative-gray-300 pb-2 pt-6">{dao?.name}</h1>
+                <form onSubmit={handleSubmit(handleJoinDAO)} className="flex flex-col md:flex-row w-full gap-3 px-6 sm:px-0 justify-center">
                     <input
                       {...register("name", { required: true })}
                       type="text"
-                      className="md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
+                      className="w-full md:w-96 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-transparent sm:text-sm rounded-md bg-daonative-component-bg text-daonative-gray-300"
                       placeholder="How should we call you?"
                     />
-                    <PrimaryButton type="submit " className='ml-3'>
+                    <PrimaryButton type="submit">
                       Join the DAO
                     </PrimaryButton>
-                  </div>
                 </form>
-              </>
-            )}
-            {!isConnected && (
-              <>
-                <p className="p-6 text-gray-200 font-bold">You need to connect your wallet before you can join</p>
-                <div className="w-36 h-16">
-                  <ConnectWalletButton />
-                </div>
               </>
             )}
           </div>
         </main>
-      </div>
+      </div >
     </>
   )
 }

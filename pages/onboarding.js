@@ -6,7 +6,6 @@ import { classNames } from '../lib/utils'
 import { roomCreatorAbi, membershipAbi } from '../lib/abi'
 import ConnectWalletButton from '../components/ConnectWalletButton'
 import useDarkMode from '../lib/useDarkMode'
-import useProvider from '../lib/useProvider'
 import useIsConnected from '../lib/useIsConnected'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
@@ -24,6 +23,7 @@ import { PrimaryButton } from '../components/Button'
 import { guild as guild } from '@guildxyz/sdk'
 import Link from 'next/link'
 import { Input } from '../components/Input'
+import { useSigner } from 'wagmi'
 
 const roomCreatorInterface = new ethers.utils.Interface(roomCreatorAbi)
 const membershipInterface = new ethers.utils.Interface(membershipAbi)
@@ -87,7 +87,7 @@ const StepDescription = ({ children }) => (
 
 const Create = ({ onDaoCreating, onDaoCreated }) => {
   const { account } = useWallet()
-  const provider = useProvider()
+  const { data: signer } = useSigner()
   const { register, handleSubmit } = useForm()
   const requireAuthentication = useRequireAuthentication()
 
@@ -203,12 +203,11 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
 
 const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
   const { account } = useWallet()
-  const provider = useProvider()
+  const { data: signer } = useSigner()
   const { register, handleSubmit } = useForm()
   const requireAuthentication = useRequireAuthentication()
 
   const createMembershipToken = async (roomId) => {
-    const signer = provider.getSigner(account)
     const contract = new ethers.Contract(MEMBERSHIP_CONTRACT_ADDRESS, membershipInterface, signer)
     return await contract.safeMint(account, roomId)
   }

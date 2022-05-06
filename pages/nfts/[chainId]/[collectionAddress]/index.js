@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { collectionAbi } from '../../../../lib/abi'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../components/Modal'
 import { PrimaryButton, SecondaryButton } from '../../../../components/Button'
-import useProvider from '../../../../lib/useProvider'
 import toast from 'react-hot-toast'
 import { useWallet } from '@/lib/useWallet'
 import Spinner from '../../../../components/Spinner'
@@ -21,6 +20,7 @@ import { ImagePreview, OpenSeaPreview } from '../../create'
 import Link from 'next/link'
 import { getReadonlyProvider } from '../../../../lib/chainSupport'
 import { collection, doc, getDocs, getFirestore, query, where } from 'firebase/firestore'
+import { useSigner } from 'wagmi'
 
 const CreateDAOModal = ({ show, onClose, chainId, collectionAddress }) => {
   const { handleSubmit, register, formState: { isSubmitting } } = useForm()
@@ -197,14 +197,13 @@ const TokenList = ({ address, tokens }) => (
 
 const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
   const [isPausingOrUnpausing, setIsPausingOrUnpausing] = useState(false)
-  const injectedProvider = useProvider()
+  const { data: signer } = useSigner()
 
   const handlePauseCollection = async () => {
     setIsPausingOrUnpausing(true)
     const toastId = toast.loading("Pausing the collection")
 
     try {
-      const signer = injectedProvider.getSigner()
       const contract = new ethers.Contract(address, collectionAbi, signer)
       const tx = await contract.pause()
       await tx.wait()
@@ -225,7 +224,6 @@ const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
     const toastId = toast.loading("Unpausing the collection")
 
     try {
-      const signer = injectedProvider.getSigner()
       const contract = new ethers.Contract(address, collectionAbi, signer)
       const tx = await contract.unpause()
       await tx.wait()
@@ -278,12 +276,11 @@ export const GatorCollection = () => {
 
   const { query: { chainId, collectionAddress } } = useRouter()
   const { account } = useWallet()
-  const injectedProvider = useProvider()
+  const { data: signer } = useSigner()
 
   const isOwner = collectionOwner === account
 
   const generateInviteCodes = async (inviteMaxUse) => {
-    const signer = injectedProvider.getSigner()
     const inviteCode = (Math.random() + 1).toString(36).substring(2)
     const inviteHash = ethers.utils.solidityKeccak256(['string', 'uint'], [inviteCode, 0]);
     const inviteSig = await signer.signMessage(ethers.utils.arrayify(inviteHash))
