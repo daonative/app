@@ -298,10 +298,10 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold pb-2 font-space">{dao?.name}</h1>
-      <form onSubmit={handleSubmit(handleJoinDAO)}>
+      <h1 className="text-2xl font-semibold pb-2 font-space w-full">{dao?.name}</h1>
+      <form onSubmit={handleSubmit(handleJoinDAO)} className="w-full">
         <div className="flex flex-col w-full items-end">
-          <Input className="text-xl" register={register} name="memberName" placeholder={"How should we call you?"} />
+          <Input className="text-xl w-full" register={register} name="memberName" placeholder={"How should we call you?"} required />
           <PrimaryButton
             type="submit"
             full
@@ -383,8 +383,8 @@ const Onboarding = () => {
           <StepDescription></StepDescription>
         </Step>
       </Steps>
-      <main className="flex justify-center items-center px-4 sm:px-0">
-        <div className="flex flex-col items-center ">
+      <main className="flex justify-center items-center px-4 sm:px-0 ">
+        <div className="flex flex-col items-center w-full">
           <div className={classNames("fill-daonative-white w-24 h-24 md:w-32 md:h-32 m-6", isLoading && "animate-spin-slow")}>
             <DAOnativeLogo />
           </div>
