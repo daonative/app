@@ -36,7 +36,7 @@ const MemberItem = ({ member }) => {
               ))*/}
               </div>
               <p className="text-sm text-gray-500 pr-1">
-                {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} format="YYYY-MM-DD" />}
+                Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
               </p>
             </div>
           </div>
@@ -87,7 +87,7 @@ export const Members = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl">Members</h2>
             <div className="flex gap-2 items-center">
-              <span className="text-daonative-subtitle">{members?.length} members</span>
+              <span className="text-daonative-subtitle">{members?.length} member(s)</span>
               {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
             </div>
           </div>
