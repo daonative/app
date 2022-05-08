@@ -115,6 +115,29 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 }
 
 
+const ChallengeItem = ({ title, weight, deadline, meta }) =>
+
+  <Card onClick={() => null}>
+    <div className="flex items-center justify-between py-2">
+      <p className="text-sm font-semibold sm:w-[75%] whitespace-normal ">{title}</p>
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        {weight} XP
+      </span>
+    </div>
+    <div className="mt-2 sm:flex sm:justify-between items-center">
+      <div className="text-daonative-subtitle">
+        {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
+          <>Expires <Moment date={deadline?.toMillis()} fromNow={true} /></>
+        )}
+      </div>
+      <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+        <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+        <p>
+          {meta?.submissionCount || 0} Completions
+        </p>
+      </div>
+    </div>
+  </Card>
 
 const Challenges = () => {
   const roomId = useRoomId()
@@ -143,30 +166,10 @@ const Challenges = () => {
           </div>
           {challenges?.length > 0 ? (
             <ul role="list" className="flex flex-col gap-3">
-              {challenges?.filter(challenge => challenge.status !== 'closed').map((challenge) => (
+              {challenges?.filter(challenge => challenge?.status !== 'closed').map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
-                    <Card onClick={() => null}>
-                      <div className="flex items-center justify-between py-2">
-                        <p className=" font-semibold sm:w-[75%] whitespace-normal ">{challenge.title}</p>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {challenge.weight} XP
-                        </span>
-                      </div>
-                      <div className="mt-2 sm:flex sm:justify-between items-center">
-                        <div className="text-daonative-subtitle">
-                          {challenge?.deadline?.toMillis() && new Date().getTime() < challenge?.deadline?.toMillis() && (
-                            <>Expires <Moment date={challenge?.deadline?.toMillis()} fromNow={true} /></>
-                          )}
-                        </div>
-                        <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-                          <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                          <p>
-                            {challenge?.meta?.submissionCount || 0} Completions
-                          </p>
-                        </div>
-                      </div>
-                    </Card>
+                    <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
                   </li>
                 </Link>
               ))}
@@ -178,24 +181,7 @@ const Challenges = () => {
                   {challenges?.filter(challenge => challenge.status === 'closed').map((challenge) => (
                     <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                       <li className='opacity-75'>
-                        <Card>
-                          <div className="flex items-center justify-between">
-                            <p className="font-semibold text-white">{challenge.title}</p>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              {challenge.weight} XP
-                            </span>
-                          </div>
-                          <div className="mt-2 sm:flex sm:justify-between">
-                            <div className="sm:flex">
-                            </div>
-                            <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-                              <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                              <p>
-                                {challenge?.meta?.submissionCount || 0} Completions
-                              </p>
-                            </div>
-                          </div>
-                        </Card>
+                        <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
                       </li>
                     </Link>
                   ))}
