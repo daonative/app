@@ -148,7 +148,7 @@ const Challenges = () => {
                   <li>
                     <Card onClick={() => null}>
                       <div className="flex items-center justify-between py-2">
-                        <p className=" font-semibold w-[75%] whitespace-normal ">{challenge.title}</p>
+                        <p className=" font-semibold sm:w-[75%] whitespace-normal ">{challenge.title}</p>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           {challenge.weight} XP
                         </span>

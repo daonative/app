@@ -91,7 +91,6 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   const { register, handleSubmit } = useForm()
   const requireAuthentication = useRequireAuthentication()
 
-  useDarkMode()
 
   const deployRoomContract = async (name) => {
     const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorInterface, signer)
