@@ -20,6 +20,7 @@ import { Card } from '../../../../components/Card'
 import { Input, TextField } from '../../../../components/Input'
 import { TextArea } from '../../../../components/TextArea'
 import Moment from 'react-moment'
+import Image from 'next/image'
 
 const db = getFirestore()
 
@@ -118,26 +119,37 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 const ChallengeItem = ({ title, weight, deadline, meta }) =>
 
   <Card onClick={() => null}>
-    <div className="flex items-center justify-between py-2">
-      <p className="text-sm font-semibold sm:w-[75%] whitespace-normal ">{title}</p>
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-        {weight} XP
-      </span>
-    </div>
-    <div className="mt-2 sm:flex sm:justify-between items-center">
-      <div className="text-daonative-subtitle">
-        {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
-          <>Expires <Moment date={deadline?.toMillis()} fromNow={true} /></>
-        )}
+    <div className="flex items-center justify-between">
+      <div className='flex gap-3'>
+        <div>
+          <Image width="64" height="64" src="/challenge.svg" alt="sample-challenge-picture" />
+
+        </div>
+        <div>
+          <p className="text-sm font-semibold  whitespace-normal ">{title}</p>
+          <div className="text-sm text-daonative-subtitle">
+            {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
+              <>Expires <Moment date={deadline?.toMillis()} fromNow={true} /></>
+            )}
+
+          </div>
+        </div>
       </div>
-      <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-        <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-        <p>
-          {meta?.submissionCount || 0} Completions
-        </p>
+      <div className='flex flex-col items-end min-w-max gap-3'>
+        <div>
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            {weight} XP
+          </span>
+        </div>
+        <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+          <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+          <p>
+            {meta?.submissionCount || 0} Completions
+          </p>
+        </div>
       </div>
     </div>
-  </Card>
+  </Card >
 
 const Challenges = () => {
   const roomId = useRoomId()
