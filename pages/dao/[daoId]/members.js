@@ -9,7 +9,7 @@ import PFP, { UserAvatar, UserName } from "../../../components/PFP"
 import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
-import { Card } from "../../../components/Card"
+import { Card, SimpleCard, SimpleCardBody } from "../../../components/Card"
 import { useRouter } from "next/router"
 import { useRequireAuthentication } from "../../../lib/authenticate"
 import Moment from "react-moment"
@@ -20,26 +20,28 @@ const MemberItem = ({ member }) => {
 
   return (
     <li >
-      <Card>
-        <div className="flex justify-between">
-          <div className="flex items-center gap-3">
-            <UserAvatar account={account} />
-            <UserName account={account} />
-          </div>
-          <div className="flex justify-center items-center gap-2">
-            <div>
-              {/*member?.roles?.map((role, idx) => (
+      <SimpleCard>
+        <SimpleCardBody>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <UserAvatar account={account} />
+              <UserName account={account} />
+            </div>
+            <div className="flex justify-center items-center gap-2">
+              <div>
+                {/*member?.roles?.map((role, idx) => (
                 <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
                   {role}
                 </span>
               ))*/}
+              </div>
+              <p className="text-sm text-gray-500 pr-1">
+                {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} format="YYYY-MM-DD" />}
+              </p>
             </div>
-            <p className="text-sm text-gray-500 pr-1">
-              {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} format="YYYY-MM-DD" />}
-            </p>
           </div>
-        </div>
-      </Card>
+        </SimpleCardBody>
+      </SimpleCard>
     </li >)
 
 }
