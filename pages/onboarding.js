@@ -94,7 +94,6 @@ const Create = ({ onDaoCreating, onDaoCreated }) => {
   useDarkMode()
 
   const deployRoomContract = async (name) => {
-    const signer = provider.getSigner(account)
     const contract = new ethers.Contract(ROOM_CREATOR_CONTRACT_ADDRESS, roomCreatorInterface, signer)
     return await contract.createRoom(name)
   }
