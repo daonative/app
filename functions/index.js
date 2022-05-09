@@ -91,6 +91,38 @@ exports.updateLeaderboardXP = functions.firestore
     })
   })
 
+const assignRole = async (roomId, account, role) => {
+  const membershipRef = db.collection('rooms').doc(roomId).collection('members').doc(account)
+  await membershipRef.set({
+    roles: firestore.FieldValue.arrayUnion(role)
+  }, { merge: true })
+}
+
+exports.assignRewardsOnCreate = functions.firestore
+  .document('/rewards/{rewardId}')
+  .onCreate(async (snap, context) => {
+    const reward = snap.data()
+    const { roomId } = reward
+    const minXps = reward?.conditions?.minXps
+    const role = reward?.reward?.role
+
+    // No minimum XP condition, abort
+    if (!minXps) return
+    if (typeof minXps !== "number") return
+
+    // No reward role is set, abort
+    if (!reward?.reward?.role) return
+
+    const eligibleAccountsSnap = await db.collection('rooms').doc(roomId).collection('leaderboard').where('verifiedExperience', '>=', minXps).get()
+    const eligibleAccounts = eligibleAccountsSnap.docs.map(snap => snap.id)
+    eligibleAccounts.forEach(account => {
+      assignRole(roomId, account, role)
+    })
+    await snap.ref.update({
+      'meta.eligibleCount': eligibleAccounts.length
+    })
+  })
+
 exports.updateRewardedRoles = functions.firestore
   .document('/rooms/{roomId}/leaderboard/{account}')
   .onWrite(async (change, context) => {
@@ -100,22 +132,27 @@ exports.updateRewardedRoles = functions.firestore
     const rewards = await db.collection('rewards').where('roomId', '==', roomId).get()
 
     rewards.forEach(async rewardSnap => {
+      console.log(rewardSnap.id)
       const reward = rewardSnap.data()
       const minXps = reward?.conditions?.minXps
-
-      // No reward role is set, abort
-      if (!reward?.reward?.role) return
+      const role = reward?.reward?.role
 
       // No minimum XP condition, abort
       if (!minXps) return
 
+      // Update metadata
+      const eligibleAccountsSnap = await db.collection('rooms').doc(roomId).collection('leaderboard').where('verifiedExperience', '>=', minXps).get()
+      await rewardSnap.ref.update({
+        'meta.eligibleCount': eligibleAccountsSnap.docs.length
+      })
+
+      // No reward role is set, abort
+      if (!role) return
+
       // Minimum XP is higher than user XP, abort
       if (minXps > leaderboardData.verifiedExperience) return
 
-      const membershipRef = db.collection('rooms').doc(roomId).collection('membership').doc(account)
-      await membershipRef.set({
-        roles: firestore.FieldValue.arrayUnion(reward.reward.role)
-      }, {merge: true})
+      assignRole(roomId, account, role)
     })
   })
 

@@ -36,7 +36,7 @@ const RewardModal = ({ show, onClose }) => {
 
   const handleCreateReward = async (data) => {
     await requireAuthentication()
-    await createRolesReward(data.name, data.role, data.xps)
+    await createRolesReward(data.name, data.role, Number(data.xps))
     onClose()
   }
 
@@ -128,7 +128,7 @@ const RewardItem = ({ title, type, weight, eligibleCount }) =>
         )}>
           <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
           <p>
-            {eligibleCount} Members Eligible
+            {eligibleCount} Member(s) Eligible
           </p>
         </div>
         <div>
@@ -162,7 +162,13 @@ const Rewards = () => {
             {isAdmin && <PrimaryButton onClick={handleShowRewardModal}>Add a reward</PrimaryButton>}
           </div>
           <ul role="list" className="flex flex-col gap-3">
-            {rewards?.map((reward, index) => <RewardItem key={index} title={reward.name} type="Role" weight={reward?.conditions?.minXps} />)}
+            {rewards?.map((reward, index) => <RewardItem
+              key={index}
+              title={reward.name}
+              type="Role"
+              weight={reward?.conditions?.minXps}
+              eligibleCount={reward?.meta?.eligibleCount}
+            />)}
           </ul>
         </div>
       </div>
