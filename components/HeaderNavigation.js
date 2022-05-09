@@ -116,7 +116,7 @@ const HeaderNavigation = ({ onShowSidebar, showLogWork = true }) => {
               <ConnectButton.Custom>
                 {({ openConnectModal }) => (
                   <button
-                    className="font-sans flex h-8 px-2 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-component-bg text-daonative-gray-100 rounded-full"
+                    className="font-sans flex h-8 px-4 items-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  bg-daonative-component-bg text-daonative-gray-100 rounded-md"
                     onClick={openConnectModal}
                   >
                     Connect
