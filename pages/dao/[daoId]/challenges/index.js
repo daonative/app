@@ -72,24 +72,31 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
             <div>
               <TextArea label="Description" name="description" register={register} required />
             </div>
-            <div>
-              <label className="block text-sm font-medium pb-2">
-                Weight
-              </label>
-              <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
-                <Input register={register} name="weight" required placeholder="100" />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm" id="price-currency">
-                    XPs
-                  </span>
+            <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+              <div>
+                <label className="block text-sm font-medium pb-2">
+                  Weight
+                </label>
+                <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
+                  <Input register={register} name="weight" required placeholder="100" />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm" id="price-currency">
+                      XPs
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium py-2">
-                Submission deadline (optional)
-              </label>
-              <input type="datetime-local" {...register("deadline", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+              <div className='sm:w-1/2'>
+                <div className="flex justify-between">
+                  <label htmlFor="email" className="block text-sm font-medium pb-2">
+                    Submission deadline
+                  </label>
+                  <span className="text-sm text-gray-500" id="email-optional pb-2">
+                    Optional
+                  </span>
+                </div>
+                <input style={{ colorScheme: 'dark' }} type="datetime-local" {...register("deadline", { required: false })} className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block m:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" />
+              </div>
             </div>
             <div>
               <input type="checkbox" {...register("imageRequired", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
