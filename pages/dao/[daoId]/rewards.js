@@ -30,7 +30,7 @@ const RewardModal = ({ show, onClose }) => {
         role: role
       },
       conditionTypes: ['minXps'],
-      conditions: {'minXps': xps}
+      conditions: { 'minXps': xps }
     })
   }
 
@@ -162,7 +162,7 @@ const Rewards = () => {
             {isAdmin && <PrimaryButton onClick={handleShowRewardModal}>Add a reward</PrimaryButton>}
           </div>
           <ul role="list" className="flex flex-col gap-3">
-            {rewards?.map(reward => <RewardItem title={reward.name} type="Role" weight={reward?.conditions?.minXps} />)}
+            {rewards?.map((reward, index) => <RewardItem key={index} title={reward.name} type="Role" weight={reward?.conditions?.minXps} />)}
           </ul>
         </div>
       </div>
