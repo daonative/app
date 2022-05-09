@@ -121,11 +121,11 @@ const ChallengeItem = ({ title, weight, deadline, meta }) =>
   <Card onClick={() => null}>
     <div className="flex items-center justify-between">
       <div className='flex gap-3'>
-        <div>
-          <Image width="64" height="64" src="/challenge.svg" alt="sample-challenge-picture" />
-
+        {/* <PFP address={`${Math.floor(Math.random() * 10000)}`} size={64} /> */}
+        <div className='flex min-w-max'>
+          <Image className="min-w-max" width="64" height="64" src="/challenge.svg" alt="sample-challenge-picture" />
         </div>
-        <div>
+        <div className='flex flex-col justify-between'>
           <p className="text-sm font-semibold  whitespace-normal ">{title}</p>
           <div className="text-sm text-daonative-subtitle">
             {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
