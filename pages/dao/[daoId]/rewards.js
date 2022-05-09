@@ -4,7 +4,7 @@ import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
 import useMembership from "@/lib/useMembership"
 import useRoomId from "@/lib/useRoomId"
-import { CheckIcon } from "@heroicons/react/solid"
+import { CheckIcon, PlusIcon } from "@heroicons/react/solid"
 import Image from "next/image"
 import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "@/components/Button"
@@ -14,6 +14,7 @@ import { useRequireAuthentication } from "@/lib/authenticate"
 import { addDoc, collection, getFirestore, query, where } from "firebase/firestore"
 import { useCollectionData } from "react-firebase-hooks/firestore"
 import { classNames } from "@/lib/utils"
+import EmptyStateNoRewards from "@/components/EmptyStateNoRewards"
 
 const RewardModal = ({ show, onClose }) => {
   const { handleSubmit, register, formState: { errors } } = useForm()
@@ -161,15 +162,36 @@ const Rewards = () => {
             <h2 className="text-2xl">Rewards</h2>
             {isAdmin && <PrimaryButton onClick={handleShowRewardModal}>Add a reward</PrimaryButton>}
           </div>
-          <ul role="list" className="flex flex-col gap-3">
-            {rewards?.map((reward, index) => <RewardItem
-              key={index}
-              title={reward.name}
-              type="Role"
-              weight={reward?.conditions?.minXps}
-              eligibleCount={reward?.meta?.eligibleCount}
-            />)}
-          </ul>
+          {rewards?.length > 0 && (
+            <ul role="list" className="flex flex-col gap-3">
+              {rewards?.map((reward, index) => <RewardItem
+                key={index}
+                title={reward.name}
+                type="Role"
+                weight={reward?.conditions?.minXps}
+                eligibleCount={reward?.meta?.eligibleCount}
+              />)}
+            </ul>
+
+          )}
+
+          {!loading && rewards?.length === 0 && (
+            <div className="mt-6">
+              <EmptyStateNoRewards>
+                {isAdmin && (
+                  <>
+                    <p className="mt-1 text-sm text-gray-500">Get started by creating a reward</p>
+                    <div className="mt-6">
+                      <PrimaryButton onClick={handleShowRewardModal}>
+                        <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                        Add a reward
+                      </PrimaryButton>
+                    </div>
+                  </>
+                )}
+              </EmptyStateNoRewards>
+            </div>
+          )}
         </div>
       </div>
     </LayoutWrapper >
