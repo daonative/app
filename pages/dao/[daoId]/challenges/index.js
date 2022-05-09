@@ -125,7 +125,6 @@ const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
 
 
 const ChallengeItem = ({ title, weight, deadline, meta }) =>
-
   <Card onClick={() => null}>
     <div className="flex items-center justify-between">
       <div className='flex gap-3'>
