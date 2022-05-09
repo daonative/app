@@ -91,6 +91,34 @@ exports.updateLeaderboardXP = functions.firestore
     })
   })
 
+exports.updateRewardedRoles = functions.firestore
+  .document('/rooms/{roomId}/leaderboard/{account}')
+  .onWrite(async (change, context) => {
+    const leaderboardData = change.after.data()
+    const { roomId, account } = context.params
+
+    const rewards = await db.collection('rewards').where('roomId', '==', roomId).get()
+
+    rewards.forEach(async rewardSnap => {
+      const reward = rewardSnap.data()
+      const minXps = reward?.conditions?.minXps
+
+      // No reward role is set, abort
+      if (!reward?.reward?.role) return
+
+      // No minimum XP condition, abort
+      if (!minXps) return
+
+      // Minimum XP is higher than user XP, abort
+      if (minXps > leaderboardData.verifiedExperience) return
+
+      const membershipRef = db.collection('rooms').doc(roomId).collection('membership').doc(account)
+      await membershipRef.set({
+        roles: firestore.FieldValue.arrayUnion(reward.reward.role)
+      }, {merge: true})
+    })
+  })
+
 exports.setJoinDateForMembers = functions.firestore
   .document('rooms/{roomId}/members/{account}')
   .onCreate(async (snap, context) => {
