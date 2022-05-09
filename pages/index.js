@@ -8,6 +8,7 @@ import { Card } from '../components/Card'
 import { useEffect, useState } from "react"
 import Spinner from "../components/Spinner"
 import { getUserRooms } from "../lib/useMembership"
+import { PrimaryButton } from "@/components/Button"
 
 
 const DAOList = ({ rooms, isLoading }) => {
@@ -82,9 +83,13 @@ const Home = () => {
   if (!isConnected) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center">
-        <p className="p-6 text-gray-200 font-bold">You need to connect your wallet before you can continue</p>
+        <p className="p-6 font-semibold">You need to connect your wallet before you can continue</p>
         <div className="w-36 h-16">
-          <ConnectWalletButton />
+          <ConnectWalletButton >
+            <PrimaryButton className='h-min'>
+              Connect
+            </PrimaryButton>
+          </ConnectWalletButton>
         </div>
       </div>
     )
