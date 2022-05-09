@@ -21,6 +21,7 @@ import { Input, TextField } from '../../../../components/Input'
 import { TextArea } from '../../../../components/TextArea'
 import Moment from 'react-moment'
 import Image from 'next/image'
+import PFP from '@/components/PFP'
 
 const db = getFirestore()
 
@@ -129,7 +130,7 @@ const ChallengeItem = ({ title, weight, deadline, meta }) =>
           <p className="text-sm font-semibold  whitespace-normal ">{title}</p>
           <div className="text-sm text-daonative-subtitle">
             {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
-              <>Expires <Moment date={deadline?.toMillis()} fromNow={true} /></>
+              <>Ends <Moment date={deadline?.toMillis()} fromNow={true} /></>
             )}
 
           </div>
