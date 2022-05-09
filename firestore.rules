@@ -59,6 +59,9 @@ service cloud.firestore {
       allow create: if isAdmin(request.resource.data.roomId);
 
     }
+    match /rewards/{inviteId} {
+      allow create: if isAdmin(request.resource.data.roomId);
+    }
     match /logs/{logId} {
       allow create: if true;
       allow read: if false;
