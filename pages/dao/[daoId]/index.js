@@ -27,9 +27,10 @@ import { useProfileModal } from '../../../components/ProfileModal';
 import { TextField } from '@/components/Input';
 import Image from 'next/image';
 
-const db = getFirestore()
 
+// unused for the moment
 const getFeed = async (roomId) => {
+  const db = getFirestore()
   const feedRef = collection(db, 'feed')
   const feedQuery = query(feedRef, where('roomId', '==', roomId), orderBy('created', 'desc'))
   const snapshot = await getDocs(feedQuery)
@@ -44,6 +45,7 @@ const getFeed = async (roomId) => {
 }
 
 export const getRoom = async (roomId) => {
+  const db = getFirestore()
   const roomRef = doc(db, 'rooms', roomId)
   const roomSnap = await getDoc(roomRef)
 
@@ -82,6 +84,7 @@ const Mission = ({ roomId, mission }) => {
   const isAdmin = membership?.roles?.includes('admin')
 
   const setMission = async (data) => {
+    const db = getFirestore()
     await requireAuthentication()
 
     const { mission } = data
@@ -125,6 +128,7 @@ const LogWorkModal = ({ show, onClose, task }) => {
   }, [reset, task])
 
   const logWork = async (data) => {
+    const db = getFirestore()
     const feedRef = collection(db, 'feed')
     await addDoc(feedRef, {
       roomId: task.roomId,
@@ -322,6 +326,7 @@ const Socials = ({ room }) =>
 const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
   const roomId = params?.daoId
+  const db = getFirestore()
   const [daoSnapshot] = useDocument(doc(db, 'rooms', roomId))
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
