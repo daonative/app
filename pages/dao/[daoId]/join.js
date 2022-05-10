@@ -123,7 +123,7 @@ const Join = ({ dao }) => {
             {isConnected && !isLoading && (
               <>
                 <h1 className="text-xl text-daonative-gray-300 pb-2 pt-6">{dao?.name}</h1>
-                <form onSubmit={handleSubmit(handleJoinDAO)} className="flex flex-col md:flex-row w-full gap-3 px-6 sm:px-0 justify-center">
+                <form onSubmit={handleSubmit(handleJoinDAO)} className="flex flex-col md:flex-row w-full gap-3 px-6 sm:px-0 justify-center max-w-4xl">
                   <Input className="text-xl w-full" register={register} name="name" placeholder={"How should we call you?"} required />
                   <PrimaryButton
                     type="submit"
