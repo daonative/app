@@ -298,17 +298,19 @@ const Join = ({ dao, onMemberJoining, onMemberJoined }) => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold pb-2 font-space w-full">{dao?.name}</h1>
-      <form onSubmit={handleSubmit(handleJoinDAO)} className="w-full">
+      <form onSubmit={handleSubmit(handleJoinDAO)} className="w-full max-w-xl">
         <div className="flex flex-col w-full items-end">
-          <Input className="text-xl w-full" register={register} name="memberName" placeholder={"How should we call you?"} required />
-          <PrimaryButton
-            type="submit"
-            full
-            className='sm:ml-3 mt-3 text-xl justify-center w-full sm:min-w-max'
-          >
-            Join
-          </PrimaryButton>
+          <h1 className="text-2xl font-semibold pb-2 font-space w-full">{dao?.name}</h1>
+          <div className="flex flex-col w-full items-end">
+            <Input className="text-xl w-full" register={register} name="memberName" placeholder={"How should we call you?"} required />
+            <PrimaryButton
+              type="submit"
+              full
+              className='sm:ml-3 mt-3 text-xl justify-center w-full sm:min-w-max'
+            >
+              Join
+            </PrimaryButton>
+          </div>
         </div>
       </form>
     </>
