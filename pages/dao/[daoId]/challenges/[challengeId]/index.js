@@ -141,7 +141,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
             </div>
-            <input {...register("image", { required: false })} type="file" className="rounded-md file:rounded-md text-sm focus:ring-3 ring-pink-200 focus:border-0 max-w-min file:ring-0" />
+            <input {...register("image", { required: false })} type="file" className="rounded-md file:rounded-md text-sm max-w-min " />
           </div>
         </ModalBody>
         <ModalActionFooter>
