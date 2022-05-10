@@ -400,16 +400,7 @@ const Onboarding = () => {
               </div>
             </>
           )}
-          {isConnected && !isAllowed && !isLoading && (
-            <>
-              <p className="p-6 text-gray-200 font-bold text-center">Only DAOnative NFT holders can join the alpha</p>
-              <Link passHref href="/nfts/137/0x6b362FE1445DBAC80B064DD13b77403d4f17EE17/mint?inviteCode=kypymbk4tk&inviteMaxUse=0&inviteSig=0x0fa2306b57e7d2f0a95c4dc59b7439a0ec088ef1c58e42f3628cbed6034a53db6cf0e232f0535e7946e9f6ee67df0b6dcd81300d225d4e4b0207c164a5d08ece1c">
-                <PrimaryButton className='h-min'>
-                  Mint your NFT
-                </PrimaryButton>
-              </Link>
-            </>
-          )}
+
           {isConnected && isAllowed && !isLoading && currentStep === 1 && <Create onDaoCreating={handleLoading} onDaoCreated={handleDaoCreated} />}
           {isConnected && isAllowed && !isLoading && currentStep === 2 && <Join onMemberJoining={handleLoading} onMemberJoined={handleMemberJoined} dao={dao} />}
         </div>
