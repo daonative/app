@@ -15,7 +15,6 @@ import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, query, where
 import { useCollection } from "react-firebase-hooks/firestore"
 import { classNames } from "@/lib/utils"
 import EmptyStateNoRewards from "@/components/EmptyStateNoRewards"
-import { reactRouterV3Instrumentation } from "@sentry/react"
 import Spinner from "@/components/Spinner"
 
 const CreateRewardModal = ({ show, onClose }) => {
