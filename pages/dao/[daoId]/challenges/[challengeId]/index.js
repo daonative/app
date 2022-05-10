@@ -21,6 +21,8 @@ import { SimpleCard } from '../../../../../components/Card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
+import { Label } from '@/components/Input'
+import { TextArea } from '@/components/TextArea'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -134,20 +136,12 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
         <ModalBody>
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium pb-2">
-                Description
-              </label>
-              <textarea rows="8" {...register("description", { required: true })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
+              <TextArea label="Description" name="description" required register={register} />
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
             </div>
-            <div>
-              <label className="block text-sm font-medium pb-2">
-                Image (optional)
-              </label>
-              <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
-            </div>
+            <input {...register("image", { required: false })} type="file" className="rounded-md file:rounded-md text-sm focus:ring-3 ring-pink-200 focus:border-0 max-w-min file:ring-0" />
           </div>
         </ModalBody>
         <ModalActionFooter>
@@ -160,7 +154,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
           </PrimaryButton>
         </ModalActionFooter>
       </form>
-    </Modal>
+    </Modal >
   )
 }
 
