@@ -28,16 +28,18 @@ const MemberItem = ({ member }) => {
               <UserName account={account} />
             </div>
             <div className="flex justify-center items-center gap-2">
-              <div>
+              <div className="flex gap-1">
                 {member?.roles?.map((role, idx) => (
                   <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
                     {role}
                   </span>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 pr-1">
-                Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
-              </p>
+              {member?.joinDate && (
+                <p className="text-sm text-gray-500 pr-1">
+                  Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
+                </p>
+              )}
             </div>
           </div>
         </SimpleCardBody>
