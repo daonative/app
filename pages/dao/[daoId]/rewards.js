@@ -46,7 +46,9 @@ const CreateRewardModal = ({ show, onClose }) => {
     try {
       const minXps = Number(xps)
       retrieveEligibleMembersCount(minXps)
-    } catch (e) { }
+    } catch (e) {
+      console.error(e)
+    }
 
   }, [xps, roomId])
 
