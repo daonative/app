@@ -10,9 +10,9 @@ export const Input = ({ name, register, required, placeholder, className, type =
 
 
 }
-const Label = ({ children }) => {
+export const Label = ({ children, className }) => {
   return <label
-    className="block text-sm font-medium pb-2"
+    className={classNames("block text-sm font-medium pb-2", className)}
   >
     {children}
   </label>
