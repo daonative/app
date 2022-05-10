@@ -21,24 +21,26 @@ const MemberItem = ({ member }) => {
     <li >
       <SimpleCard>
         <SimpleCardBody>
-          <div className="flex justify-between">
-            <div className="flex items-center gap-3">
+          <div className="grid grid-cols-2">
+            <div className="flex gap-3">
               <UserAvatar account={account} />
               <UserName account={account} />
             </div>
-            <div className="flex justify-center items-center gap-2">
-              <div className="flex gap-1">
-                {member?.roles?.map((role, idx) => (
-                  <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                    {role}
-                  </span>
-                ))}
+            <div>
+              <div className="flex flex-col justify-between items-end gap-2">
+                <div className="flex gap-1">
+                  {member?.roles?.map((role, idx) => (
+                    <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
+                      {role}
+                    </span>
+                  ))}
+                </div>
+                {member?.joinDate && (
+                  <div className="text-xs text-gray-500 pr-1 min-w-max">
+                    Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
+                  </div>
+                )}
               </div>
-              {member?.joinDate && (
-                <p className="text-sm text-gray-500 pr-1">
-                  Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
-                </p>
-              )}
             </div>
           </div>
         </SimpleCardBody>
@@ -49,7 +51,7 @@ const MemberItem = ({ member }) => {
 
 const MemberList = ({ members }) => {
   return (
-    <ul role="list" className="flex flex-col gap-3">
+    <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
       {
         members?.map((member, idx) => (
           <MemberItem key={idx} member={member} />
