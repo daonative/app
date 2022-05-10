@@ -61,6 +61,7 @@ service cloud.firestore {
     }
     match /rewards/{inviteId} {
       allow create: if isAdmin(request.resource.data.roomId);
+      allow delete: if isAdmin(resource.data.roomId)
     }
     match /logs/{logId} {
       allow create: if true;
