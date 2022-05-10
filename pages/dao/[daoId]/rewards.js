@@ -20,7 +20,7 @@ import Spinner from "@/components/Spinner"
 const CreateRewardModal = ({ show, onClose }) => {
   const [eligibleCount, setEligibleCount] = useState(null)
   const [calculatingEligibleCount, setCalculatingEligibleCount] = useState(false)
-  const { handleSubmit, register, formState: { errors }, watch } = useForm()
+  const { handleSubmit, register, formState: { errors }, watch, reset } = useForm()
   const requireAuthentication = useRequireAuthentication()
   const roomId = useRoomId()
 
@@ -68,6 +68,7 @@ const CreateRewardModal = ({ show, onClose }) => {
   const handleCreateReward = async (data) => {
     await requireAuthentication()
     await createRolesReward(data.name, data.role, Number(data.xps))
+    reset()
     onClose()
   }
 
@@ -145,6 +146,7 @@ const RewardDetailModal = ({ show, onClose, reward }) => {
   const handleDeleteReward = async () => {
     await requireAuthentication()
     await deleteReward()
+    onClose()
   }
 
   const capitalizeFirstLetter = (string) => {
