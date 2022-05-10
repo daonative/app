@@ -1,5 +1,5 @@
 import { Card } from "@/components/Card"
-import { Input, TextField } from "@/components/Input"
+import { Input, Select, TextField } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
 import useMembership from "@/lib/useMembership"
@@ -54,32 +54,17 @@ const CreateRewardModal = ({ show, onClose }) => {
               )}
             </div>
             <div>
-              <label
-                className="block text-sm font-medium pb-2"
-              >
-                Type
-              </label>
-              <select
-                {...register("type")}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300"
-              >
+
+              <Select label={"Type"} register={register} name="type">
                 <option value="role">Role</option>
                 <option value="nft" disabled>NFT</option>
-              </select>
+              </Select>
             </div>
             <div>
-              <label
-                className="block text-sm font-medium pb-2"
-              >
-                Reward with role
-              </label>
-              <select
-                {...register("role")}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300"
-              >
+              <Select label={"Reward with role"} register={register} name="role">
                 <option value="verifier">Verifier</option>
                 <option value="lurker">Lurker</option>
-              </select>
+              </Select>
             </div>
             <div>
               <label
