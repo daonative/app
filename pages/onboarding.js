@@ -6,7 +6,6 @@ import { classNames } from '../lib/utils'
 import { roomCreatorAbi, membershipAbi } from '../lib/abi'
 import ConnectWalletButton from '../components/ConnectWalletButton'
 import useDarkMode from '../lib/useDarkMode'
-import useIsConnected from '../lib/useIsConnected'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
 
@@ -17,11 +16,9 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
 import { CheckIcon } from '@heroicons/react/solid'
-import PolygonWarning from '../components/ChainWarning'
 import { useRequireAuthentication } from '../lib/authenticate'
 import { PrimaryButton } from '../components/Button'
 import { guild as guild } from '@guildxyz/sdk'
-import Link from 'next/link'
 import { Input } from '../components/Input'
 import { useSigner } from 'wagmi'
 

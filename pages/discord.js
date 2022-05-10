@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import axios from 'axios'
 
 const DiscordConnect = () => {
   const router = useRouter()

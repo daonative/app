@@ -1,10 +1,9 @@
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useInterval from '../lib/useInterval';
 import { providers } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
-import ComingSoonBadge from './ComingSoonBadge';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, CategoryScale);
 

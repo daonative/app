@@ -9,8 +9,6 @@ import { ConnectWalletModalProvider } from '../components/ConnectWalletModal';
 import { useEffect, useMemo } from 'react'
 import { ProfileModalProvider } from '../components/ProfileModal'
 import { WagmiProvider, createClient, chain } from 'wagmi'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 import {
   apiProvider,

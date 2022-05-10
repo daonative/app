@@ -1,6 +1,5 @@
 import { useConnect } from 'wagmi'
 import { createContext, Fragment, useEffect, useState, useContext, useMemo } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
 import Spinner from './Spinner';
 import { Modal, ModalBody, ModalTitle } from './Modal';
 import { useWallet } from '@/lib/useWallet';

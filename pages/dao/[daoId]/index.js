@@ -16,8 +16,6 @@ import { useRequireAuthentication } from '../../../lib/authenticate';
 import { Members } from './members';
 import { LayoutWrapper } from '../../../components/LayoutWrapper';
 import { PrimaryButton, SecondaryButton } from '../../../components/Button';
-import { CogIcon } from '@heroicons/react/solid';
-import Link from 'next/link';
 import PFP from '../../../components/PFP';
 import { uploadToIPFS } from '../../../lib/uploadToIPFS';
 import { NextSeo } from 'next-seo';

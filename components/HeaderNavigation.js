@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { BellIcon, CheckCircleIcon, MenuAlt2Icon } from '@heroicons/react/solid';
+import { BellIcon, MenuAlt2Icon } from '@heroicons/react/solid';
 import { useConnectWalletModal } from './ConnectWalletModal';
 import { useWallet } from '@/lib/useWallet';
 import useIsConnected from '../lib/useIsConnected';
