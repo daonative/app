@@ -129,7 +129,7 @@ const RewardItem = ({ title, type, weight, eligibleCount }) =>
         )}>
           <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
           <p>
-            {eligibleCount} Member(s) Eligible
+            {eligibleCount} Members
           </p>
         </div>
         <div>
@@ -156,14 +156,14 @@ const Rewards = () => {
   return (
     <LayoutWrapper>
       <RewardModal show={rewardModalOpen} onClose={handleCloseRewardModal} />
-      <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
+      <div className="mx-auto px-4 sm:px-0">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <h2 className="text-2xl">Rewards</h2>
             {isAdmin && <PrimaryButton onClick={handleShowRewardModal}>Add a reward</PrimaryButton>}
           </div>
           {rewards?.length > 0 && (
-            <ul role="list" className="flex flex-col gap-3">
+            <ul role="list" className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {rewards?.map((reward, index) => <RewardItem
                 key={index}
                 title={reward.name}
