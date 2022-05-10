@@ -25,7 +25,7 @@ import Image from 'next/image'
 const db = getFirestore()
 
 
-const ChallengeModal = ({ show, onClose, challengeId, defaultValues = {} }) => {
+const ChallengeModal = ({ show, onClose, challengeId }) => {
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
   const requireAuthentication = useRequireAuthentication()
   const roomId = useRoomId()

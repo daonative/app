@@ -21,7 +21,6 @@ import { SimpleCard } from '../../../../../components/Card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
-import { Label } from '@/components/Input'
 import { TextArea } from '@/components/TextArea'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
@@ -158,8 +157,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
   )
 }
 
-const SubmissionsList = ({ submissions, isAdmin }) => {
-  const { account } = useWallet()
+const SubmissionsList = ({ submissions }) => {
   const [proofOfWorkModalOpen, setProofOfWorkModalOpen] = useState(false)
   const [proofOfWorkToShow, setProofOfWorkToShow] = useState(null)
 

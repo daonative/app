@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
+import { getFirestore, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 
-import { isFirestoreDate } from '../../../lib/utils';
 
 import KPIs from '../../../components/KPIs'
-import TasksTable from '../../../components/TasksTable'
 import useMembership from '../../../lib/useMembership';
 import { useWallet } from '@/lib/useWallet';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
@@ -26,21 +24,7 @@ import { TextField } from '@/components/Input';
 import Image from 'next/image';
 
 
-// unused for the moment
-const getFeed = async (roomId) => {
-  const db = getFirestore()
-  const feedRef = collection(db, 'feed')
-  const feedQuery = query(feedRef, where('roomId', '==', roomId), orderBy('created', 'desc'))
-  const snapshot = await getDocs(feedQuery)
-  return snapshot.docs.map((doc) => {
-    const item = doc.data()
-    return {
-      ...item,
-      created: isFirestoreDate(item?.created) ? item.created.toMillis() : '',
-      eventId: doc.id
-    }
-  })
-}
+
 
 export const getRoom = async (roomId) => {
   const db = getFirestore()
@@ -197,27 +181,7 @@ const LogWorkModal = ({ show, onClose, task }) => {
   )
 }
 
-const OpenTasks = ({ openTasks }) => {
-  const [taskToLog, setTaskToLog] = useState(null)
-  const [showLogWorkModal, setShowLogWorkModal] = useState(false)
 
-  const handleLogWork = (taskId) => {
-    const task = openTasks.find(task => task.taskId === taskId)
-    setTaskToLog(task)
-    setShowLogWorkModal(true)
-  }
-
-  const handleCloseLogWorkModal = () => {
-    setShowLogWorkModal(false)
-  }
-
-  return (
-    <>
-      <LogWorkModal show={showLogWorkModal} onClose={handleCloseLogWorkModal} task={taskToLog} />
-      <TasksTable title="Open Tasks" showWeight={true} tasks={openTasks} onTaskClick={(taskId) => handleLogWork(taskId)} />
-    </>
-  )
-}
 
 const DAOProfileModal = ({ room, roomId, show, onClose }) => {
   const { discordNotificationWebhook, twitterHandle, discordServer } = room
@@ -302,7 +266,7 @@ const DAOProfileButton = ({ roomId, room, canEditProfile }) => {
 
 const DAOProfilePicture = ({ roomId, profilePictureURI }) => (
   <>
-    {profilePictureURI && <img src={profilePictureURI} width="64" height="64" style={{ borderRadius: 8 }} />}
+    {profilePictureURI && <img alt="DAO profile picture" src={profilePictureURI} width="64" height="64" style={{ borderRadius: 8 }} />}
     {!profilePictureURI && <PFP address={roomId} size={64} />}
   </>
 )
@@ -343,9 +307,7 @@ const Dashboard = ({ dao: initialDAO }) => {
   )
   const SEOUrl = "https://app.daonative.xyz"
 
-  const handleOpenProfileSettings = () => {
-    openProfileModal("settings")
-  }
+
 
   useEffect(() => {
     const userNameBanner = async () => {
