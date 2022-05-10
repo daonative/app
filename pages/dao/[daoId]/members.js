@@ -21,7 +21,7 @@ const MemberItem = ({ member }) => {
     <li >
       <SimpleCard className="h-full">
         <SimpleCardBody>
-          <div className="grid grid-cols-2 auto-rows-fr	">
+          <div className="flex flex-col gap-2">
             <div className="flex gap-3 min-w-max items-start font-semibold text-sm">
               <UserAvatar account={account} />
               <div>
@@ -33,7 +33,7 @@ const MemberItem = ({ member }) => {
                 )}
               </div>
             </div>
-            <div className="flex flex-col gap-2 items-end">
+            <div className="flex gap-2 items-end">
               {member?.roles?.map((role, idx) => (
                 <div key={idx} className="text-xs px-1 py-0.5 rounded-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
                   {role}
