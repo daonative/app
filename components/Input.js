@@ -1,5 +1,10 @@
 import { classNames } from "../lib/utils"
 
+export const FileInput = ({ name, register, required = false, validate, className }) => {
+
+  return <input {...register(name, { required: required, validate })} type="file" className={classNames("block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-daonative-component-bg file:text-daonative-white hover:file:brightness-125 max-w-max", className)} />
+}
+
 export const Input = ({ name, register, required, placeholder, className, type = "text" }) => {
   return <input
     type={type}

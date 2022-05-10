@@ -26,6 +26,7 @@ import { getCollectionCreatorAddress, isSupportedChain, switchToMainnet, switchT
 import { SwitchToMainnetButton, SwitchToPolygonButton, SwitchToRinkebyButton } from "../../components/ChainWarning";
 import { uploadToIPFS } from "../../lib/uploadToIPFS";
 import { useSigner } from "wagmi";
+import { FileInput } from "@/components/Input";
 
 const CollectionForm = ({ onImage, onMetadata, onName }) => {
   const { account, chainId } = useWallet()
@@ -163,29 +164,30 @@ const CollectionForm = ({ onImage, onMetadata, onName }) => {
                 <label className="block text-sm font-medium pb-2">
                   Image
                 </label>
-                <input {...register("image", { required: false, validate: { metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) } })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
+
+                <FileInput name="image" register={register} validate={{ metaOrImage: value => checkMetaDataOrImage(value, getValues('metadata')) }} />
                 {!open && (errors?.image?.type === "metaOrImage" || errors?.metadata?.type === "metaOrImage") && (
                   <span className="block text-xs text-red-400 pt-2">You need to set an image</span>
                 )}
               </div>
-                    <div>
-                      <label className="block text-sm font-medium py-2">
-                        Max Supply (optional)
-                      </label>
-                      <input type="number" {...register("maxSupply", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium py-2">
-                        End of minting window (UTC) (optional)
-                      </label>
-                      <input type="datetime-local" {...register("endDateTime", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
-                    </div>
-                    <div>
-                      <input type="checkbox" {...register("oneTokenPerAddress", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
-                      <label className="inline-block text-sm font-medium py-2 pl-2">
-                        Allow only one token per address (no double minting)
-                      </label>
-                    </div>
+              <div>
+                <label className="block text-sm font-medium py-2">
+                  Max Supply (optional)
+                </label>
+                <input type="number" {...register("maxSupply", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+              </div>
+              <div>
+                <label className="block text-sm font-medium py-2">
+                  End of minting window (UTC) (optional)
+                </label>
+                <input type="datetime-local" {...register("endDateTime", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+              </div>
+              <div>
+                <input type="checkbox" {...register("oneTokenPerAddress", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent " />
+                <label className="inline-block text-sm font-medium py-2 pl-2">
+                  Allow only one token per address (no double minting)
+                </label>
+              </div>
               <Disclosure.Button className="flex w-full justify-end text-sm text-daonative-subtitle">
                 <div className="flex items-center">
                   <ChevronRightIcon className={classNames('w-5 h-5', open && 'transform rotate-90')} />

@@ -22,6 +22,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
 import { TextArea } from '@/components/TextArea'
+import { FileInput } from '@/components/Input'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -140,7 +141,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
             </div>
-            <input {...register("image", { required: false })} type="file" className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-daonative-component-bg file:text-daonative-white hover:file:brightness-125 max-w-max" />
+            <FileInput name="image" register={register} />
           </div>
         </ModalBody>
         <ModalActionFooter>

@@ -20,7 +20,7 @@ import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
-import { TextField } from '@/components/Input';
+import { FileInput, TextField } from '@/components/Input';
 import Image from 'next/image';
 
 
@@ -226,7 +226,7 @@ const DAOProfileModal = ({ room, roomId, show, onClose }) => {
             </div>
             <div>
               <label className="block text-sm font-medium pb-2">DAO profile picture</label>
-              <input {...register("image", { required: false })} type="file" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-100 rounded-md bg-daonative-component-bg border-transparent" />
+              <FileInput name="image" register={register} />
             </div>
             <div>
               <TextField type="url" label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
