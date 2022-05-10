@@ -10,13 +10,31 @@ export const Input = ({ name, register, required, placeholder, className, type =
 
 
 }
+const Label = ({ children }) => {
+  return <label
+    className="block text-sm font-medium pb-2"
+  >
+    {children}
+  </label>
+
+}
 export const TextField = ({ label, name, register, required, placeholder, type }) => (
   <>
-    <label
-      className="block text-sm font-medium pb-2"
-    >
-      {label}
-    </label>
+    <Label>{label}</Label>
     <Input name={name} register={register} required={required} placeholder={placeholder} type={type} />
+  </>
+);
+
+export const Select = ({ label, name, register, children }) => (
+  <>
+    <Label>
+      {label}
+    </Label>
+    <select
+      {...register(name)}
+      className="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-white"
+    >
+      {children}
+    </select>
   </>
 );
