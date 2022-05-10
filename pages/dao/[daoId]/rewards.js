@@ -1,5 +1,5 @@
 import { Card } from "@/components/Card"
-import { Input, Select, TextField } from "@/components/Input"
+import { Input, Label, Select, TextField } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
 import useMembership from "@/lib/useMembership"
@@ -79,14 +79,14 @@ const CreateRewardModal = ({ show, onClose }) => {
         <ModalBody>
           <div className="flex flex-col gap-4">
             <div>
-              <TextField label="Name" name="name" register={register} required />
+              <TextField label="Reward Name" name="name" register={register} required />
               {errors.name && (
                 <span className="text-xs text-red-400">You need to set a reward name</span>
               )}
             </div>
             <div>
 
-              <Select label={"Type"} register={register} name="type">
+              <Select label={"Reward Type"} register={register} name="type">
                 <option value="role">Role</option>
                 <option value="nft" disabled>NFT</option>
               </Select>
@@ -101,10 +101,10 @@ const CreateRewardModal = ({ show, onClose }) => {
               <label
                 className="block text-sm font-medium pb-2"
               >
-                Active condition
+                Active condition(s)
               </label>
-              <span className="text-sm text-daonative-subtitle">💡 This role will be given automatically to members that fit the following criteria</span>
-              <label className="block text-sm font-medium pb-2">At least</label>
+              <div className="border-2 border-daonative-border py-2 px-2 rounded-md w-full text-xs text-daonative-subtitle">💡 This role will be given automatically to members that fit the following criteria</div>
+              <Label className={"mt-3"}>At least</Label>
               <div className="relative rounded-md shadow-sm" style={{ maxWidth: '100px' }}>
                 <Input register={register} name="xps" required placeholder="100" />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -124,7 +124,7 @@ const CreateRewardModal = ({ show, onClose }) => {
             {!!eligibleCount && (
               <span className="flex items-center text-sm text-daonative-gray-300">
                 <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-                {eligibleCount} Eligible Members
+                {eligibleCount} member(s) will receive this role
               </span>
             )}
             <PrimaryButton type="submit">Create Reward</PrimaryButton>
