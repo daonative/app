@@ -21,7 +21,6 @@ import { Input, TextField } from '../../../../components/Input'
 import { TextArea } from '../../../../components/TextArea'
 import Moment from 'react-moment'
 import Image from 'next/image'
-import PFP from '@/components/PFP'
 
 const db = getFirestore()
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Feedback } from './FeedbackModal';
 import HeaderNavigation from './HeaderNavigation';
 import SidebarNavigation from './SidebarNavigation';

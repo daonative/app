@@ -1,11 +1,11 @@
-import { CheckIcon, UsersIcon } from "@heroicons/react/solid"
+import { CheckIcon } from "@heroicons/react/solid"
 import { collection, getFirestore, orderBy, query } from "firebase/firestore"
 import { useCollectionData } from "react-firebase-hooks/firestore"
 import { PrimaryButton } from "../../../components/Button"
 import { SimpleCard, SimpleCardBody } from "../../../components/Card"
 import EmptyStateNoLeaders from "../../../components/EmptyStateNoLeaders"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
-import PFP, { UserAvatar, UserName, UserRectangleAvatar } from "../../../components/PFP"
+import { UserName, UserRectangleAvatar } from "../../../components/PFP"
 import useRoomId from "../../../lib/useRoomId"
 
 const db = getFirestore()

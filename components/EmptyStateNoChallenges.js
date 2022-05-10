@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { LightningBoltIcon, PlusIcon } from '@heroicons/react/solid'
+import { LightningBoltIcon } from '@heroicons/react/solid'
 
 export default function EmptyStateNoChallenges({ children }) {
     return (

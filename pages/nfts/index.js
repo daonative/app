@@ -5,9 +5,7 @@ import { useEffect, useState } from "react"
 import { collectionAbi, collectionCreatorAbi } from "../../lib/abi"
 import Link from "next/link"
 import { LayoutWrapper } from "../../components/LayoutWrapper"
-import Spinner from "../../components/Spinner"
 import { useRouter } from "next/router"
-import { CollectionIcon } from "@heroicons/react/solid";
 import ConnectWalletButton from "../../components/ConnectWalletButton";
 import { Card } from "../../components/Card";
 import { getReadonlyProvider, getCollectionCreatorAddress } from "../../lib/chainSupport";

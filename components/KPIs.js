@@ -1,6 +1,4 @@
 import {
-  ArrowSmDownIcon,
-  ArrowSmUpIcon,
   AdjustmentsIcon,
   ChartBarIcon,
   BeakerIcon
@@ -12,7 +10,6 @@ import { useForm } from 'react-hook-form';
 import { useWallet } from '@/lib/useWallet';
 import { useRequireAuthentication } from '../lib/authenticate';
 import useMembership from '../lib/useMembership';
-import { classNames } from "../lib/utils";
 import { SimpleCard, SimpleCardBody } from './Card';
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from './Modal';
 

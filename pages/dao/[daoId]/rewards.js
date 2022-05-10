@@ -12,7 +12,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "@/lib/authenticate"
 import { addDoc, collection, deleteDoc, doc, getFirestore, query, where } from "firebase/firestore"
-import { useCollection, useCollectionData } from "react-firebase-hooks/firestore"
+import { useCollection } from "react-firebase-hooks/firestore"
 import { classNames } from "@/lib/utils"
 import EmptyStateNoRewards from "@/components/EmptyStateNoRewards"
 
