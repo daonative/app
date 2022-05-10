@@ -19,22 +19,13 @@ const MemberItem = ({ member }) => {
 
   return (
     <li >
-      <SimpleCard>
+      <SimpleCard className="h-full">
         <SimpleCardBody>
-          <div className="grid grid-cols-2">
-            <div className="flex gap-3">
+          <div className="grid grid-cols-2 auto-rows-fr	">
+            <div className="flex gap-3 min-w-max items-start font-semibold text-sm">
               <UserAvatar account={account} />
-              <UserName account={account} />
-            </div>
-            <div>
-              <div className="flex flex-col justify-between items-end gap-2">
-                <div className="flex gap-1">
-                  {member?.roles?.map((role, idx) => (
-                    <span key={idx} className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
-                      {role}
-                    </span>
-                  ))}
-                </div>
+              <div>
+                <UserName account={account} />
                 {member?.joinDate && (
                   <div className="text-xs text-gray-500 pr-1 min-w-max">
                     Joined {member?.joinDate && <Moment date={member?.joinDate?.toMillis()} fromNow />}
@@ -42,6 +33,14 @@ const MemberItem = ({ member }) => {
                 )}
               </div>
             </div>
+            <div className="flex flex-col gap-2 items-end">
+              {member?.roles?.map((role, idx) => (
+                <div key={idx} className="text-xs px-1 py-0.5 rounded-md font-medium bg-blue-100 text-blue-800 font-weight-600 font-space">
+                  {role}
+                </div>
+              ))}
+            </div>
+
           </div>
         </SimpleCardBody>
       </SimpleCard>
