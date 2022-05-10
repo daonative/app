@@ -8,18 +8,47 @@ import { CheckIcon, PlusIcon } from "@heroicons/react/solid"
 import Image from "next/image"
 import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton, SecondaryButton } from "@/components/Button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "@/lib/authenticate"
-import { addDoc, collection, deleteDoc, doc, getFirestore, query, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, query, where } from "firebase/firestore"
 import { useCollection } from "react-firebase-hooks/firestore"
 import { classNames } from "@/lib/utils"
 import EmptyStateNoRewards from "@/components/EmptyStateNoRewards"
+import { reactRouterV3Instrumentation } from "@sentry/react"
+import Spinner from "@/components/Spinner"
 
 const CreateRewardModal = ({ show, onClose }) => {
-  const { handleSubmit, register, formState: { errors } } = useForm()
+  const [eligibleCount, setEligibleCount] = useState(null)
+  const [calculatingEligibleCount, setCalculatingEligibleCount] = useState(false)
+  const { handleSubmit, register, formState: { errors }, watch } = useForm()
   const requireAuthentication = useRequireAuthentication()
   const roomId = useRoomId()
+
+  const xps = watch('xps')
+
+  useEffect(() => {
+    const retrieveEligibleMembersCount = async (minXps) => {
+      setCalculatingEligibleCount(true)
+      const db = getFirestore()
+      const eligibleCountQuery = query(
+        collection(db, "rooms", roomId, 'leaderboard'),
+        where("verifiedExperience", ">=", minXps)
+      );
+      const eligibleCountSnap = await getDocs(eligibleCountQuery)
+      const eligibleCount = eligibleCountSnap.docs.length
+      setEligibleCount(eligibleCount)
+      setCalculatingEligibleCount(false)
+    }
+
+    if (!xps || !roomId) return
+
+    try {
+      const minXps = Number(xps)
+      retrieveEligibleMembersCount(minXps)
+    } catch (e) { }
+
+  }, [xps, roomId])
 
   const createRolesReward = async (name, role, xps) => {
     const db = getFirestore()
@@ -86,7 +115,18 @@ const CreateRewardModal = ({ show, onClose }) => {
           </div>
         </ModalBody>
         <ModalActionFooter>
-          <PrimaryButton type="submit">Create Reward</PrimaryButton>
+          <div className="flex items-center gap-2">
+            {calculatingEligibleCount && (
+              <span className="w-4 h-4"><Spinner /></span>
+            )}
+            {!!eligibleCount && (
+              <span className="flex items-center text-sm text-daonative-gray-300">
+                <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+                {eligibleCount} Eligible Members
+              </span>
+            )}
+            <PrimaryButton type="submit">Create Reward</PrimaryButton>
+          </div>
         </ModalActionFooter>
       </form>
     </Modal>
