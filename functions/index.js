@@ -287,7 +287,7 @@ exports.newChallengeDiscordNotification = functions.firestore
       await sendDiscordNotification(roomId, {
         embeds: [
           {
-            title: challenge.title,
+            title: `:pick: ${challenge.title}`,
             description: "New challenge!",
             url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
             color: 5814783
@@ -327,7 +327,7 @@ exports.newProofOfWorkDiscordNotification = functions.firestore
     const message = {
       embeds: [
         {
-          title: challenge.title,
+          title: `:pick: ${challenge.title}`,
           description: "New proof of work!",
           url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
           color: 5814783,
@@ -373,7 +373,7 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
       const message = {
         embeds: [
           {
-            title: challenge.title,
+            title: `:x: ${challenge.title}`,
             description: "Proof of work is reverted",
             url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
             color: 5814783,
@@ -400,7 +400,7 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
       const message = {
         embeds: [
           {
-            title: challenge.title,
+            title: `:ballot_box_with_check: ${challenge.title}`,
             description: "Proof of work is verfied!",
             url: `https://app.daonative.xyz/dao/${roomId}/challenges/${challengeId}`,
             color: 5814783,
@@ -431,6 +431,6 @@ exports.closeExpiredChallenges = functions.pubsub
     const openChallengesSnap = await openChallengesQuery.get()
     openChallengesSnap.forEach(doc => {
       console.log(doc.id)
-      doc.ref.update({status: "closed"})
+      doc.ref.update({ status: "closed" })
     })
   })
