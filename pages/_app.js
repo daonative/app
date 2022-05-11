@@ -16,6 +16,8 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -26,6 +28,13 @@ const firebaseConfig = {
 }
 
 initializeApp(firebaseConfig)
+
+if (process.env.NEXT_PUBLIC_EMULATOR === "true") {
+  const auth = getAuth();
+  const db = getFirestore();
+  connectAuthEmulator(auth, "http://localhost:9099");
+  connectFirestoreEmulator(db, 'localhost', 8080);
+}
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.rinkeby, chain.polygon, chain.optimism, chain.arbitrum],

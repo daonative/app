@@ -22,7 +22,6 @@ import { TextArea } from '../../../../components/TextArea'
 import Moment from 'react-moment'
 import Image from 'next/image'
 
-const db = getFirestore()
 
 
 const ChallengeModal = ({ show, onClose, challengeId }) => {
@@ -31,6 +30,7 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
   const roomId = useRoomId()
 
   const createChallenge = async (data) => {
+    const db = getFirestore()
     const rules = { imageRequired: data?.imageRequired || false }
     const deadline = data?.deadline ? new Date(data.deadline) : null
     const challenge = {
@@ -159,6 +159,7 @@ const ChallengeItem = ({ title, weight, deadline, meta }) =>
   </Card >
 
 const Challenges = () => {
+  const db = getFirestore()
   const roomId = useRoomId()
   const { account } = useWallet()
   const [showChallengeModal, setShowChallengeModal] = useState(false)
