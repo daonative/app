@@ -268,7 +268,7 @@ exports.newChallengeDiscordNotification = functions.firestore
     }
 
     // Don't do anything when the status hasn't changed
-    if (change.before.data().status === change.after.data().status) return
+    if (change.before.data()?.status === change.after.data()?.status) return
 
     // Notify when a challenge has closed
     if (challenge.status === "closed") {

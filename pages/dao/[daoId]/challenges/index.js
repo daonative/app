@@ -38,6 +38,7 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
       description: data.description,
       weight: Number(data.weight),
       created: serverTimestamp(),
+      status: 'open',
       rules,
       deadline,
       roomId,
