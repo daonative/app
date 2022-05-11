@@ -27,11 +27,11 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
-initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 
-if (process.env.NEXT_PUBLIC_EMULATOR === "true") {
-  const auth = getAuth();
-  const db = getFirestore();
+if (process.env.NEXT_PUBLIC_EMULATOR === "true" && typeof window !== 'undefined') {
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(db, 'localhost', 8080);
 }

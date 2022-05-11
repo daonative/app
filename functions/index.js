@@ -91,11 +91,40 @@ exports.updateLeaderboardXP = functions.firestore
     })
   })
 
+
+const capitalizeFirstLetter = (string) => {
+  try {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } catch (e) {
+    return string
+  }
+}
+
 const assignRole = async (roomId, account, role) => {
   const membershipRef = db.collection('rooms').doc(roomId).collection('members').doc(account)
+  const membershipSnap = await membershipRef.get()
+  const membershipData = membershipSnap.data()
+  const hasRole = membershipData?.roles?.includes(role) || false
+
+  if (hasRole) return
+
   await membershipRef.set({
     roles: firestore.FieldValue.arrayUnion(role)
   }, { merge: true })
+
+  const discordName = await getDiscordDisplayName(account)
+  const roleName = capitalizeFirstLetter(role)
+  await sendDiscordNotification(roomId, {
+    embeds: [
+      {
+        title: ":military_medal: Role rewarded!",
+        description: `${discordName} received the ${roleName} role`,
+        url: `https://app.daonative.xyz/dao/${roomId}`,
+        color: 5814783
+      }
+    ]
+  })
+
 }
 
 exports.assignRewardsOnCreate = functions.firestore
