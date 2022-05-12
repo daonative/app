@@ -27,13 +27,21 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
-const app = initializeApp(firebaseConfig)
+initializeApp(firebaseConfig)
 
-if (process.env.NEXT_PUBLIC_EMULATOR === "true" && typeof window !== 'undefined') {
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const EMULATORS_STARTED = 'EMULATORS_STARTED';
+function startEmulators() {
+  if (global[EMULATORS_STARTED]) return
+
+  const auth = getAuth();
+  const db = getFirestore();
   connectAuthEmulator(auth, "http://localhost:9099");
   connectFirestoreEmulator(db, 'localhost', 8080);
+  global[EMULATORS_STARTED] = true;
+}
+
+if (process.env.NEXT_PUBLIC_EMULATOR === "true") {
+  startEmulators()
 }
 
 const { chains, provider } = configureChains(

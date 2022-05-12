@@ -19,3 +19,4 @@ ports:
 vscode:
   extensions:
     - dbaeumer.vscode-eslint
+    - chflick.firecode
