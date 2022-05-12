@@ -22,8 +22,6 @@ import { TextArea } from '../../../../components/TextArea'
 import Moment from 'react-moment'
 import Image from 'next/image'
 
-
-
 const ChallengeModal = ({ show, onClose, challengeId }) => {
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm()
   const requireAuthentication = useRequireAuthentication()
@@ -122,7 +120,6 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
     </Modal>
   )
 }
-
 
 const ChallengeItem = ({ title, weight, deadline, meta }) =>
   <Card onClick={() => null}>

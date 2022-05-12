@@ -5,6 +5,7 @@ import { FileInput } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
 import { UserName, UserRectangleAvatar } from "@/components/PFP"
+import ProofOfWorkModal from "@/components/ProofOfWorkModal"
 import Spinner from "@/components/Spinner"
 import { TextArea } from "@/components/TextArea"
 import { useRequireAuthentication } from "@/lib/authenticate"
@@ -75,28 +76,40 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
 }
 
 const WorkList = ({ workproofs }) => {
+  const [proofOfWorkModalOpen, setProofOfWorkModalOpen] = useState(false)
+  const [proofOfWorkToShow, setProofOfWorkToShow] = useState(null)
+
+  const handleCloseDetailsModal = () => {
+    setProofOfWorkModalOpen(false)
+  }
+  const handleOpenDetailsModal = (submission) => {
+    setProofOfWorkToShow(submission)
+    setProofOfWorkModalOpen(true)
+  }
+
   if (workproofs?.length === 0) return <EmptyStateNoSubmissions />
 
   return (
     <>
+      <ProofOfWorkModal show={proofOfWorkModalOpen} onClose={handleCloseDetailsModal} workproof={proofOfWorkToShow} />
       <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {workproofs?.map((submission, idx) => {
-          const verifications = submission?.verifications ? Object.values(submission.verifications) : []
+        {workproofs?.map((workproof, idx) => {
+          const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
           const isPending = verifications.length === 0
           const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
           const isVerified = !isPending && !isReverted
           return (
             <li key={idx} >
-              <SimpleCard className="hover:cursor-pointer opacity-[75%] hover:opacity-100">
+              <SimpleCard className="hover:cursor-pointer opacity-[75%] hover:opacity-100" onClick={() => handleOpenDetailsModal(workproof)}>
                 <div className=' py-2 px-3'>
                   <div className="grid grid-cols-2 overflow-hidden">
-                    <UserRectangleAvatar account={submission.author} />
+                    <UserRectangleAvatar account={workproof.author} />
                     <div className="flex flex-col gap-1 items-end ">
                       <p className="text-sm  max-w-[100%] truncate text-ellipsis">
-                        <UserName account={submission.author} />
+                        <UserName account={workproof.author} />
                       </p>
                       <p className="text-sm text-gray-500 ">
-                        <Moment date={submission?.created?.toMillis()} fromNow={true} />
+                        <Moment date={workproof?.created?.toMillis()} fromNow={true} />
                       </p>
                       <div className="flex justify-between">
                         {isVerified && (
