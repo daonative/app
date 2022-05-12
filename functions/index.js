@@ -11,6 +11,8 @@ exports.updateSubmissionCount = functions.firestore
   .onCreate(async (snap, context) => {
     const workproof = snap.data()
 
+    if (!workproof.challengeId) return
+
     const workproofsQuery = db.collection('workproofs').where('challengeId', '==', workproof.challengeId)
     const workproofsSnap = await workproofsQuery.get()
 
@@ -320,6 +322,10 @@ exports.newProofOfWorkDiscordNotification = functions.firestore
     const proofOfWork = snap.data()
     const roomId = proofOfWork.roomId
     const challengeId = proofOfWork.challengeId
+
+    // No discord notifications for adhoc proof of work yet
+    if (!proofOfWork.challengeId) return
+
     const challengeSnap = await db.collection('challenges').doc(challengeId).get()
     const challenge = challengeSnap.data()
 
@@ -355,6 +361,9 @@ exports.verifiedProofOfWorkDiscordNotification = functions.firestore
     const proofOfWork = change.after.data()
     const roomId = proofOfWork.roomId
     const challengeId = proofOfWork.challengeId
+
+    // No discord notifications for adhoc proof of work yet
+    if (!proofOfWork.challengeId) return
 
     const challengeSnap = await db.collection('challenges').doc(challengeId).get()
     const challenge = challengeSnap.data()
