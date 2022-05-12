@@ -37,9 +37,14 @@ service cloud.firestore {
       allow create: if
         isMember(request.resource.data.roomId)
         && getChallenge(request.resource.data.challengeId).get("status", "open") != "closed"
-        && request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
         && request.resource.data.author == request.auth.uid
-        && request.resource.data.weight is int;
+        && request.resource.data.weight is int
+        // If a challenge is configured, the work weight must equal the challenge weight
+        && request.resource.data.challengeId != null ? (
+            request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
+          ) : (
+            true
+          )
       allow update: if (
           (isAdmin(resource.data.roomId) || isVerifier(resource.data.roomId))
           && resource.data.author != request.auth.uid
