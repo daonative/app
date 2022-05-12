@@ -29,7 +29,8 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
       description,
       author: account,
       roomId,
-      type: 'adhoc',
+      weight: 0,
+      challengeId: null,
       imageUrls: imageUrl ? [imageUrl] : [],
       created: serverTimestamp(),
     }
@@ -73,13 +74,13 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
   )
 }
 
-const WorkList = ({ submissions }) => {
-  if (submissions?.length === 0) return <EmptyStateNoSubmissions />
+const WorkList = ({ workproofs }) => {
+  if (workproofs?.length === 0) return <EmptyStateNoSubmissions />
 
   return (
     <>
       <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {submissions?.map((submission, idx) => {
+        {workproofs?.map((submission, idx) => {
           const verifications = submission?.verifications ? Object.values(submission.verifications) : []
           const isPending = verifications.length === 0
           const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
@@ -141,7 +142,7 @@ const WorkPage = () => {
   const [workproofsSnapshot] = useCollection(
     query(collection(db, 'workproofs'), where('roomId', '==', roomId), orderBy('created', 'desc'))
   )
-  const workproofs = workproofsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id }))
+  const workproofs = workproofsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id })) || []
 
   return (
     <LayoutWrapper>
@@ -150,7 +151,7 @@ const WorkPage = () => {
         <div className="w-full">
           <div className="flex justify-between py-4">
             <div>
-              <h2 className="text-xl text-daonative-white">Submissions</h2>
+              <h2 className="text-xl text-daonative-white">Proofs of Work</h2>
             </div>
             <div className="flex gap-4 items-center">
               <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
