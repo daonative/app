@@ -10,11 +10,14 @@ exports.updateSubmissionCount = functions.firestore
   .document('workproofs/{workproofId}')
   .onCreate(async (snap, context) => {
     const workproof = snap.data()
+    console.log('running')
+    console.log(workproof)
 
     if (!workproof.challengeId) return
 
     const workproofsQuery = db.collection('workproofs').where('challengeId', '==', workproof.challengeId)
     const workproofsSnap = await workproofsQuery.get()
+    console.log(workproofsSnap)
 
     const challengeRef = db.collection('challenges').doc(workproof.challengeId)
     await challengeRef.update({
