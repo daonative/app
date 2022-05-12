@@ -349,7 +349,6 @@ const ChallengeDetails = () => {
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
 
-
   const handleOpenEditChallengeModal = () => setShowEditChallengeModal(true)
   const handleCloseEditChallengeModal = () => setShowEditChallengeModal(false)
 

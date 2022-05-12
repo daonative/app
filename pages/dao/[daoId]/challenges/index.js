@@ -165,7 +165,9 @@ const Challenges = () => {
   const [showChallengeModal, setShowChallengeModal] = useState(false)
   const [challengesSnapshot, loading] = useCollection(
     query(collection(db, 'challenges'), where('roomId', '==', roomId || ''), orderBy('created', 'desc')))
-  const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() }))
+  const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() })) || []
+  const openChallenges = challenges.filter(challenge => challenge?.status !== 'closed')
+  const closedChallenges = challenges.filter(challenge => challenge.status === 'closed')
 
   const membership = useMembership(account, roomId)
   const isAdmin = membership?.roles?.includes('admin')
@@ -175,78 +177,62 @@ const Challenges = () => {
   const handleShowChallengeModal = () => setShowChallengeModal(true)
   const handleCloseChallengeModal = () => setShowChallengeModal(false)
 
+
   return (
     <LayoutWrapper>
       <ChallengeModal show={showChallengeModal} onClose={handleCloseChallengeModal} />
       <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
         <div className="flex flex-col gap-4">
+
           <div className="flex justify-between">
             <h2 className="text-2xl">Latest Challenges</h2>
             {challenges?.length > 0 && isAdmin && <PrimaryButton onClick={handleShowChallengeModal}>Add a challenge</PrimaryButton>}
           </div>
-          {challenges?.length > 0 ? (
+
+          {!loading && challenges?.length === 0 && (
+            <div className="mt-6">
+              <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
+                {isAdmin && (
+                  <>
+                    <p className="mt-1 text-sm text-gray-500">Get started by creating a new challange</p>
+                    <div className="mt-6">
+                      <PrimaryButton onClick={handleShowChallengeModal}>
+                        <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                        Add Challenge
+                      </PrimaryButton>
+                    </div>
+                  </>
+                )}
+              </EmptyStateNoChallenges>
+            </div>
+          )}
+
+          {openChallenges.length > 0 && (
             <ul role="list" className="flex flex-col gap-3">
-              {challenges?.filter(challenge => challenge?.status !== 'closed').map((challenge) => (
+              {openChallenges.map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
                     <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
                   </li>
                 </Link>
               ))}
+            </ul>
+          )}
+
+          {closedChallenges.length > 0 && (
+            <>
               <div className="flex justify-between">
                 <h2 className="text-2xl">Closed Challenges</h2>
               </div>
-              {challenges?.length > 0 ? (
-                <ul role="list" className="flex flex-col gap-3">
-                  {challenges?.filter(challenge => challenge.status === 'closed').map((challenge) => (
-                    <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
-                      <li className='opacity-75'>
-                        <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
-                      </li>
-                    </Link>
-                  ))}
-                </ul>
-              ) : (
-                <>
-                  {!loading && (
-                    <div className="mt-6">
-                      <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
-                        {isAdmin && (
-                          <>
-                            <p className="mt-1 text-sm text-gray-500">Get started by creating a new challange</p>
-                            <div className="mt-6">
-                              <PrimaryButton onClick={handleShowChallengeModal}>
-                                <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                                Add Challenge
-                              </PrimaryButton>
-                            </div>
-                          </>
-                        )}
-                      </EmptyStateNoChallenges>
-                    </div>
-                  )}
-                </>
-              )}
-            </ul>
-          ) : (
-            <>
-              {!loading && (
-                <div className="mt-6">
-                  <EmptyStateNoChallenges onClick={handleShowChallengeModal}>
-                    {isAdmin && (
-                      <>
-                        <p className="mt-1 text-sm text-gray-500">Get started by creating a new challange</p>
-                        <div className="mt-6">
-                          <PrimaryButton onClick={handleShowChallengeModal}>
-                            <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                            Add Challenge
-                          </PrimaryButton>
-                        </div>
-                      </>
-                    )}
-                  </EmptyStateNoChallenges>
-                </div>
-              )}
+              <ul role="list" className="flex flex-col gap-3">
+                {closedChallenges.map((challenge) => (
+                  <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
+                    <li className='opacity-75'>
+                      <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
+                    </li>
+                  </Link>
+                ))}
+              </ul>
             </>
           )}
         </div>
