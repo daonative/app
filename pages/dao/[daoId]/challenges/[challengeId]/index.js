@@ -389,7 +389,7 @@ const ChallengeDetails = () => {
     extensions: [
       StarterKit,
     ],
-    content: challenge.description ? `${challenge?.description}`: "",
+    content: challenge?.description ? `${challenge?.description}`: "",
   })
 
   return (
