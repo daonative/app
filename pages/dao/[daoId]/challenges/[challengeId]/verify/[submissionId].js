@@ -174,7 +174,7 @@ const InspectWork = ({ workproof, challenge }) => {
             </p>
             <div className="whitespace-pre-wrap text-sm font-medium">
               <a href={workproof.imageUrls[0]} target="_blank" rel="noreferrer">
-                <img alt="Proof image" src={workproof.imageUrls[0]} width={64} />
+                <img alt="Proof image" src={workproof.imageUrls[0]} width={256} />
               </a>
             </div>
           </div>
