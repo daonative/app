@@ -104,6 +104,14 @@ const InspectWork = ({ workproof, challenge }) => {
         </div>
         <div>
           <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
+            Submission Id
+          </p>
+          <div className="whitespace-pre-wrap text-sm font-medium text-daonative-white">
+            {workproof.workproofId}
+          </div>
+        </div>
+        <div>
+          <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
             Status
           </p>
           {isVerified && (

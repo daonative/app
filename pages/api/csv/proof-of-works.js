@@ -25,6 +25,7 @@ async function handler(req, res) {
     .docs
     .map(proofOfWorkSnapshot => {
       const proofOfWork = proofOfWorkSnapshot.data()
+      const id = proofOfWorkSnapshot.id
       const author = proofOfWork?.author
       const created = proofOfWork?.created?.toDate()
       const description = proofOfWork?.description?.replace(/"/g, '""')
@@ -33,7 +34,7 @@ async function handler(req, res) {
       const verifications = proofOfWork?.verifications || {}
       const acceptedBy = Object.entries(verifications).filter(([_, verification]) => verification.accepted).map(([account, _]) => account)
       const rejectedBy = Object.entries(verifications).filter(([_, verification]) => !verification.accepted).map(([account, _]) => account)
-      return `"${author}";"${created}";"${description}";"${image}";"${weight}";"${acceptedBy}";"${rejectedBy}"`
+      return `"${id}";"${author}";"${created}";"${description}";"${image}";"${weight}";"${acceptedBy}";"${rejectedBy}"`
     })
     .join('\n')
 
@@ -41,7 +42,7 @@ async function handler(req, res) {
     .setHeader("Content-Disposition", "attachment;filename=submissions.csv")
     .setHeader("Content-Type", "text/csv")
     .status(200)
-    .send(`"Author";"Created";"Proof of Work";"Image";"XP";"Accepted By";"Rejected By"\n${CSV}`);
+    .send(`"Id";"Author";"Created";"Proof of Work";"Image";"XP";"Accepted By";"Rejected By"\n${CSV}`);
 }
 
 export default handler;
