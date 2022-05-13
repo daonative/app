@@ -1,12 +1,13 @@
-const { CheckIcon, ClockIcon, BanIcon } = require("@heroicons/react/solid")
-const { SecondaryButton } = require("./Button")
-const { Modal, ModalTitle, ModalBody, ModalActionFooter } = require("./Modal")
+import { CheckIcon, ClockIcon, BanIcon } from "@heroicons/react/solid"
+import { SecondaryButton } from "./Button"
+import { Modal, ModalTitle, ModalBody, ModalActionFooter } from "@/components/Modal"
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
   const isPending = verifications.length === 0
   const isReverted = !isPending && verifications.filter(verification => !verification.accepted).length > 0
   const isVerified = !isPending && !isReverted
+
   return (
     <Modal show={show} onClose={onClose}>
       <ModalTitle>Proof of Work</ModalTitle>
@@ -26,8 +27,8 @@ const ProofOfWorkModal = ({ show, onClose, workproof }) => {
                 Image
               </p>
               <div className="whitespace-pre-wrap text-sm font-medium">
-                <a href={workproof.imageUrls[0]}>
-                  <img src={workproof.imageUrls[0]} width={64} />
+                <a href={workproof.imageUrls[0]} target="_blank" rel="noreferrer">
+                  <img src={workproof.imageUrls[0]} width={256} />
                 </a>
               </div>
             </div>
