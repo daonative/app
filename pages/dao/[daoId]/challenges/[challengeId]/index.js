@@ -18,11 +18,17 @@ import useMembership from '../../../../../lib/useMembership'
 import Link from 'next/link'
 import { classNames, formatDate } from '../../../../../lib/utils'
 import { SimpleCard } from '../../../../../components/Card'
-import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
 import { TextArea } from '@/components/TextArea'
 import { FileInput } from '@/components/Input'
+import {
+  useEditor,
+  EditorContent,
+  BubbleMenu,
+  FloatingMenu,
+} from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 
 const ProofOfWorkModal = ({ show, onClose, workproof }) => {
   const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -379,6 +385,12 @@ const ChallengeDetails = () => {
       toast.error(`Something went wrong ${e.message}`,)
     }
   }
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+    ],
+    content: challenge?.description ? `${challenge?.description}`: "",
+  })
 
   return (
     <LayoutWrapper>
@@ -397,10 +409,30 @@ const ChallengeDetails = () => {
         </div>
         <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
           <div className="w-full">
-            <div className="prose prose-sm prose-daonative-text prose-invert text-daonative-text">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {challenge?.description}
-              </ReactMarkdown>
+            <div className="w-full rounded-md bg-daonative-component-bg border-transparent text-daonative-text">
+              <>
+      {editor && <BubbleMenu className="bubble-menu" tippyOptions={{ duration: 100 }} editor={editor}>
+        <button
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={`p-2 ${editor.isActive('bold') ? 'is-active' : ''}`}
+        >
+          Bold
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={`p-2 ${editor.isActive('italic') ? 'is-active' : ''}`}
+        >
+          Italic
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          className={`p-2 ${editor.isActive('strike') ? 'is-active' : ''}`}
+        >
+          Strike
+        </button>
+      </BubbleMenu>}
+      <EditorContent editor={editor} />
+    </>
             </div>
           </div>
           <div className="w-full">
