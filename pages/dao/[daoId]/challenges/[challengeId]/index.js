@@ -18,7 +18,6 @@ import useMembership from '../../../../../lib/useMembership'
 import Link from 'next/link'
 import { classNames, formatDate } from '../../../../../lib/utils'
 import { SimpleCard } from '../../../../../components/Card'
-import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
 import { TextArea } from '@/components/TextArea'
@@ -436,19 +435,19 @@ const ChallengeDetails = () => {
       {editor && <FloatingMenu className="floating-menu" tippyOptions={{ duration: 100 }} editor={editor}>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+          className={`p-2 ${editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}`}
         >
           H1
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+          className={`p-2 ${editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}`}
         >
           H2
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive('bulletList') ? 'is-active' : ''}
+          className={`p-2 ${editor.isActive('bulletList') ? 'is-active' : ''}`}
         >
           Bullet List
         </button>
