@@ -36,7 +36,7 @@ const getGates = async (roomId) => {
   return tokenGates.docs.map(doc => doc.data())
 }
 
-const canJoin = async (roomId, account) => {
+export const canJoin = async (roomId, account) => {
   const gates = await getGates(roomId)
   const checkResults = await Promise.all(gates.map(async gate => await checkGate(gate, account)))
   const canJoin = checkResults.filter(result => result === true).length > 0

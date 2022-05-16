@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getFirestore, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useDocument } from 'react-firebase-hooks/firestore';
@@ -23,6 +23,7 @@ import { useProfileModal } from '../../../components/ProfileModal';
 import { FileInput, TextField } from '@/components/Input';
 import Image from 'next/image';
 import axios from 'axios';
+import { classNames } from '@/lib/utils';
 
 
 
@@ -285,6 +286,28 @@ const Socials = ({ room }) =>
     }
   </div >
 
+const ClaimMembershipButton = ({ roomId, onClick = () => { } }) => {
+  const requireAuthentication = useRequireAuthentication()
+
+  const joinRoom = async () => {
+    const toastId = toast.loading('Joining the DAO')
+    const tokenId = await requireAuthentication()
+    const authHeaders = { headers: { 'Authorization': `Bearer ${tokenId}` } }
+    await axios.post('/api/tokengating/join', { roomId }, authHeaders)
+    toast.success('You are now a member!', { id: toastId })
+  }
+
+  const handleClick = () => {
+    onClick()
+    joinRoom()
+  }
+
+  return (
+    <PrimaryButton onClick={handleClick}>
+      Join
+    </PrimaryButton>
+  )
+}
 
 const Dashboard = ({ dao: initialDAO }) => {
   const { query: params } = useRouter()
@@ -338,7 +361,7 @@ const Dashboard = ({ dao: initialDAO }) => {
   }, [account, openProfileModal])
 
   useEffect(() => {
-    const checkIsAllowed = async () => {
+    const checkCanJoin = async () => {
       const db = getFirestore()
       const membershipRef = doc(db, 'rooms', roomId, 'members', account)
       const membershipDoc = await getDoc(membershipRef)
@@ -351,23 +374,31 @@ const Dashboard = ({ dao: initialDAO }) => {
 
       if (!hasAccess) return
 
-      const toastId = toast(() => (
-        <div className="flex justify-between">
-          You are a tokenholder and can join this community!
-          <PrimaryButton onClick={() => { toast.dismiss(toastId) }}>
-            Join
-          </PrimaryButton>
-        </div>
-      ), {
-        duration: 10000
-      })
+      toast.custom((t) => (
+        <div
+          className={classNames(
+            `${t.visible ? 'animate-enter' : 'animate-leave'}`,
+            'max-w-xl w-full shadow-lg rounded-lg pointer-events-auto flex justify-between',
+            'items-center border border-daonative-modal-border p-2 bg-daonative-component-bg'
+          )}
+        >
+            You are a tokenholder and can join this community!
+            <div className="flex gap-1">
+              <ClaimMembershipButton roomId={roomId} onClick={() => toast.dismiss(t.id)}>
+                Join
+              </ClaimMembershipButton>
+              <SecondaryButton onClick={() => toast.dismiss(t.id)}>
+                Dismiss
+              </SecondaryButton>
+            </div>
+          </div>
+      ), { duration: Infinity, position: 'top-center'})
     }
 
-    if (!account) return
+    if (!account || !roomId) return
 
-    checkIsAllowed()
-
-  }, [account, roomId])
+    checkCanJoin()
+  }, [account, roomId]);
 
   return (
     <>
