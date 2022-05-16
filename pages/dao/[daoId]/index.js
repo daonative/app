@@ -22,6 +22,7 @@ import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
 import { FileInput, TextField } from '@/components/Input';
 import Image from 'next/image';
+import axios from 'axios';
 
 
 
@@ -334,6 +335,38 @@ const Dashboard = ({ dao: initialDAO }) => {
     if (!account) return
 
     userNameBanner()
+  }, [account, openProfileModal])
+
+  useEffect(() => {
+    const checkIsAllowed = async () => {
+      const db = getFirestore()
+      const membershipRef = doc(db, 'rooms', roomId, 'members', account)
+      const membershipDoc = await getDoc(membershipRef)
+
+      // Already a member, no need to check anymore
+      if (membershipDoc.exists()) return
+
+      const response = await axios.post('/api/tokengating/is-allowed', { roomId, account })
+      const isAllowed = response.data.allowed
+
+      if (!isAllowed) return
+
+      const toastId = toast(() => (
+        <div className="flex justify-between">
+          You are a tokenholder and can join this community!
+          <PrimaryButton onClick={() => {toast.dismiss(toastId)}}>
+            Join
+          </PrimaryButton>
+        </div>
+      ), {
+        duration: 10000
+      })
+    }
+
+    if (!account) return
+
+    checkIsAllowed()
+
   }, [account])
 
   return (
