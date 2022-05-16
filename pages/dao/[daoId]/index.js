@@ -346,15 +346,15 @@ const Dashboard = ({ dao: initialDAO }) => {
       // Already a member, no need to check anymore
       if (membershipDoc.exists()) return
 
-      const response = await axios.post('/api/tokengating/is-allowed', { roomId, account })
-      const isAllowed = response.data.allowed
+      const response = await axios.post('/api/tokengating/has-access', { roomId, account })
+      const { hasAccess } = response.data
 
-      if (!isAllowed) return
+      if (!hasAccess) return
 
       const toastId = toast(() => (
         <div className="flex justify-between">
           You are a tokenholder and can join this community!
-          <PrimaryButton onClick={() => {toast.dismiss(toastId)}}>
+          <PrimaryButton onClick={() => { toast.dismiss(toastId) }}>
             Join
           </PrimaryButton>
         </div>
@@ -367,7 +367,7 @@ const Dashboard = ({ dao: initialDAO }) => {
 
     checkIsAllowed()
 
-  }, [account])
+  }, [account, roomId])
 
   return (
     <>
