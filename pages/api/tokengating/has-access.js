@@ -24,7 +24,7 @@ const hasERC1155Token = async (chainId, contractAddress, tokenId, owner) => {
 
 const checkGate = async (gate, account) => {
   // We only support ERC1155 for now
-  if (gate.type !== "ERC1155") return
+  if (gate.type !== "ERC1155") return false
 
   const { chainId, contractAddress, tokenId} = gate
 
@@ -33,13 +33,21 @@ const checkGate = async (gate, account) => {
 
 const getGates = async (roomId) => {
   const tokenGates = await db.collection('gates').where('roomId', '==', roomId).get()
-  return tokenGates.docs.map(doc => doc.data())
+  return tokenGates.docs.map(doc => ({ gateId: doc.id, ...doc.data()}))
+}
+
+export const checkGates = async (roomId, account) => {
+  const gates = await getGates(roomId)
+  const checkResults = await Promise.all(gates.map(async gate => ({
+    gateId: gate.gateId,
+    check: await checkGate(gate, account)
+  })))
+  return checkResults
 }
 
 export const canJoin = async (roomId, account) => {
-  const gates = await getGates(roomId)
-  const checkResults = await Promise.all(gates.map(async gate => await checkGate(gate, account)))
-  const canJoin = checkResults.filter(result => result === true).length > 0
+  const gateTests = await checkGates(roomId, account)
+  const canJoin = gateTests.filter(result => result.check === true).length > 0
   return canJoin
 }
 

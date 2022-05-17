@@ -1,6 +1,6 @@
 import requireAuthenticationMiddleware from '@/lib/requireAuthenticationMiddleware'
-import admin from 'firebase-admin';
-import { canJoin } from './has-access';
+import admin, { firestore } from 'firebase-admin';
+import { canJoin, checkGates } from './has-access';
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -14,8 +14,11 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-const addMember = async (account, roomId) => {
-  await db.collection('rooms').doc(roomId).collection('members').doc(account).set({ account }, { merge: true })
+const addMember = async (account, roomId, gates) => {
+  await db.collection('rooms').doc(roomId).collection('members').doc(account).set({
+    account,
+    gates: firestore.FieldValue.arrayUnion(...gates)
+  }, { merge: true })
 }
 
 const handler = async (req, res) => {
@@ -26,13 +29,15 @@ const handler = async (req, res) => {
     return res.status(400).json({ error: 'Missing one of the required parameters' })
   }
 
-  const hasAccess = await canJoin(roomId, account)
+  const gateTests = await checkGates(roomId, account)
+  const positiveGates = gateTests.filter(result => result.check).map(result => result.gateId)
+  const hasAccess = positiveGates.length > 0
 
   if (!hasAccess) {
     return res.status(400).json({ error: "You don't have access to this DAO" })
   }
 
-  await addMember(account, roomId)
+  await addMember(account, roomId, positiveGates)
 
   res.status(200).json({ roomId });
 }

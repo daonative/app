@@ -291,10 +291,14 @@ const ClaimMembershipButton = ({ roomId, onClick = () => { } }) => {
 
   const joinRoom = async () => {
     const toastId = toast.loading('Joining the DAO')
-    const tokenId = await requireAuthentication()
-    const authHeaders = { headers: { 'Authorization': `Bearer ${tokenId}` } }
-    await axios.post('/api/tokengating/join', { roomId }, authHeaders)
-    toast.success('You are now a member!', { id: toastId })
+    try {
+      const tokenId = await requireAuthentication()
+      const authHeaders = { headers: { 'Authorization': `Bearer ${tokenId}` } }
+      await axios.post('/api/tokengating/join', { roomId }, authHeaders)
+      toast.success('You are now a member!', { id: toastId })
+    } catch (e) {
+      toast.error('Unable to join the room', { id: toastId })
+    }
   }
 
   const handleClick = () => {
@@ -382,17 +386,17 @@ const Dashboard = ({ dao: initialDAO }) => {
             'items-center border border-daonative-modal-border p-2 bg-daonative-component-bg'
           )}
         >
-            You are a tokenholder and can join this community!
-            <div className="flex gap-1">
-              <ClaimMembershipButton roomId={roomId} onClick={() => toast.dismiss(t.id)}>
-                Join
-              </ClaimMembershipButton>
-              <SecondaryButton onClick={() => toast.dismiss(t.id)}>
-                Dismiss
-              </SecondaryButton>
-            </div>
+          You are a tokenholder and can join this community!
+          <div className="flex gap-1">
+            <ClaimMembershipButton roomId={roomId} onClick={() => toast.dismiss(t.id)}>
+              Join
+            </ClaimMembershipButton>
+            <SecondaryButton onClick={() => toast.dismiss(t.id)}>
+              Dismiss
+            </SecondaryButton>
           </div>
-      ), { duration: Infinity, position: 'top-center'})
+        </div>
+      ), { duration: Infinity, position: 'top-center' })
     }
 
     if (!account || !roomId) return
