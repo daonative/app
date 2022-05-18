@@ -52,7 +52,8 @@ const AdvancedSettings = ({ roomId }) => {
 
     <form onSubmit={handleSubmit(handleUpdateAdvancedSettings)}>
       <div className="flex flex-col gap-4 mt-8">
-        {gates.map(gate => <div key={gate.gateId}><div >{gate.contractAddress}</div><PrimaryButton onClick={() => handleDelete(gate.gateId)}>Delete</PrimaryButton></div>)}
+        <div className="text-daonative-subtitle">Active token-gates</div>
+        {gates.map(gate => <div key={gate.gateId} className="flex gap-3"><div >{gate.contractAddress}</div><div className="cursor-pointer" onClick={() => handleDelete(gate.gateId)}>x</div></div>) }
         <div className="flex items-center gap-5">
           <div>
             <TextField label="Enter the contract address" name="contractAddress" placeholder={`0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D`} register={register} required />
