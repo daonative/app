@@ -82,6 +82,8 @@ export const Members = () => {
         .filter(gate => gate.chainId === 1)
         .map(gate => ({tokenAddress: gate.contractAddress, amount: "1"}))
 
+      if (tokenGates.length === 0) return
+
       const holdersResponse = await axios.post('https://balancy.guild.xyz/api/xyzHolders', {
         logic: 'OR',
         limit: 0,
