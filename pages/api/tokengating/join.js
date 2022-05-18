@@ -1,6 +1,6 @@
 import requireAuthenticationMiddleware from '@/lib/requireAuthenticationMiddleware'
 import admin, { firestore } from 'firebase-admin';
-import { canJoin, checkGates } from './has-access';
+import { checkGates } from './has-access';
 
 if (!admin.apps.length) {
   admin.initializeApp({

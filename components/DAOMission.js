@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { useForm } from 'react-hook-form';
-import useMembership from '../../../lib/useMembership';
+import useMembership from '../lib/useMembership';
 import { useWallet } from '@/lib/useWallet';
-import { useRequireAuthentication } from '../../../lib/authenticate';
+import { useRequireAuthentication } from '../lib/authenticate';
 
 export const DAOMission = ({ roomId, mission }) => {
   const [showForm, setShowForm] = useState(false);

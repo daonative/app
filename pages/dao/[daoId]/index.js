@@ -1,15 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
-import { getFirestore, collection, getDoc, doc, addDoc, serverTimestamp } from "firebase/firestore"
+import { useState, useEffect } from 'react'
+import { getFirestore, getDoc, doc } from "firebase/firestore"
 import { useRouter } from 'next/router';
 import { useDocument } from 'react-firebase-hooks/firestore';
-import { useForm } from 'react-hook-form';
 
 
 import KPIs from '../../../components/KPIs'
 import useMembership from '../../../lib/useMembership';
 import { useWallet } from '@/lib/useWallet';
-import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../components/Modal';
-import Spinner from '../../../components/Spinner';
 import { useRequireAuthentication } from '../../../lib/authenticate';
 import { Members } from './members';
 import { LayoutWrapper } from '../../../components/LayoutWrapper';
@@ -18,7 +15,6 @@ import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import toast from 'react-hot-toast';
 import { useProfileModal } from '../../../components/ProfileModal';
-import Image from 'next/image';
 import axios from 'axios';
 import { classNames } from '@/lib/utils';
 import { DAOProfileModal, DAOProfilePicture } from '../../../components/DAOProfileModal';

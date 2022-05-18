@@ -9,7 +9,6 @@ import {
   LightningBoltIcon,
   FireIcon,
   HeartIcon,
-  BriefcaseIcon,
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
