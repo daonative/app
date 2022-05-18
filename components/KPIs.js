@@ -88,7 +88,7 @@ const Metric = ({ icon: MetricIcon, name, indicator, change, changeType, onSave,
   return (
     <SimpleCard
       onClick={() => { isEditable && handleOpenMetricModal() }}
-      className="cursor-pointer"
+      className="cursor-pointer hover:brightness-125"
     >
       <SimpleCardBody>
         <MetricModal show={showModal} onClose={handleCloseMetricModal} onSave={handleUpdateMetric} defaultValues={{ name, indicator }} />
