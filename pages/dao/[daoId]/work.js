@@ -1,10 +1,10 @@
 import { PrimaryButton } from "@/components/Button"
-import { SimpleCard } from "@/components/Card"
+import { Card, SimpleCard } from "@/components/Card"
 import EmptyStateNoSubmissions from "@/components/EmptyStateNoSubmissions"
-import { FileInput } from "@/components/Input"
+import { FileInput, TextField, Label } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
-import { UserName, UserRectangleAvatar } from "@/components/PFP"
+import { UserName, UserAvatar } from "@/components/PFP"
 import ProofOfWorkModal, { ProofOfWorkVerificationModal } from "@/components/ProofOfWorkModal"
 import Spinner from "@/components/Spinner"
 import { TextArea } from "@/components/TextArea"
@@ -20,14 +20,41 @@ import { useCollection } from "react-firebase-hooks/firestore"
 import { useForm } from "react-hook-form"
 import Moment from "react-moment"
 
+const FeedExample = ({ summary, placeholder }) => {
+  const { account } = useWallet()
+
+  return (
+    <Card>
+      <div className="flex justify-between">
+        <div className="flex gap-4 text-xs items-center">
+          <UserAvatar account={account} size={24} />
+          <div>
+            <span className="inline-block"><UserName account={account} /></span>
+            {" "}
+            worked on {summary ? summary : <span className="text-daonative-gray-400">{placeholder}</span>}
+          </div>
+        </div>
+        <div className="text-xs text-daonative-subtitle flex items-center">
+          <Moment fromNow />
+        </div>
+      </div>
+    </Card>
+  )
+
+}
+
 const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting }, watch } = useForm()
   const requireAuthentication = useRequireAuthentication()
   const { account } = useWallet()
 
-  const submitProof = async (description, image) => {
+  const summaryPlaceholder = "onboarding 0x13.eth"
+  const summary = watch("summary")
+
+  const submitProof = async (summary, description, image) => {
     const imageUrl = image?.length === 1 ? await uploadToIPFS(image[0]) : ''
     const proof = {
+      summary,
       description,
       author: account,
       roomId,
@@ -42,7 +69,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
 
   const handleSubmitProof = async (data) => {
     await requireAuthentication()
-    await submitProof(data.description, data.image)
+    await submitProof(data.summary, data.description, data.image)
     onClose()
     reset()
   }
@@ -54,7 +81,17 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
         <ModalBody>
           <div className="flex flex-col gap-4">
             <div>
-              <TextArea label="Description" name="description" required register={register} />
+              <TextField label="Summary" name="summary" placeholder={summaryPlaceholder} required register={register} />
+              {errors.summary && (
+                <span className="text-xs text-red-400">You need to set a summary</span>
+              )}
+            </div>
+            <div>
+              <Label>Preview</Label>
+              <FeedExample summary={summary} placeholder={summaryPlaceholder} />
+            </div>
+            <div>
+              <TextArea label="What did you work on?" name="description" required register={register} />
               {errors.description && (
                 <span className="text-xs text-red-400">You need to set a description</span>
               )}
@@ -108,7 +145,7 @@ const WorkList = ({ workproofs, canVerify }) => {
               <SimpleCard className="hover:cursor-pointer opacity-[75%] hover:opacity-100" onClick={() => handleOpenDetailsModal(workproof)}>
                 <div className=' py-2 px-3'>
                   <div className="grid grid-cols-2 overflow-hidden">
-                    <UserRectangleAvatar account={workproof.author} />
+                    <UserAvatar account={workproof.author} />
                     <div className="flex flex-col gap-1 items-end ">
                       <p className="text-sm  max-w-[100%] truncate text-ellipsis">
                         <UserName account={workproof.author} />
