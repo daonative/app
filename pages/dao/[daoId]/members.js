@@ -4,7 +4,7 @@ import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../../../components/Button"
 import { InviteMemberModal } from "../../../components/InviteMemberModal"
 import { LayoutWrapper } from "../../../components/LayoutWrapper"
-import { UserAvatar, UserName } from "../../../components/PFP"
+import PFP, { UserAvatar, UserName } from "../../../components/PFP"
 import { useNewMembers } from "../../../lib/useMembers"
 import useMembership from "../../../lib/useMembership"
 import useRoomId from "../../../lib/useRoomId"
@@ -14,6 +14,7 @@ import { useRequireAuthentication } from "../../../lib/authenticate"
 import Moment from "react-moment"
 import axios from "axios"
 import { useSendTransaction } from "wagmi"
+import ShortAddress from "@/components/ShortAddress"
 
 
 const MemberItem = ({ member }) => {
@@ -58,6 +59,38 @@ const MemberList = ({ members }) => {
           <MemberItem key={idx} member={member} />
         ))}
     </ul>)
+}
+
+const TokenHolderItem = ({ holder }) => {
+  const account = holder.account
+
+  return (
+    <li >
+      <SimpleCard className="h-full">
+        <SimpleCardBody>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-3 min-w-max items-start font-semibold text-sm">
+              <PFP address={account} size={40} />
+              <div>
+                <ShortAddress>{account}</ShortAddress>
+              </div>
+            </div>
+          </div>
+        </SimpleCardBody>
+      </SimpleCard>
+    </li >
+  )
+}
+
+const TokenHoldersList = ({ holders }) => {
+  return (
+    <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+      {
+        holders?.map((holder, idx) => (
+          <TokenHolderItem key={idx} holder={holder} />
+        ))}
+    </ul>
+  )
 }
 
 export const Members = () => {
@@ -125,7 +158,9 @@ export const Members = () => {
               {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
             </div>
           </div>
-          <MemberList members={membersAndTokenHolders} />
+          <MemberList members={members} />
+          <h2 className="text-2xl">Eligible members</h2>
+          <TokenHoldersList holders={tokenHolders} />
         </div>
       </div>
     </>
