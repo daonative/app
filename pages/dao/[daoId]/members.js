@@ -113,7 +113,7 @@ export const Members = () => {
       const tokenGates = tokenGatesSnap.docs
         .map(gate => gate.data())
         .filter(gate => gate.chainId === 1)
-        .map(gate => ({tokenAddress: gate.contractAddress, amount: "1"}))
+        .map(gate => ({ tokenAddress: gate.contractAddress, amount: "1" }))
 
       if (tokenGates.length === 0) return
 
@@ -123,7 +123,7 @@ export const Members = () => {
         requirements: tokenGates
       })
 
-      const tokenHolders = holdersResponse.data.addresses.map(address => ({account: address}))
+      const tokenHolders = holdersResponse.data.addresses.map(address => ({ account: address }))
       setTokenHolders(tokenHolders)
     }
 
@@ -159,8 +159,13 @@ export const Members = () => {
             </div>
           </div>
           <MemberList members={members} />
-          <h2 className="text-2xl">Eligible members</h2>
-          <TokenHoldersList holders={tokenHolders} />
+          {tokenHolders.length > 0 && (
+            <>
+              <h2 className="text-2xl">Token Holders</h2>
+              <TokenHoldersList holders={tokenHolders} />
+            </>
+          )
+          }
         </div>
       </div>
     </>

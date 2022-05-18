@@ -123,7 +123,7 @@ const DiscordConnectButton = () => {
   )
 }
 
-const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
+const ProfileModal = ({ show, onClose }) => {
   const db = getFirestore()
   const { account } = useWallet()
   const [submissionCount, setSubmissionCount] = useState(0)
@@ -222,7 +222,7 @@ const ProfileModal = ({ show, onClose, selectedIndex, onChange }) => {
 
       </ModalTitle>
       <ModalBody>
-        <Tab.Group selectedIndex={selectedIndex} onChange={onChange}>
+        <Tab.Group>
           <Tab.List className={'flex gap-3'}>
             <Tab className={({ selected }) => (classNames(
               selected
@@ -330,8 +330,7 @@ export const ProfileModalProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false);
 
-  const openProfileModal = (tab) => {
-    if (tab === "settings") setSelectedIndex(1)
+  const openProfileModal = () => {
     setIsOpen(true)
   }
   const closeProfileModal = () => setIsOpen(false)

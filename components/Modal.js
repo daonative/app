@@ -12,6 +12,10 @@ export const ModalBody = ({ children }) => (
   <div className="p-4">{children}</div>
 )
 
+export const ModalTabs = ({ children }) => (
+  <div className="px-4">{children}</div>
+)
+
 export const ModalActionFooter = ({ children }) => (
   <div className="flex justify-end p-4">
     {children}
