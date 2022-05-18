@@ -1,5 +1,5 @@
-import { addDoc, collection, getFirestore } from "firebase/firestore"
-import { useState } from "react"
+import { addDoc, collection, doc, getDocs, getFirestore, query, where } from "firebase/firestore"
+import { useEffect, useState } from "react"
 import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../../../components/Button"
 import { InviteMemberModal } from "../../../components/InviteMemberModal"
@@ -12,6 +12,8 @@ import { SimpleCard, SimpleCardBody } from "../../../components/Card"
 import { useRouter } from "next/router"
 import { useRequireAuthentication } from "../../../lib/authenticate"
 import Moment from "react-moment"
+import axios from "axios"
+import { useSendTransaction } from "wagmi"
 
 
 const MemberItem = ({ member }) => {
@@ -69,6 +71,34 @@ export const Members = () => {
   const [members] = useNewMembers()
   const requireAuthentication = useRequireAuthentication()
 
+  const [tokenHolders, setTokenHolders] = useState([])
+
+  useEffect(() => {
+    const retrieveTokenGatedMembers = async () => {
+      const db = getFirestore()
+      const tokenGatesSnap = await getDocs(query(collection(db, 'gates'), where('roomId', '==', roomId)))
+      const tokenGates = tokenGatesSnap.docs
+        .map(gate => gate.data())
+        .filter(gate => gate.chainId === 1)
+        .map(gate => ({tokenAddress: gate.contractAddress, amount: "1"}))
+
+      const holdersResponse = await axios.post('https://balancy.guild.xyz/api/xyzHolders', {
+        logic: 'OR',
+        limit: 0,
+        requirements: tokenGates
+      })
+
+      const tokenHolders = holdersResponse.data.addresses.map(address => ({account: address}))
+      setTokenHolders(tokenHolders)
+    }
+
+    if (!roomId) return
+
+    retrieveTokenGatedMembers()
+  }, [roomId])
+
+  const membersAndTokenHolders = members.concat(tokenHolders)
+
 
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
@@ -93,7 +123,7 @@ export const Members = () => {
               {isAdmin && (<PrimaryButton onClick={handleModal}>Add member</PrimaryButton>)}
             </div>
           </div>
-          <MemberList members={members} />
+          <MemberList members={membersAndTokenHolders} />
         </div>
       </div>
     </>
