@@ -132,9 +132,6 @@ export const Members = () => {
     retrieveTokenGatedMembers()
   }, [roomId])
 
-  const membersAndTokenHolders = members.concat(tokenHolders)
-
-
   const openModal = () => setOpen(true)
   const closeModal = () => setOpen(false)
 

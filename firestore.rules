@@ -63,6 +63,11 @@ service cloud.firestore {
       allow read: if false;
       allow create: if isAdmin(request.resource.data.roomId);
     }
+    match /gates/{gateId} {
+      allow create: if isAdmin(request.resource.data.roomId);
+      allow delete: if isAdmin(resource.data.roomId);
+      allow read: if true;
+    }
     match /rewards/{inviteId} {
       allow create: if isAdmin(request.resource.data.roomId);
       allow delete: if isAdmin(resource.data.roomId)
