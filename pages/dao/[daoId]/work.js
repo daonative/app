@@ -5,11 +5,12 @@ import { FileInput } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
 import { UserName, UserRectangleAvatar } from "@/components/PFP"
-import ProofOfWorkModal from "@/components/ProofOfWorkModal"
+import ProofOfWorkModal, { ProofOfWorkVerificationModal } from "@/components/ProofOfWorkModal"
 import Spinner from "@/components/Spinner"
 import { TextArea } from "@/components/TextArea"
 import { useRequireAuthentication } from "@/lib/authenticate"
 import { uploadToIPFS } from "@/lib/uploadToIPFS"
+import useMembership from "@/lib/useMembership"
 import { useWallet } from "@/lib/useWallet"
 import { BanIcon, CheckIcon, ClockIcon, PlusIcon } from "@heroicons/react/solid"
 import { addDoc, collection, getFirestore, orderBy, query, serverTimestamp, where } from "firebase/firestore"
@@ -75,7 +76,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, roomId }) => {
   )
 }
 
-const WorkList = ({ workproofs }) => {
+const WorkList = ({ workproofs, canVerify }) => {
   const [proofOfWorkModalOpen, setProofOfWorkModalOpen] = useState(false)
   const [proofOfWorkToShow, setProofOfWorkToShow] = useState(null)
 
@@ -91,7 +92,11 @@ const WorkList = ({ workproofs }) => {
 
   return (
     <>
-      <ProofOfWorkModal show={proofOfWorkModalOpen} onClose={handleCloseDetailsModal} workproof={proofOfWorkToShow} />
+      {canVerify ? (
+        <ProofOfWorkVerificationModal show={proofOfWorkModalOpen} onClose={handleCloseDetailsModal} workproof={proofOfWorkToShow} />
+      ) : (
+        <ProofOfWorkModal show={proofOfWorkModalOpen} onClose={handleCloseDetailsModal} workproof={proofOfWorkToShow} />
+      )}
       <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
         {workproofs?.map((workproof, idx) => {
           const verifications = workproof?.verifications ? Object.values(workproof.verifications) : []
@@ -144,6 +149,7 @@ const WorkList = ({ workproofs }) => {
 }
 
 const WorkPage = () => {
+  const { account } = useWallet()
   const [showProofModal, setShowProofModal] = useState(false)
   const { query: params } = useRouter()
   const roomId = params.daoId || ''
@@ -151,9 +157,12 @@ const WorkPage = () => {
   const handleOpenProofModal = () => setShowProofModal(true)
   const handleCloseProofModal = () => setShowProofModal(false)
 
+  const membership = useMembership(account, roomId)
+  const canVerify = membership?.roles?.includes('admin') || membership?.roles?.includes('verifier')
+
   const db = getFirestore()
   const [workproofsSnapshot] = useCollection(
-    query(collection(db, 'workproofs'), where('roomId', '==', roomId), orderBy('created', 'desc'))
+    query(collection(db, 'workproofs'), where('roomId', '==', roomId), where('challengeId', '==', null), orderBy('created', 'desc'))
   )
   const workproofs = workproofsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id })) || []
 
@@ -172,7 +181,7 @@ const WorkPage = () => {
               </button>
             </div>
           </div>
-          <WorkList workproofs={workproofs} />
+          <WorkList workproofs={workproofs} canVerify={canVerify} />
         </div>
       </div>
     </LayoutWrapper >
