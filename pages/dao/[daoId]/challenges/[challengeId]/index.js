@@ -12,7 +12,7 @@ import { LayoutWrapper } from '../../../../../components/LayoutWrapper'
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from '../../../../../components/Modal'
 import { UserName, UserRectangleAvatar } from '../../../../../components/PFP'
 import Spinner from '../../../../../components/Spinner'
-import { useRequireAuthentication } from '../../../../../lib/authenticate'
+import { useRequireAccess, useRequireAuthentication } from '../../../../../lib/authenticate'
 import { uploadToIPFS } from '../../../../../lib/uploadToIPFS'
 import useMembership from '../../../../../lib/useMembership'
 import Link from 'next/link'
@@ -28,6 +28,7 @@ import ProofOfWorkModal from '@/components/ProofOfWorkModal'
 const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
   const requireAuthentication = useRequireAuthentication()
+  const { requireAccess } = useRequireAccess()
   const { account } = useWallet()
 
   const submitProof = async (description, image) => {
@@ -47,6 +48,7 @@ const SubmitProofOfWorkModal = ({ show, onClose, challenge }) => {
 
   const handleSubmitProof = async (data) => {
     await requireAuthentication()
+    await requireAccess()
     await submitProof(data.description, data.image)
     onClose()
     reset()
@@ -259,14 +261,12 @@ const ChallengeDetails = () => {
   )
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id }))
 
-  const { account } = useWallet()
-  const membership = useMembership(account, roomId)
   const requireAuthentication = useRequireAuthentication()
-  const isMember = !!membership
-  const isAdmin = membership?.roles?.includes('admin')
+  const { requireAccess, hasAccess, roles} = useRequireAccess(roomId)
+  const isAdmin = roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
 
-  const canVerify = membership?.roles?.includes('admin') || membership?.roles?.includes('verifier')
+  const canVerify = roles?.includes('admin') || roles?.includes('verifier')
   const hasWorkToVerify = submissions && submissions?.length > 0
 
   const handleOpenProofModal = () => setShowProofModal(true)
@@ -286,6 +286,7 @@ const ChallengeDetails = () => {
   const handleDeactivate = async () => {
     try {
       await requireAuthentication()
+      await requireAccess()
       await updateChallenge('closed')
       toast.success('Challenge is now deactivated')
     } catch (e) {
@@ -296,6 +297,7 @@ const ChallengeDetails = () => {
   const handleActivate = async () => {
     try {
       await requireAuthentication()
+      await requireAccess()
       await updateChallenge('open')
       toast.success('Challenge is now active')
     } catch (e) {
@@ -344,7 +346,7 @@ const ChallengeDetails = () => {
                     </a>
                   </Link>
                 )}
-                {isMember && isEnabled && (
+                {hasAccess && isEnabled && (
                   <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
                     <PlusIcon className="w-4 h-4" />
                   </button>

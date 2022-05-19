@@ -22,18 +22,33 @@ const hasERC1155Token = async (chainId, contractAddress, tokenId, owner) => {
   return balance.gt(0)
 }
 
+const hasERC721Token = async (chainId, contractAddress, owner) => {
+  const iface = new ethers.utils.Interface([
+    'function balanceOf(address _owner) external view returns (uint256)'
+  ])
+  const readonlyProvider = getReadonlyProvider(chainId)
+  const contract = new ethers.Contract(contractAddress, iface, readonlyProvider)
+  const balance = await contract.balanceOf(owner)
+  return balance.gt(0)
+}
+
 const checkGate = async (gate, account) => {
-  // We only support ERC1155 for now
-  if (gate.type !== "ERC1155") return false
+  if (gate.type === "ERC1155") {
+    const { chainId, contractAddress, tokenId } = gate
+    return hasERC1155Token(chainId, contractAddress, tokenId, account)
+  }
 
-  const { chainId, contractAddress, tokenId} = gate
+  if (gate.type === "ERC721") {
+    const { chainId, contractAddress } = gate
+    return hasERC721Token(chainId, contractAddress, account)
+  }
 
-  return hasERC1155Token(chainId, contractAddress, tokenId, account)
+  return false
 }
 
 const getGates = async (roomId) => {
   const tokenGates = await db.collection('gates').where('roomId', '==', roomId).get()
-  return tokenGates.docs.map(doc => ({ gateId: doc.id, ...doc.data()}))
+  return tokenGates.docs.map(doc => ({ gateId: doc.id, ...doc.data() }))
 }
 
 export const checkGates = async (roomId, account) => {
