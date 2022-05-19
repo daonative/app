@@ -10,6 +10,9 @@ import { classNames } from "@/lib/utils";
 import { Tab } from "@headlessui/react";
 import { useAccount } from "wagmi";
 import { useCollection } from "react-firebase-hooks/firestore";
+import { TrashIcon } from '@heroicons/react/solid'
+import toast from "react-hot-toast";
+
 
 const computeTabStyling = (selected) => {
   return classNames(
@@ -39,7 +42,13 @@ const AdvancedSettings = ({ roomId }) => {
     await requireAuthentication()
     const requirements = { chainId: 1, contractAddress: data.contractAddress, roomId, tokenId: 1, type: data.type, created: serverTimestamp(), creator: account.address }
     const gates = collection(db, 'gates')
-    await addDoc(gates, requirements)
+    try {
+      await addDoc(gates, requirements)
+      toast.success('Successfully added token-gate')
+    } catch (e) {
+      console.error(e)
+      toast.error(e.message)
+    }
   };
 
   const handleDelete = async (docId) => {
@@ -51,10 +60,10 @@ const AdvancedSettings = ({ roomId }) => {
   return (
 
     <form onSubmit={handleSubmit(handleUpdateAdvancedSettings)}>
-      <div className="flex flex-col gap-4 mt-8">
-        <div className="text-daonative-subtitle">Active token-gates</div>
-        {gates.map(gate => <div key={gate.gateId} className="flex gap-3"><div >{gate.contractAddress}</div><div className="cursor-pointer" onClick={() => handleDelete(gate.gateId)}>x</div></div>) }
-        <div className="flex items-center gap-5">
+      <div className="flex flex-col gap-4">
+        <div className="text-daonative-subtitle text-sm">Active token-gates</div>
+        {gates.length > 0 ? gates.map(gate => <div key={gate.gateId} className="flex gap-3"><div >{gate.contractAddress}</div><div className="cursor-pointer" onClick={() => handleDelete(gate.gateId)}><TrashIcon className="h-5 w-5 text-daonativewhite" /></div></div>) : <div className="text-sm">There are no active token gates.</div>}
+        <div className="flex items-end gap-5">
           <div>
             <TextField label="Enter the contract address" name="contractAddress" placeholder={`0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D`} register={register} required />
           </div>
@@ -64,14 +73,15 @@ const AdvancedSettings = ({ roomId }) => {
               <option disabled value="ERC1155">ERC1155 (coming soon)</option>
             </Select>
           </div>
+          <PrimaryButton type="submit">{'Add'}</PrimaryButton>
         </div>
-      </div>
-      <div className="flex gap-4 justify-end py-4 ">
-        <PrimaryButton type="submit">{isSubmitSuccessful ? 'Success' : 'Save'}</PrimaryButton>
       </div>
     </form>
   )
 }
+
+
+
 
 export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
   const { discordNotificationWebhook, twitterHandle, discordServer } = room;
@@ -142,7 +152,7 @@ export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
                     <TextField label="Twitter Handle" name="twitterHandle" register={register} placeholder="@DAOnative" />
                   </div>
                   <div>
-                    <TextField type="url" label="Discord Server" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
+                    <TextField type="url" label="Enter your discord invite link" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
                   </div>
                 </div>
                 <div className="flex gap-4 justify-end py-4 ">
