@@ -111,10 +111,9 @@ const SubmissionsList = ({ submissions }) => {
               <SimpleCard
                 onClick={() => handleOpenEditModal(submission)}
                 className={classNames(
-                  "hover:cursor-pointer",
-                  "hover:cursor-pointer opacity-[75%] hover:opacity-100")}
+                  "hover:cursor-pointer hover:brightness-125")}
               >
-                <div className=' py-2 px-3'>
+                <div className=' py-4 px-4'>
                   <div className="grid grid-cols-2 overflow-hidden">
                     <UserRectangleAvatar account={submission.author} />
                     <div className="flex flex-col gap-1 items-end ">
@@ -261,7 +260,7 @@ const ChallengeDetails = () => {
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id }))
 
   const requireAuthentication = useRequireAuthentication()
-  const { requireAccess, hasAccess, roles} = useRequireAccess(roomId)
+  const { requireAccess, hasAccess, roles } = useRequireAccess(roomId)
   const isAdmin = roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
 
@@ -308,19 +307,25 @@ const ChallengeDetails = () => {
     <LayoutWrapper>
       <EditChallengeModal show={showEditChallengeModal} onClose={handleCloseEditChallengeModal} challenge={{ ...challenge, challengeId }} />
       <SubmitProofOfWorkModal show={showProofModal} onClose={handleCloseProofModal} challenge={{ ...challenge, challengeId }} />
-      <div className="mx-auto px-4 sm:px-6 md:px-8">
-        <div className="flex">
-          <div className="flex justify-center w-full max-w-2xl mx-auto">
-            <h1 className="text-2xl">{challenge?.title}</h1>
-          </div>
-          <div className='flex gap-3'>
-            {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
-            {isAdmin && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
-            {isAdmin && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+      <div className="mx-auto sm:px-6 md:px-8">
+        <div
+          className='py-4'
+          style={{ borderBottom: '1px solid rgba(49, 49, 74, 0.4)', }}
+        >
+          <div className="flex">
+            <div className="flex w-full mx-auto">
+              <h1 className="text-2xl">{challenge?.title}</h1>
+            </div>
+            <div className='flex gap-3'>
+              {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
+              {isAdmin && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
+              {isAdmin && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+            </div>
           </div>
         </div>
-        <div className="flex flex-col w-full pt-16 gap-4 max-w-2xl mx-auto">
+        <div className="flex flex-col w-full pt-8 gap-4 mx-auto">
           <div className="w-full">
+            <div className='text-daonative-subtitle pb-2'>Description</div>
             <div className="prose prose-sm prose-daonative-text prose-invert text-daonative-text">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {challenge?.description}
@@ -356,7 +361,7 @@ const ChallengeDetails = () => {
           </div>
         </div>
       </div>
-    </LayoutWrapper>
+    </LayoutWrapper >
   )
 }
 
