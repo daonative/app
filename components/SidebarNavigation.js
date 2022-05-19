@@ -9,6 +9,7 @@ import {
   LightningBoltIcon,
   FireIcon,
   HeartIcon,
+  CogIcon
 } from '@heroicons/react/solid'
 
 import DAOnativeLogo from '../public/DAOnativeLogo.svg'
@@ -77,6 +78,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Rewards', disabled: !roomId, href: rewardsUrl, icon: HeartIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     // { name: 'Work', disabled: !roomId, href: workUrl, icon: BriefcaseIcon, match: "^/dao/[a-zA-Z0-9]*/work$" },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
+    { name: 'Settings', disabled: false, comingSoon: false, href: '#', icon: CogIcon },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
     // { name: 'Members', disabled: false, comingSoon: true, href: '#', icon: UsersIcon },
   ]

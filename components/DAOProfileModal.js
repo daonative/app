@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import { computeTabStyling } from "../lib/computeTabStyling";
 
 
-const AdvancedSettingsForm = ({ roomId }) => {
+export const AdvancedSettingsForm = ({ roomId }) => {
   const { data: account } = useAccount()
   const { handleSubmit, register, formState: { isSubmitSuccessful } } = useForm({ defaultValues: {} });
   const requireAuthentication = useRequireAuthentication();
@@ -72,7 +72,7 @@ const AdvancedSettingsForm = ({ roomId }) => {
 }
 
 
-const DAOProfileForm = ({ roomId, room }) => {
+export const DAOProfileForm = ({ roomId, room }) => {
   const { discordNotificationWebhook, twitterHandle, discordServer } = room;
   const { handleSubmit, register, watch } = useForm({ defaultValues: { discordNotificationWebhook, twitterHandle, discordServer } });
   const imageFile = watch('image');
