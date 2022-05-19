@@ -7,7 +7,6 @@ import { PrimaryButton, SecondaryButton } from "../components/Button"
 import { UserName } from "../components/PFP"
 import { Modal, ModalBody, ModalTitle } from "./Modal"
 
-import { classNames } from "../lib/utils"
 import { useForm } from "react-hook-form"
 import { useRequireAuthentication } from "../lib/authenticate"
 import Spinner from "./Spinner"

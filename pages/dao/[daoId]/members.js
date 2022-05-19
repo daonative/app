@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, query, where } from "firebase/firestore"
+import { addDoc, collection, getDocs, getFirestore, query, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useWallet } from "@/lib/useWallet"
 import { PrimaryButton } from "../../../components/Button"
@@ -13,7 +13,6 @@ import { useRouter } from "next/router"
 import { useRequireAuthentication } from "../../../lib/authenticate"
 import Moment from "react-moment"
 import axios from "axios"
-import { useSendTransaction } from "wagmi"
 import ShortAddress from "@/components/ShortAddress"
 
 

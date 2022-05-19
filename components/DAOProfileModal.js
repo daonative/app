@@ -1,8 +1,8 @@
 import { getFirestore, doc, updateDoc, collection, addDoc, serverTimestamp, query, where, deleteDoc } from "firebase/firestore";
 import { useForm } from 'react-hook-form';
-import { Modal, ModalActionFooter, ModalBody, ModalTabs, ModalTitle } from './Modal';
+import { Modal, ModalBody, ModalTabs, ModalTitle } from './Modal';
 import { useRequireAuthentication } from '../lib/authenticate';
-import { PrimaryButton, SecondaryButton } from './Button';
+import { PrimaryButton } from './Button';
 import { uploadToIPFS } from '../lib/uploadToIPFS';
 import { FileInput, Select, TextField } from '@/components/Input';
 import PFP from "./PFP";
