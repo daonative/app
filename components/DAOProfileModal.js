@@ -6,24 +6,15 @@ import { PrimaryButton, SecondaryButton } from './Button';
 import { uploadToIPFS } from '../lib/uploadToIPFS';
 import { FileInput, Select, TextField } from '@/components/Input';
 import PFP from "./PFP";
-import { classNames } from "@/lib/utils";
 import { Tab } from "@headlessui/react";
 import { useAccount } from "wagmi";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { TrashIcon } from '@heroicons/react/solid'
 import toast from "react-hot-toast";
+import { computeTabStyling } from "../lib/computeTabStyling";
 
 
-const computeTabStyling = (selected) => {
-  return classNames(
-    selected
-      ? 'border-indigo-500 text-indigo-600'
-      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-  )
-}
-
-const AdvancedSettings = ({ roomId }) => {
+const AdvancedSettingsForm = ({ roomId }) => {
   const { data: account } = useAccount()
   const { handleSubmit, register, formState: { isSubmitSuccessful } } = useForm({ defaultValues: {} });
   const requireAuthentication = useRequireAuthentication();
@@ -81,16 +72,12 @@ const AdvancedSettings = ({ roomId }) => {
 }
 
 
-
-
-export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
+const DAOProfileForm = ({ roomId, room }) => {
   const { discordNotificationWebhook, twitterHandle, discordServer } = room;
   const { handleSubmit, register, watch } = useForm({ defaultValues: { discordNotificationWebhook, twitterHandle, discordServer } });
   const imageFile = watch('image');
   const imageUri = imageFile?.length > 0 ? URL.createObjectURL(imageFile[0]) : "";
   const requireAuthentication = useRequireAuthentication();
-
-
 
   const uploadProfilePicture = async (image) => {
     if (image?.length !== 1)
@@ -111,10 +98,49 @@ export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
   const handleUpdateDAOProfile = async (data) => {
     await requireAuthentication();
     const { image, ...daoProfile } = data;
-    await updateDAOProfile(image, daoProfile);
-    onClose();
+    try {
+
+      await updateDAOProfile(image, daoProfile);
+      toast.success('Profile Updated')
+    } catch (e) {
+      toast.error(e.message)
+    }
   };
 
+
+
+  return (
+    <form onSubmit={handleSubmit(handleUpdateDAOProfile)}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-5">
+          <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
+          <div>
+            <label className="block text-sm font-medium pb-2">Choose a profile picture</label>
+            <FileInput name="image" register={register} />
+          </div>
+        </div>
+        <div>
+          <TextField type="url" label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
+        </div>
+        <div>
+          <TextField label="Twitter Handle" name="twitterHandle" register={register} placeholder="@DAOnative" />
+        </div>
+        <div>
+          <TextField type="url" label="Enter your discord invite link" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
+        </div>
+      </div>
+      <div className="flex gap-4 justify-end py-4 ">
+        <PrimaryButton type="submit">Save</PrimaryButton>
+      </div>
+    </form>
+
+
+  )
+}
+
+
+
+export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
   return (
     <Modal show={show} onClose={onClose} >
 
@@ -136,35 +162,12 @@ export const DAOProfileModal = ({ room, roomId, show, onClose }) => {
         <Tab.Panels>
           <Tab.Panel>
             <ModalBody>
-              <form onSubmit={handleSubmit(handleUpdateDAOProfile)}>
-                <div className="flex flex-col gap-4 mt-8">
-                  <div className="flex items-center gap-5">
-                    <DAOProfilePicture profilePictureURI={imageUri || room.profilePictureURI} roomId={roomId} />
-                    <div>
-                      <label className="block text-sm font-medium pb-2">Choose a profile picture</label>
-                      <FileInput name="image" register={register} />
-                    </div>
-                  </div>
-                  <div>
-                    <TextField type="url" label="Discord Webhook URL" name="discordNotificationWebhook" register={register} placeholder="https://discord.com/api/webhooks/..." />
-                  </div>
-                  <div>
-                    <TextField label="Twitter Handle" name="twitterHandle" register={register} placeholder="@DAOnative" />
-                  </div>
-                  <div>
-                    <TextField type="url" label="Enter your discord invite link" name="discordServer" register={register} placeholder="https://discord.gg/vRyrqCQhWd" />
-                  </div>
-                </div>
-                <div className="flex gap-4 justify-end py-4 ">
-                  <SecondaryButton onClick={onClose}>Close</SecondaryButton>
-                  <PrimaryButton type="submit">Save</PrimaryButton>
-                </div>
-              </form>
+              <DAOProfileForm roomId={roomId} room={room} />
             </ModalBody>
           </Tab.Panel>
           <Tab.Panel>
             <ModalBody>
-              <AdvancedSettings roomId={roomId} />
+              <AdvancedSettingsForm roomId={roomId} />
             </ModalBody>
           </Tab.Panel>
         </Tab.Panels>
