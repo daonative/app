@@ -36,15 +36,19 @@ service cloud.firestore {
     match /workproofs/{workproofId} {
       allow create: if
         isMember(request.resource.data.roomId)
-        && getChallenge(request.resource.data.challengeId).get("status", "open") != "closed"
+        // is author
         && request.resource.data.author == request.auth.uid
+        // is integer
         && request.resource.data.weight is int
-        // If a challenge is configured, the work weight must equal the challenge weight
-        && request.resource.data.challengeId != null ? (
-            request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
-          ) : (
-            true
-          )
+        && ((
+          // is linked to challenge
+          request.resource.data.challengeId != null
+          && getChallenge(request.resource.data.challengeId).get("status", "open") != "closed"
+          && request.resource.data.weight == getChallenge(request.resource.data.challengeId).weight
+        ) ||
+          // is not linked to challenge
+          request.resource.data.challengeId == null
+        )
       allow update: if (
           (isAdmin(resource.data.roomId) || isVerifier(resource.data.roomId))
           && resource.data.author != request.auth.uid
