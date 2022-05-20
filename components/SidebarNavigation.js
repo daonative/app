@@ -69,6 +69,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const rewardsUrl = roomId ? `/dao/${roomId}/rewards` : '/'
   //const workUrl = roomId ? `/dao/${roomId}/work` : '/'
   const nftsUrl = roomId ? `/dao/${roomId}/nfts` : '/nfts'
+  const settingsUrl = roomId ? `/dao/${roomId}/settings` : '/'
 
   const navigation = [
     { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$|/$" },
@@ -77,8 +78,8 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Members', disabled: !roomId, href: `/dao/${roomId}/members`, icon: UsersIcon, match: "^/dao/[a-zA-Z0-9]*/members$" },
     { name: 'Rewards', disabled: !roomId, href: rewardsUrl, icon: HeartIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     // { name: 'Work', disabled: !roomId, href: workUrl, icon: BriefcaseIcon, match: "^/dao/[a-zA-Z0-9]*/work$" },
+    { name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
-    { name: 'Settings', disabled: false, comingSoon: false, href: `/dao/${roomId}/settings`, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
     // { name: 'Members', disabled: false, comingSoon: true, href: '#', icon: UsersIcon },
   ]
