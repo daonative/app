@@ -22,10 +22,9 @@ const addMember = async (account, roomId, gates) => {
 }
 
 const handler = async (req, res) => {
-  const account = req.uid
-  const { roomId } = req.body
+  const { roomId, account } = req.body
 
-  if (!roomId) {
+  if (!roomId || !account) {
     return res.status(400).json({ error: 'Missing one of the required parameters' })
   }
 
@@ -42,4 +41,4 @@ const handler = async (req, res) => {
   res.status(200).json({ roomId });
 }
 
-export default requireAuthenticationMiddleware(handler);
+export default handler;

@@ -260,7 +260,7 @@ const ChallengeDetails = () => {
   const submissions = submissionsSnapshot?.docs.map(doc => ({ ...doc.data(), workproofId: doc.id }))
 
   const requireAuthentication = useRequireAuthentication()
-  const { requireAccess, hasAccess, roles } = useRequireAccess(roomId)
+  const { requireAccess, hasAccess, roles} = useRequireAccess()
   const isAdmin = roles?.includes('admin')
   const isEnabled = challenge?.status !== "closed"
 
@@ -350,7 +350,7 @@ const ChallengeDetails = () => {
                     </a>
                   </Link>
                 )}
-                {hasAccess && isEnabled && (
+                {hasAccess && true && (
                   <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
                     <PlusIcon className="w-4 h-4" />
                   </button>

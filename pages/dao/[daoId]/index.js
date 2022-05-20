@@ -73,13 +73,13 @@ const DAOProfileButton = ({ roomId, room, canEditProfile }) => {
 
 const ClaimMembershipButton = ({ roomId, onClick = () => { } }) => {
   const requireAuthentication = useRequireAuthentication()
+  const { account } = useWallet()
 
   const joinRoom = async () => {
     const toastId = toast.loading('Joining the DAO')
     try {
-      const tokenId = await requireAuthentication()
-      const authHeaders = { headers: { 'Authorization': `Bearer ${tokenId}` } }
-      await axios.post('/api/tokengating/join', { roomId }, authHeaders)
+      await requireAuthentication()
+      await axios.post('/api/tokengating/join', { roomId, account })
       toast.success('You are now a member!', { id: toastId })
     } catch (e) {
       toast.error('Unable to join the room', { id: toastId })
@@ -149,6 +149,7 @@ const Dashboard = ({ dao: initialDAO }) => {
     userNameBanner()
   }, [account, openProfileModal])
 
+  /*
   useEffect(() => {
     const checkCanJoin = async () => {
       const db = getFirestore()
@@ -188,6 +189,7 @@ const Dashboard = ({ dao: initialDAO }) => {
 
     checkCanJoin()
   }, [account, roomId]);
+  */
 
   return (
     <>
@@ -233,7 +235,6 @@ const Dashboard = ({ dao: initialDAO }) => {
           <Members />
         </div>
       </LayoutWrapper>
-
     </>
   )
 }
