@@ -67,7 +67,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
   const challengesUrl = roomId ? `/dao/${roomId}/challenges` : '/'
   const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : '/'
   const rewardsUrl = roomId ? `/dao/${roomId}/rewards` : '/'
-  //const workUrl = roomId ? `/dao/${roomId}/work` : '/'
+  const workUrl = roomId ? `/dao/${roomId}/work` : '/'
   const nftsUrl = roomId ? `/dao/${roomId}/nfts` : '/nfts'
   const settingsUrl = roomId ? `/dao/${roomId}/settings` : '/'
 
@@ -78,10 +78,9 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Members', disabled: !roomId, href: `/dao/${roomId}/members`, icon: UsersIcon, match: "^/dao/[a-zA-Z0-9]*/members$" },
     { name: 'Rewards', disabled: !roomId, href: rewardsUrl, icon: HeartIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     // { name: 'Work', disabled: !roomId, href: workUrl, icon: BriefcaseIcon, match: "^/dao/[a-zA-Z0-9]*/work$" },
-    { name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
+    //{ name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
-    // { name: 'Members', disabled: false, comingSoon: true, href: '#', icon: UsersIcon },
   ]
 
   const NavLink = ({ disabled = false, href, current, children }) => (
