@@ -5,7 +5,7 @@ export const Button = ({ children, onClick, type = "button", className = "" }) =
     type={type}
     className={
       classNames(
-        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-md hover:opacity-75 focus:outline-none text-daonative-white h-max",
+        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-md hover:brightness-125 focus:outline-none text-daonative-white h-max",
         className
       )
     }
