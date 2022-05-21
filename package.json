@@ -40,7 +40,7 @@
     "remark-gfm": "^3.0.1",
     "tailwindcss": "^3.0.24",
     "use-wallet": "^0.13.4",
-    "wagmi": "^0.3.5",
+    "wagmi": "^0.4.0",
     "zustand": "^3.7.2"
   },
   "devDependencies": {
