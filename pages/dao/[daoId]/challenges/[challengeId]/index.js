@@ -325,7 +325,6 @@ const ChallengeDetails = () => {
         </div>
         <div className="flex flex-col w-full pt-8 gap-4 mx-auto">
           <div className="w-full">
-            <div className='text-daonative-subtitle pb-2'>Description</div>
             <div className="prose prose-sm prose-daonative-text prose-invert text-daonative-text">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {challenge?.description}
