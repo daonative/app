@@ -4,6 +4,7 @@ import EmptyStateNoSubmissions from "@/components/EmptyStateNoSubmissions"
 import { FileInput, TextField, Label } from "@/components/Input"
 import { LayoutWrapper } from "@/components/LayoutWrapper"
 import { Modal, ModalActionFooter, ModalBody, ModalTitle } from "@/components/Modal"
+import { PageHeader } from "@/components/PageHeader"
 import { UserName, UserAvatar } from "@/components/PFP"
 import ProofOfWorkModal, { ProofOfWorkVerificationModal } from "@/components/ProofOfWorkModal"
 import Spinner from "@/components/Spinner"
@@ -207,10 +208,11 @@ const WorkPage = () => {
     <LayoutWrapper>
       <SubmitProofOfWorkModal show={showProofModal} onClose={handleCloseProofModal} roomId={roomId} />
       <div className="mx-auto px-4 sm:px-6 md:px-8">
-        <div className="w-full">
-          <div className="flex justify-between py-4">
-            <div>
-              <h2 className="text-xl text-daonative-white">Proofs of Work</h2>
+        <PageHeader>
+          <div className="flex justify-between py-4 items-end">
+            <div >
+              <h2 className="text-xl font-space font-semibold text-white">Proof of Work</h2>
+              <h2 className="text-sm text-slate-200 text-justify max-w-2xl">Submit work you do for this community outside of challenges. This work {`doesn't`} directly yield any XPs but makes it easy to keep track of your efforts and can be used for retro-active rewards. </h2>
             </div>
             <div className="flex gap-4 items-center">
               <button className="bg-daonative-primary-blue flex justify-center items-center rounded-full h-8 w-8 p-0" onClick={handleOpenProofModal}>
@@ -218,6 +220,8 @@ const WorkPage = () => {
               </button>
             </div>
           </div>
+        </PageHeader>
+        <div className="mt-6">
           <WorkList workproofs={workproofs} canVerify={canVerify} />
         </div>
       </div>
