@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/PageHeader"
 import { CheckIcon } from "@heroicons/react/solid"
 import { collection, getFirestore, orderBy, query } from "firebase/firestore"
 import { useCollectionData } from "react-firebase-hooks/firestore"
@@ -71,10 +72,9 @@ const Leaderboard = () => {
     <LayoutWrapper>
       <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between">
-            <h2 className="text-2xl">Leaderboard</h2>
-            <PrimaryButton className="invisible">Claim reward</PrimaryButton>
-          </div>
+          <PageHeader>
+            <h2 className="text-2xl pb-2">Leaderboard</h2>
+          </PageHeader>
           <LeaderboardList leaders={leaders} />
         </div>
       </div>
