@@ -56,7 +56,7 @@ const VerifyWork = ({ workproof, challenge, onVerified }) => {
         <InspectWork workproof={workproof} challenge={challenge} />
         <div>
           <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
-            Reason
+            Submission Comment
           </p>
           <textarea rows="6" {...register("reason", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent text-daonative-gray-300" />
         </div>
@@ -146,7 +146,7 @@ const InspectWork = ({ workproof, challenge }) => {
             {verification.reason && (
               <div>
                 <p className="block text-sm font-medium pb-0.5 text-daonative-subtitle">
-                  Reason
+                  Submission Comment
                 </p>
                 <div className="whitespace-pre-wrap text-sm font-medium">
                   {verification.reason}

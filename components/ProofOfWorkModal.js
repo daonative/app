@@ -61,7 +61,7 @@ const ProofOfWorkDetails = ({ workproof }) => {
       {verifications.filter(verification => !!verification.reason).length > 0 && (
         <div>
           <p className="block text-sm font-medium pb-2 text-daonative-subtitle">
-            Reason
+            Submission Comment
           </p>
           {verifications.map((verification, idx) => (
             <div key={idx} className="whitespace-pre-wrap text-sm font-medium">
@@ -115,7 +115,7 @@ export const ProofOfWorkVerificationModal = ({ show, onClose, workproof }) => {
         <ModalBody>
           <div className="flex flex-col gap-4">
             <ProofOfWorkDetails workproof={workproof} />
-            {canVerify && <TextArea label="Reason (optional)" name="reason" register={register} />}
+            {canVerify && <TextArea label="Submission Comment (optional)" name="reason" register={register} />}
             {!isAllowedToVerify && !hasBeenVerified && <span className="text-sm text-daonative-subtitle">You {"can't"} verify this work because you are the author</span>}
           </div>
         </ModalBody>
