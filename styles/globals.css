@@ -19,10 +19,8 @@ textarea {
 }
 
 label {
-  color: #b9b9b9;
+  color: rgb(241 245 249);
 }
-
-
 
 .paper {
   border-radius: 8px !important;
