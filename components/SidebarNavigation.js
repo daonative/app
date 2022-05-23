@@ -1,5 +1,5 @@
-import { Fragment, } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import {
   CalendarIcon,
   CollectionIcon,
@@ -9,26 +9,26 @@ import {
   LightningBoltIcon,
   FireIcon,
   HeartIcon,
-  CogIcon
-} from '@heroicons/react/solid'
+  CogIcon,
+} from "@heroicons/react/solid";
 
-import DAOnativeLogo from '../public/DAOnativeLogo.svg'
-import ComingSoonBadge from './ComingSoonBadge'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useWallet } from '@/lib/useWallet'
-import { UserAvatar, UserName } from './PFP'
-import { useProfileModal } from './ProfileModal'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import DAOnativeLogo from "../public/DAOnativeLogo.svg";
+import ComingSoonBadge from "./ComingSoonBadge";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useWallet } from "@/lib/useWallet";
+import { UserAvatar, UserName } from "./PFP";
+import { useProfileModal } from "./ProfileModal";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 const ProfileButton = () => {
-  const { openProfileModal } = useProfileModal()
-  const { account } = useWallet()
-  const isConnected = !!account
+  const { openProfileModal } = useProfileModal();
+  const { account } = useWallet();
+  const isConnected = !!account;
 
   if (!isConnected)
     return (
@@ -42,7 +42,7 @@ const ProfileButton = () => {
           </button>
         )}
       </ConnectButton.Custom>
-    )
+    );
 
   return (
     <>
@@ -54,52 +54,91 @@ const ProfileButton = () => {
         <UserName account={account} />
       </button>
     </>
-  )
-}
-
+  );
+};
 
 const SidebarNavigation = ({ showMobile, onClose }) => {
-  const { query, asPath } = useRouter()
-  const roomId = query.daoId
-  const path = asPath?.split('?')[0] || ''
+  const { query, asPath } = useRouter();
+  const roomId = query.daoId;
+  const path = asPath?.split("?")[0] || "";
 
-  const dashboardUrl = roomId ? `/dao/${roomId}` : '/'
-  const challengesUrl = roomId ? `/dao/${roomId}/challenges` : '/'
-  const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : '/'
-  const rewardsUrl = roomId ? `/dao/${roomId}/rewards` : '/'
-  const workUrl = roomId ? `/dao/${roomId}/work` : '/'
-  const nftsUrl = roomId ? `/dao/${roomId}/nfts` : '/nfts'
-  const settingsUrl = roomId ? `/dao/${roomId}/settings` : '/'
+  const dashboardUrl = roomId ? `/dao/${roomId}` : "/";
+  const challengesUrl = roomId ? `/dao/${roomId}/challenges` : "/";
+  const leaderboardUrl = roomId ? `/dao/${roomId}/leaderboard` : "/";
+  const rewardsUrl = roomId ? `/dao/${roomId}/rewards` : "/";
+  const workUrl = roomId ? `/dao/${roomId}/work` : "/";
+  const nftsUrl = roomId ? `/dao/${roomId}/nfts` : "/nfts";
+  const settingsUrl = roomId ? `/dao/${roomId}/settings` : "/";
 
   const navigation = [
-    { name: 'Dashboard', href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$|/$" },
-    { name: 'Challenges', disabled: !roomId, href: challengesUrl, icon: LightningBoltIcon, match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9/]*)?$" },
-    { name: 'Leaderboard', disabled: !roomId, href: leaderboardUrl, icon: FireIcon, match: "^/dao/[a-zA-Z0-9]*/leaderboard$" },
-    { name: 'Members', disabled: !roomId, href: `/dao/${roomId}/members`, icon: UsersIcon, match: "^/dao/[a-zA-Z0-9]*/members$" },
-    { name: 'Rewards', disabled: !roomId, href: rewardsUrl, icon: HeartIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
+    { name: "Dashboard", href: dashboardUrl, icon: HomeIcon, match: "^/dao/[a-zA-Z0-9]*$|/$" },
+    {
+      name: "Challenges",
+      disabled: !roomId,
+      href: challengesUrl,
+      icon: LightningBoltIcon,
+      match: "^/dao/[a-zA-Z0-9]*/challenges(/[a-zA-Z0-9/]*)?$",
+    },
+    {
+      name: "Leaderboard",
+      disabled: !roomId,
+      href: leaderboardUrl,
+      icon: FireIcon,
+      match: "^/dao/[a-zA-Z0-9]*/leaderboard$",
+    },
+    {
+      name: "Members",
+      disabled: !roomId,
+      href: `/dao/${roomId}/members`,
+      icon: UsersIcon,
+      match: "^/dao/[a-zA-Z0-9]*/members$",
+    },
+    {
+      name: "Rewards",
+      disabled: !roomId,
+      href: rewardsUrl,
+      icon: HeartIcon,
+      match: "^/dao/[a-zA-Z0-9]*/rewards$",
+    },
     // { name: 'Work', disabled: !roomId, href: workUrl, icon: BriefcaseIcon, match: "^/dao/[a-zA-Z0-9]*/work$" },
-    { name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/settings$" },
-    { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
-    { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
-  ]
+    {
+      name: "Settings",
+      disabled: !roomId,
+      comingSoon: false,
+      href: settingsUrl,
+      icon: CogIcon,
+      match: "^/dao/[a-zA-Z0-9]*/settings$",
+    },
+    {
+      name: "NFTs",
+      href: nftsUrl,
+      icon: CollectionIcon,
+      match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$",
+    },
+    { name: "Events", disabled: true, comingSoon: true, href: "#", icon: CalendarIcon },
+  ];
 
   const NavLink = ({ disabled = false, href, current, children }) => (
     <>
       {disabled ? (
         <a
           className={classNames(
-            current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-            'group flex justify-between px-2 py-2 text-sm font-medium rounded-md opacity-50'
+            current
+              ? "bg-daonative-component-bg text-white"
+              : "text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100",
+            "group flex justify-between px-2 py-2 text-sm font-medium rounded-md opacity-50",
           )}
         >
           {children}
         </a>
       ) : (
-        <Link href={href} >
+        <Link href={href}>
           <a
             className={classNames(
-              current ? 'bg-daonative-component-bg text-daonative-gray-100' : 'text-daonative-gray-300 hover:bg-daonative-dark-300 hover:text-daonative-gray-100',
-              'group flex justify-between px-2 py-2 text-sm font-medium rounded-md'
+              current
+                ? "bg-daonative-component-bg text-white"
+                : "text-white hover:bg-daonative-dark-300 hover:brightness-150",
+              "group flex justify-between px-2 py-2 text-sm font-medium rounded-md",
             )}
           >
             {children}
@@ -107,7 +146,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         </Link>
       )}
     </>
-  )
+  );
 
   return (
     <>
@@ -166,24 +205,27 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
                   {navigation.map((item) => {
-                    const current = !item.disabled && !!path.match(item.match)
+                    const current = !item.disabled && !!path.match(item.match);
                     return (
-                      <NavLink key={item.name} current={current} disabled={item.disabled} href={item.href}>
+                      <NavLink
+                        key={item.name}
+                        current={current}
+                        disabled={item.disabled}
+                        href={item.href}
+                      >
                         <div className="flex items-center">
                           <item.icon
                             className={classNames(
-                              current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                              'mr-3 flex-shrink-0 h-6 w-6'
+                              current ? "text-gray-300" : "text-gray-400 group-hover:text-gray-300",
+                              "mr-3 flex-shrink-0 h-6 w-6",
                             )}
                             aria-hidden="true"
                           />
                           {item.name}
                         </div>
-                        <div>
-                          {item.comingSoon && <ComingSoonBadge />}
-                        </div>
+                        <div>{item.comingSoon && <ComingSoonBadge />}</div>
                       </NavLink>
-                    )
+                    );
                   })}
                 </nav>
                 <div className="py-5 px-4 flex flex-col gap-2">
@@ -214,24 +256,27 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => {
-                const current = !item.disabled && !!path.match(item.match)
+                const current = !item.disabled && !!path.match(item.match);
                 return (
-                  <NavLink key={item.name} current={current} disabled={item.disabled} href={item.href}>
-                    <div className="flex items-center font-semibold tracking-wide">
+                  <NavLink
+                    key={item.name}
+                    current={current}
+                    disabled={item.disabled}
+                    href={item.href}
+                  >
+                    <div className="flex items-center font-semibold ">
                       <item.icon
                         className={classNames(
-                          current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                          'mr-3 flex-shrink-0 h-6 w-6 font-bold'
+                          current ? "text-white" : "text-white group-hover:text-gray-300",
+                          "mr-3 flex-shrink-0 h-6 w-6 font-bold",
                         )}
                         aria-hidden="true"
                       />
                       {item.name}
                     </div>
-                    <div>
-                      {item.comingSoon && <ComingSoonBadge />}
-                    </div>
+                    <div>{item.comingSoon && <ComingSoonBadge />}</div>
                   </NavLink>
-                )
+                );
               })}
             </nav>
             <div className="py-5 px-4 flex flex-col gap-2">
@@ -243,7 +288,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SidebarNavigation
+export default SidebarNavigation;
