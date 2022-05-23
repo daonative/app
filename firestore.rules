@@ -33,6 +33,10 @@ service cloud.firestore {
       allow create: if isAdmin(request.resource.data.roomId);
       allow update: if isAdmin(resource.data.roomId);
     }
+    match /challengesets/{challengesetId} {
+      allow create: if isAdmin(request.resource.data.roomId);
+      allow update: if isAdmin(resource.data.roomId);
+    }
     match /workproofs/{workproofId} {
       allow create: if
         isMember(request.resource.data.roomId)

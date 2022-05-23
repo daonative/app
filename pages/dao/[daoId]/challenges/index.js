@@ -10,7 +10,7 @@ import useRoomId from '../../../../lib/useRoomId'
 import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import useDarkMode from '../../../../lib/useDarkMode'
-import { useCollection } from 'react-firebase-hooks/firestore'
+import { useCollection, useCollectionData, useDocumentDataOnce } from 'react-firebase-hooks/firestore'
 import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
@@ -41,7 +41,15 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
       deadline,
       roomId,
     }
-    await addDoc(collection(db, 'challenges'), challenge)
+    const challengeRef = await addDoc(collection(db, 'challenges'), challenge)
+    const challengeSet = {
+      roomId,
+      imageRequired: data?.imageRequired,
+      weeklyRecurring: data?.weeklyRecurring,
+      deadline: data?.deadline ? new Date(data.deadline) : null,
+      challenges: [challengeRef.id]
+    }
+    await addDoc(collection(db, 'challengesets'), challengeSet)
   }
 
   const handleCloseModal = () => {
@@ -102,6 +110,12 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
                 Require each submission to upload an image
               </label>
             </div>
+            <div>
+              <input type="checkbox" {...register("weeklyRecurring", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="weeklyRecurring" />
+              <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="weeklyRecurring">
+                This is a weekly recurring challenge
+              </label>
+            </div>
           </div>
         </ModalBody>
         <ModalActionFooter>
@@ -121,39 +135,51 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
   )
 }
 
-const ChallengeItem = ({ title, weight, deadline, meta }) =>
-  <Card onClick={() => null}>
-    <div className="flex items-center justify-between">
-      <div className='flex gap-3'>
-        {/* <PFP address={`${Math.floor(Math.random() * 10000)}`} size={64} /> */}
-        <div className='flex min-w-max'>
-          <Image className="min-w-max" width="64" height="64" src="/challenge.svg" alt="sample-challenge-picture" />
-        </div>
-        <div className='flex flex-col justify-between'>
-          <p className="text-sm font-semibold  whitespace-normal ">{title}</p>
-          <div className="text-sm text-daonative-subtitle">
-            {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
-              <>Ends <Moment date={deadline?.toMillis()} fromNow={true} /></>
-            )}
+const ChallengeCard = ({ title, weight, deadline, meta, challengeSet, challengeId }) => {
+  const isRecurring = challengeSet?.weeklyRecurring || false
+  const recurringSequenceIndex = challengeSet?.challenges?.indexOf?.(challengeId)
+  const recurringSequenceNo = `#${(recurringSequenceIndex + 1).toString().padStart?.(3, '0')}`
 
+  return (
+    <Card onClick={() => null}>
+      <div className="flex items-center justify-between">
+        <div className='flex gap-3'>
+          <div className='flex min-w-max'>
+            <Image className="min-w-max" width="64" height="64" src="/challenge.svg" alt="sample-challenge-picture" />
+          </div>
+          <div className='flex flex-col justify-between'>
+            <p className="text-sm font-semibold  whitespace-normal ">
+              {isRecurring && recurringSequenceNo} {title}
+            </p>
+            <div className="text-sm text-daonative-subtitle">
+              {deadline?.toMillis() && new Date().getTime() < deadline?.toMillis() && (
+                <>Ends <Moment date={deadline?.toMillis()} fromNow={true} /></>
+              )}
+            </div>
+            <div className="text-sm text-daonative-subtitle">
+              {isRecurring && (
+                <>Weekly recurring</>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='flex flex-col items-end min-w-max gap-3'>
+          <div>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              {weight} XP
+            </span>
+          </div>
+          <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
+            <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
+            <p>
+              {meta?.submissionCount || 0} Completions
+            </p>
           </div>
         </div>
       </div>
-      <div className='flex flex-col items-end min-w-max gap-3'>
-        <div>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            {weight} XP
-          </span>
-        </div>
-        <div className="mt-2 flex items-center text-sm text-daonative-gray-300 sm:mt-0">
-          <CheckIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-daonative-primary-blue" />
-          <p>
-            {meta?.submissionCount || 0} Completions
-          </p>
-        </div>
-      </div>
-    </div>
-  </Card >
+    </Card >
+  )
+}
 
 const Challenges = () => {
   const db = getFirestore()
@@ -162,7 +188,17 @@ const Challenges = () => {
   const [showChallengeModal, setShowChallengeModal] = useState(false)
   const [challengesSnapshot, loading] = useCollection(
     query(collection(db, 'challenges'), where('roomId', '==', roomId || ''), orderBy('created', 'desc')))
-  const challenges = challengesSnapshot?.docs.map(doc => ({ challengeId: doc.id, ...doc.data() })) || []
+  const [challengesets] = useCollectionData(
+    query(collection(db, 'challengesets'), where('roomId', '==', roomId || '')))
+
+  const challenges = challengesSnapshot?.docs.length > 0 ? (
+    challengesSnapshot.docs.map(doc => ({
+      challengeId: doc.id,
+      ...doc.data(),
+      challengeSet: challengesets?.filter(challengeSet => challengeSet?.challenges?.includes(doc.id)).shift()
+    }))
+  ) : []
+
   const openChallenges = challenges.filter(challenge => challenge?.status !== 'closed')
   const closedChallenges = challenges.filter(challenge => challenge.status === 'closed')
 
@@ -209,7 +245,7 @@ const Challenges = () => {
               {openChallenges.map((challenge) => (
                 <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                   <li>
-                    <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
+                    <ChallengeCard title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} challengeSet={challenge?.challengeSet} challengeId={challenge.challengeId} />
                   </li>
                 </Link>
               ))}
@@ -225,7 +261,7 @@ const Challenges = () => {
                 {closedChallenges.map((challenge) => (
                   <Link key={challenge.challengeId} href={`/dao/${roomId}/challenges/${challenge.challengeId}`} passHref>
                     <li className='opacity-75'>
-                      <ChallengeItem title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} />
+                      <ChallengeCard title={challenge?.title} meta={challenge?.meta} deadline={challenge?.deadline} weight={challenge?.weight} challengeSet={challenge?.challengeSet} challengeId={challenge.challengeId} />
                     </li>
                   </Link>
                 ))}

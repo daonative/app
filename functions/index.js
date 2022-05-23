@@ -446,3 +446,42 @@ exports.closeExpiredChallenges = functions.pubsub
       doc.ref.update({ status: "closed" })
     })
   })
+
+exports.checkRecurringChallenges = functions.pubsub
+  .schedule('every 5 minutes')
+  .onRun(async (context) => {
+    const challengeSetsQuery = db.collection('challengesets').where('weeklyRecurring', '==', true)
+    const challengeSetsSnap = await challengeSetsQuery.get()
+    challengeSetsSnap.forEach(async doc => {
+      // Get last challenge ID
+      const challengeSet = doc.data()
+      const latestChallengeId = challengeSet?.challenges?.pop()
+
+      if (!latestChallengeId) return
+
+      // Get last challenge
+      const latestChallengeRef = db.collection('challenges').doc(latestChallengeId)
+      const latestChallengeSnap = await latestChallengeRef.get()
+      const latestChallenge = latestChallengeSnap.data()
+
+      // Check if last challenge is older than a week
+      const oneWeekAgo = Date.now() - (1000 * 60 * 60 * 24 * 7)
+      if (latestChallenge.created.toMillis() > oneWeekAgo) return
+
+      // Close last challenge, create a new one and link it to the challenge set
+      await latestChallengeRef.update({status: 'closed'})
+      const newWeeklyChallenge = await db.collection('challenges').add({
+        created: admin.firestore.FieldValue.serverTimestamp(),
+        deadline: null,
+        status: "open",
+        roomId: latestChallenge.roomId,
+        description: latestChallenge.description,
+        rules: latestChallenge.rules,
+        title: latestChallenge.title,
+        weight: latestChallenge.weight
+      })
+      await doc.ref.update({
+        challenges: admin.firestore.FieldValue.arrayUnion(newWeeklyChallenge.id)
+      })
+    })
+  })
