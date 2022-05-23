@@ -78,7 +78,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
     { name: 'Members', disabled: !roomId, href: `/dao/${roomId}/members`, icon: UsersIcon, match: "^/dao/[a-zA-Z0-9]*/members$" },
     { name: 'Rewards', disabled: !roomId, href: rewardsUrl, icon: HeartIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
     // { name: 'Work', disabled: !roomId, href: workUrl, icon: BriefcaseIcon, match: "^/dao/[a-zA-Z0-9]*/work$" },
-    { name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/rewards$" },
+    { name: 'Settings', disabled: !roomId, comingSoon: false, href: settingsUrl, icon: CogIcon, match: "^/dao/[a-zA-Z0-9]*/settings$" },
     { name: 'NFTs', href: nftsUrl, icon: CollectionIcon, match: "^/(dao/[a-zA-Z0-9]*/nfts|nfts)(/[0-9]*/[a-zA-Z0-9]*(/mint)?)?$" },
     { name: 'Events', disabled: true, comingSoon: true, href: '#', icon: CalendarIcon },
   ]
