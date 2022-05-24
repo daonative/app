@@ -104,7 +104,7 @@ const Mint = (props) => {
       try {
         await Promise.all([retrieveCollectionSupply(collectionAddress)]);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         setCollectionHasError(true);
       }
       setIsLoading(false);

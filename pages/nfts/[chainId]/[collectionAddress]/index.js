@@ -209,7 +209,7 @@ const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
       setIsPaused(true)
       toast.success("Successfully paused the contract", { id: toastId })
     } catch (e) {
-      console.log(e)
+      console.error(e)
       const message = e?.data?.message || e.message
       toast.error("Failed to pause the collection", { id: toastId })
       toast.error(message, { id: toastId })
@@ -229,7 +229,7 @@ const PauseUnpauseButton = ({ className, address, isPaused, setIsPaused }) => {
       setIsPaused(false)
       toast.success("Successfully unpaused the contract", { id: toastId })
     } catch (e) {
-      console.log(e)
+      console.error(e)
       const message = e?.data?.message || e.message
       toast.error("Failed to unpause the collection", { id: toastId })
       toast.error(message, { id: toastId })
@@ -295,7 +295,7 @@ export const GatorCollection = () => {
       setShowInviteModal(true)
       toast.success("Invite link generated", { id: toastId })
     } catch (e) {
-      console.log(e)
+      console.error(e)
       toast.error("Failed to generated link", { id: toastId })
     }
   }
@@ -414,7 +414,7 @@ export const GatorCollection = () => {
           retrieveCollectionSupply(collectionAddress)
         ])
       } catch (e) {
-        console.log(e)
+        console.error(e)
         setCollectionHasError(true)
       }
     }

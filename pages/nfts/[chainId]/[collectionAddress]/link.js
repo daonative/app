@@ -34,7 +34,7 @@ const LinkCollection = () => {
       const result = await axios.post('/api/link-nft', { tokenAddress: collectionAddress, roomId, roles, chainId }, { headers: { 'Authorization': `Bearer ${tokenId}` } })
       console.log(result.data)
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 
