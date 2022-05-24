@@ -18,6 +18,7 @@ import { getReadonlyProvider } from "../../../../lib/chainSupport";
 import { NextSeo } from "next-seo";
 import Head from "next/head";
 import { useSigner } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const InvalidInviteCode = () => (
   <div className="w-full p-8 text-center flex flex-col items-center">
@@ -124,11 +125,7 @@ const Mint = (props) => {
   return (
     <div className="flex justify-center px-8 lg:px-0">
       <div className="flex flex-col items-center gap-6 w-full ">
-        {!collectionHasError && !account && (
-          <ConnectWalletButton>
-            <PrimaryButton>Connect your wallet</PrimaryButton>
-          </ConnectWalletButton>
-        )}
+        {!collectionHasError && !account && <ConnectButton />}
         {!collectionHasError &&
           isValidInvite &&
           account &&
