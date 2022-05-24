@@ -11,7 +11,7 @@ import { useState } from 'react'
 import { useRequireAuthentication } from '../../../../lib/authenticate'
 import useDarkMode from '../../../../lib/useDarkMode'
 import { useCollection, useCollectionData, useDocumentDataOnce } from 'react-firebase-hooks/firestore'
-import { CheckIcon, PlusIcon } from '@heroicons/react/solid'
+import { CheckIcon, PlusIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import EmptyStateNoChallenges from '../../../../components/EmptyStateNoChallenges'
 import { useWallet } from '@/lib/useWallet'
@@ -105,16 +105,28 @@ const ChallengeModal = ({ show, onClose, challengeId }) => {
               </div>
             </div>
             <div>
-              <input type="checkbox" {...register("imageRequired", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
-              <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="imageRequired">
-                Require each submission to upload an image
-              </label>
-            </div>
-            <div>
-              <input type="checkbox" {...register("weeklyRecurring", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="weeklyRecurring" />
-              <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="weeklyRecurring">
-                This is a weekly recurring challenge
-              </label>
+              <label className="block text-sm font-medium pb-2">Challenge Rules</label>
+              <div>
+                <input type="checkbox" {...register("imageRequired", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="imageRequired" />
+                <label className="inline-block text-sm font-medium py-2 pl-2" htmlFor="imageRequired">
+                  Require image
+                </label>
+              </div>
+              <div>
+                <input type="checkbox" {...register("weeklyRecurring", { required: false })} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 inline-block sm:text-sm border-gray-300 rounded-md bg-daonative-component-bg border-transparent" id="weeklyRecurring" />
+                <label className="text-sm font-medium py-2 pl-2 flex inline-flex items-center gap-2" htmlFor="weeklyRecurring">
+                  Repeats weekly
+                  <div className="relative inline-block group">
+                    <QuestionMarkCircleIcon className="h-5 w-5" />
+                    <div className="absolute bottom-0 items-center hidden mb-6 group-hover:flex whitespace-nowrap">
+                      <span className="relative z-10 p-2 text-xs text-daonative-title whitespace-no-wrap bg-daonative-component-bg shadow-lg">
+                        Enabling this automatically creates an<br />
+                        identical challenge every week for you
+                      </span>
+                    </div>
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
         </ModalBody>
