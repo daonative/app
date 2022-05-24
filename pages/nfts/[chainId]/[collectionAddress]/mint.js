@@ -151,19 +151,20 @@ const Mint = (props) => {
               {!isCorrectChain && isPolygonNFT && (
                 <>
                   <span>Switch to Polygon to mint your NFT</span>
-                  <SwitchToPolygonButton />
+                  {!props.isMobile && <SwitchToPolygonButton />}
                 </>
               )}
               {!isCorrectChain && isMainnetNFT && (
                 <>
                   <span>Switch to mainnet to mint your NFT</span>
-                  <SwitchToMainnetButton />
+
+                  {!props.isMobile && <SwitchToMainnetButton />}
                 </>
               )}
               {!isCorrectChain && isRinkebyNFT && (
                 <>
-                  <span>Switch to Ethereum Rikeby (testnet) to mint your NFT</span>
-                  <SwitchToRinkebyButton />
+                  <span>Switch to Ethereum Rinkeby (testnet) to mint your NFT</span>
+                  {!props.isMobile && <SwitchToRinkebyButton />}
                 </>
               )}
             </div>
@@ -250,11 +251,15 @@ const getCollection = async (address, chainId) => {
 };
 
 export async function getServerSideProps(context) {
+  const UA = context.req.headers["user-agent"];
+  const isMobile = Boolean(
+    UA.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i),
+  );
+
   const { chainId, collectionAddress } = context.params;
   const data = await getCollection(collectionAddress, chainId);
-  console.log(data);
   return {
-    props: data, // will be passed to the page component as props
+    props: { ...data, isMobile }, // will be passed to the page component as props
   };
 }
 
