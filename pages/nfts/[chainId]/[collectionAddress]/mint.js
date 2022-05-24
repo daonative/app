@@ -67,7 +67,7 @@ const Mint = (props) => {
       toast.success("Successfully minted your NFT", { id: toastId });
       routerPush(`/nfts/${chainId}/${collectionAddress}`);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       toast.error("Failed to mint your NFT", { id: toastId });
       let message = e?.data?.message || e?.error?.message || e.message;
 
