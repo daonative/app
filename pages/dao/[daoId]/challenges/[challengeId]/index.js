@@ -2,7 +2,7 @@ import { CheckIcon, ClockIcon, PlusIcon, BanIcon } from '@heroicons/react/solid'
 import { addDoc, collection, doc, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useCollection, useDocumentData } from 'react-firebase-hooks/firestore'
+import { useCollection, useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import { useForm } from 'react-hook-form'
 import Moment from 'react-moment'
 import { useWallet } from '@/lib/useWallet'
@@ -254,6 +254,14 @@ const ChallengeDetails = () => {
   const [challenge] = useDocumentData(
     doc(db, 'challenges', challengeId || 'null')
   )
+  const [challengeSets] = useCollectionData(
+    query(collection(db, 'challengesets'), where('challenges', 'array-contains', challengeId || 'x'))
+  )
+  const challengeSet = challengeSets?.length === 1 ? challengeSets[0] : {}
+  const isRecurring = challengeSet?.weeklyRecurring || false
+  const recurringSequenceIndex = challengeSet?.challenges?.indexOf?.(challengeId)
+  const recurringSequenceNo = `#${(recurringSequenceIndex + 1).toString().padStart?.(3, '0')}`
+
   const [submissionsSnapshot] = useCollection(
     query(collection(db, 'workproofs'), where('challengeId', '==', challengeId), orderBy('created', 'desc'))
   )
@@ -314,12 +322,14 @@ const ChallengeDetails = () => {
         >
           <div className="flex">
             <div className="flex w-full mx-auto">
-              <h1 className="text-2xl">{challenge?.title}</h1>
+              <h1 className="text-2xl">
+                {isRecurring && recurringSequenceNo} {challenge?.title}
+              </h1>
             </div>
             <div className='flex gap-3'>
               {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
-              {isAdmin && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
-              {isAdmin && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+              {isAdmin && !isRecurring && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
+              {isAdmin && !isRecurring && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
             </div>
           </div>
         </div>
