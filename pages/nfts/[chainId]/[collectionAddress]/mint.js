@@ -125,7 +125,7 @@ const Mint = (props) => {
   return (
     <div className="flex justify-center px-8 lg:px-0">
       <div className="flex flex-col items-center gap-6 w-full ">
-        {!collectionHasError && !account && <ConnectButton />}
+        {!collectionHasError && <ConnectButton />}
         {!collectionHasError &&
           isValidInvite &&
           account &&
