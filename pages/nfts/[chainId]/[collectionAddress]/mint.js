@@ -115,7 +115,7 @@ const Mint = (props) => {
 
   return (
     <div className="flex justify-center px-8 lg:px-0">
-      <div className="flex flex-col gap-6 w-full ">
+      <div className="flex flex-col items-center gap-6 w-full ">
         {!collectionHasError && !account && (
           <ConnectWalletButton >
             <PrimaryButton >
@@ -166,7 +166,7 @@ const Mint = (props) => {
               </div>
             )}
           </div>
-          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded-lg w-96 min-h-[18em] overflow-hidden p-6">
+          <div className="flex shadow-daonative justify-center border border-daonative-border  rounded-lg max-w-96 min-h-[18em] overflow-hidden p-6">
             <ImagePreview uri={collectionImageURI} />
           </div>
         </div>
