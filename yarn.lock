@@ -3609,10 +3609,10 @@
   resolved "https://registry.yarnpkg.com/@vanilla-extract/sprinkles/-/sprinkles-1.4.1.tgz#8c8703ddedaac355c1187db909119816c0fc771c"
   integrity sha512-aW6CfMMToX4a+baLuVxwcT0FSACjX3xrNt8wdi/3LLRlLAfhyue8OK7kJxhcYNZfydBeWTP59aRy8p5FUTIeew==
 
-"@wagmi/core@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.3.0.tgz#2eff5b1bea457516d3892f627bd7aa897a1f901c"
-  integrity sha512-PU2fGc8JpY9AYV6JilVFcTUhEMcoipev1bSYygNfprBG2Iywhf/1NRCUYDTVoRjt85oFN7filEEweg4q51wcQA==
+"@wagmi/core@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.3.2.tgz#2f927952c3197029ccb3fd318274979114d5901b"
+  integrity sha512-BIOvGO3IL6DCunInhsGKh+MxeaFaizcRrr7IVsvf7zvVj9SaS3HjbW2DXwnyqXojtwA1RTMinRgkQZSL2r8DMA==
   dependencies:
     eventemitter3 "^4.0.7"
     zustand "^4.0.0-rc.1"
@@ -15644,13 +15644,13 @@ vm2@^3.9.8:
     acorn "^8.7.0"
     acorn-walk "^8.2.0"
 
-wagmi@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.4.0.tgz#ff11dfc7b1a07046750e824acc31152c73a5437d"
-  integrity sha512-54B+tTOeZN06V3G0ZXUEUi+d6KLQu6GQ48SV2XmupqxqjthgELSDL6zoBR5OhYKitvGv4wODuz0XsB2MriSumw==
+wagmi@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.4.2.tgz#3b6738131c37eea83eb0410bd94fbdf13e36a8b4"
+  integrity sha512-gt/XCMtc4M3HXG4STPoRJ1X0+xyXsK4fLTWWab5lLia96Rxv5YkxT6NEphAYp3CehgnZvAPS6g4kwhIXMIDWjw==
   dependencies:
     "@coinbase/wallet-sdk" "^3.1.0"
-    "@wagmi/core" "^0.3.0"
+    "@wagmi/core" "^0.3.2"
     "@walletconnect/ethereum-provider" "^1.7.8"
     react-query "4.0.0-beta.12"
     use-sync-external-store "^1.1.0"
