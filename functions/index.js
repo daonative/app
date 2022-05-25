@@ -450,7 +450,7 @@ exports.closeExpiredChallenges = functions.pubsub
 exports.checkRecurringChallenges = functions.pubsub
   .schedule('every 5 minutes')
   .onRun(async (context) => {
-    const challengeSetsQuery = db.collection('challengesets').where('weeklyRecurring', '==', true)
+    const challengeSetsQuery = db.collection('challengesets').where('weeklyRecurring', '==', true).where('status', '!=', 'closed')
     const challengeSetsSnap = await challengeSetsQuery.get()
     challengeSetsSnap.forEach(async doc => {
       // Get last challenge ID

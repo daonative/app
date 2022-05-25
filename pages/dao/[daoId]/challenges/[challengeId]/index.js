@@ -254,10 +254,10 @@ const ChallengeDetails = () => {
   const [challenge] = useDocumentData(
     doc(db, 'challenges', challengeId || 'null')
   )
-  const [challengeSets] = useCollectionData(
+  const [challengeSets] = useCollection(
     query(collection(db, 'challengesets'), where('challenges', 'array-contains', challengeId || 'x'))
   )
-  const challengeSet = challengeSets?.length === 1 ? challengeSets[0] : {}
+  const challengeSet = challengeSets?.docs?.map(doc => ({challengeSetId: doc.id, ...doc.data()})).pop() || {}
   const isRecurring = challengeSet?.weeklyRecurring || false
   const recurringSequenceIndex = challengeSet?.challenges?.indexOf?.(challengeId)
   const recurringSequenceNo = `#${(recurringSequenceIndex + 1).toString().padStart?.(3, '0')}`
@@ -289,6 +289,11 @@ const ChallengeDetails = () => {
     await updateDoc(doc(db, "challenges", challengeId), challenge)
   }
 
+  const stopRecurring = async () => {
+    const db = getFirestore()
+    await updateDoc(doc(db, 'challengesets', challengeSet.challengeSetId), {status: 'closed'})
+  }
+
   const handleDeactivate = async () => {
     try {
       await requireAuthentication()
@@ -306,6 +311,18 @@ const ChallengeDetails = () => {
       await requireAccess()
       await updateChallenge('open')
       toast.success('Challenge is now active')
+    } catch (e) {
+      toast.error(`Something went wrong ${e.message}`,)
+    }
+  }
+
+  const handleStopRecurring = async () => {
+    try {
+      await requireAuthentication()
+      await requireAccess()
+      await stopRecurring()
+      await updateChallenge('closed')
+      toast.success('Recurring challenge is now closed')
     } catch (e) {
       toast.error(`Something went wrong ${e.message}`,)
     }
@@ -330,6 +347,7 @@ const ChallengeDetails = () => {
               {isAdmin && <SecondaryButton onClick={handleOpenEditChallengeModal}>Edit</SecondaryButton>}
               {isAdmin && !isRecurring && isEnabled && <SecondaryButton onClick={handleDeactivate}>Close</SecondaryButton>}
               {isAdmin && !isRecurring && !isEnabled && <SecondaryButton onClick={handleActivate}>Activate</SecondaryButton>}
+              {isAdmin && isRecurring && isEnabled && <SecondaryButton onClick={handleStopRecurring}>Stop</SecondaryButton>}
             </div>
           </div>
         </div>
