@@ -16,6 +16,7 @@ import { loadUserProfile } from '../lib/useUserProfile'
 import axios from 'axios'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { computeTabStyling } from '@/lib/computeTabStyling'
+import toast from 'react-hot-toast'
 
 const kFormatter = (num) =>
   Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
@@ -226,50 +227,14 @@ const ProfileModal = ({ show, onClose }) => {
           <Tab.List className={'flex gap-3'}>
             <Tab className={({ selected }) => computeTabStyling(selected)}
             >
-              Rewards
+              Settings
             </Tab>
-
             <Tab className={({ selected }) => computeTabStyling(selected)}
             >
-              Settings
+              Rewards
             </Tab>
           </Tab.List>
           <Tab.Panels>
-            <Tab.Panel>
-              <>
-                <div className="flex justify-between w-full items-end pt-8 ">
-                  <div>
-                    <h2 className="text-xl">Latest Rewards</h2>
-                  </div>
-                </div>
-                <div className="flex gap-6 relative justify-between">
-                  <div className="flex gap-6 ">
-                    <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
-                      <div className="flex items-center justify-center text-3xl pt-20">
-                        Coming soon
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
-                      <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
-                    </div>
-                    <div>
-                      <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
-                      <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
-                    </div>
-
-                  </div>
-                  <div className='flex flex-col gap-3'>
-                    <div className="flex gap-1">
-                      <span className="">{Math.floor(verifiedXps / 10)}</span>
-                      <span className="text-daonative-subtitle ">$GREEN</span>
-                    </div>
-                    <PrimaryButton disabled={true}>Claim</PrimaryButton>
-                  </div>
-                </div>
-              </>
-            </Tab.Panel>
             <Tab.Panel>
               <>
                 <form onSubmit={handleSubmit(handleUpdateProfile)}>
@@ -306,7 +271,41 @@ const ProfileModal = ({ show, onClose }) => {
                 </form>
               </>
             </Tab.Panel>
-            <Tab.Panel>Content 3</Tab.Panel>
+            <Tab.Panel>
+              <>
+                <div className="flex justify-between w-full items-end pt-8 ">
+                  <div>
+                    <h2 className="text-xl">Latest Rewards</h2>
+                  </div>
+                </div>
+                <div className="flex gap-6 relative justify-between">
+                  <div className="flex gap-6 ">
+                    <div className="absolute top-0 left-0 w-full h-full bg-daonative-dark-300 bg-opacity-80">
+                      <div className="flex items-center justify-center text-3xl pt-20">
+                        Coming soon
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-xs text-daonative-subtitle">Undefined contract #5</span>
+                      <img src="https://arweave.net/Jf6CQMTDHpNu2jpGrwTSr6V9hdsp7geyqQM0xypenTE" className="w-32 rounded-md" />
+                    </div>
+                    <div>
+                      <span className="text-xs text-daonative-subtitle">Early Adopters Gen 1</span>
+                      <img src="https://ipfs.infura.io/ipfs/QmcebJ4PbN3yXKSZoKdf7y7vBo5T4X98VKGULnkdFnAK2m" className="w-32 rounded-md" />
+                    </div>
+
+                  </div>
+                  <div className='flex flex-col gap-3'>
+                    <div className="flex gap-1">
+                      <span className="">{Math.floor(verifiedXps / 10)}</span>
+                      <span className="text-daonative-subtitle ">$GREEN</span>
+                    </div>
+                    <PrimaryButton disabled={true}>Claim</PrimaryButton>
+                  </div>
+                </div>
+              </>
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </ModalBody>
@@ -317,13 +316,39 @@ const ProfileModal = ({ show, onClose }) => {
 
 const ProfileModalContext = createContext()
 export const ProfileModalProvider = ({ children }) => {
+  const { account } = useWallet()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isOpen, setIsOpen] = useState(false);
 
-  const openProfileModal = () => {
-    setIsOpen(true)
-  }
+  const openProfileModal = () => setIsOpen(true)
   const closeProfileModal = () => setIsOpen(false)
+
+  useEffect(() => {
+    const userNameBanner = async () => {
+      const db = getFirestore()
+      const userRef = doc(db, 'users', account)
+      const userDoc = await getDoc(userRef)
+      const user = userDoc.data()
+
+      if (userDoc.exists() && user.name) return
+
+      toast(() => (
+        <span className="text-center hover:cursor-pointer" onClick={(t) => {
+          setIsOpen(true)
+          toast.dismiss(t.id)
+        }}>
+          Looks like you {"didn't"} set your profile name yet. Click here to change it.
+        </span>
+      ), {
+        icon: '💬',
+        duration: 10000
+      })
+    }
+
+    if (!account) return
+    console.log(account)
+    userNameBanner()
+  }, [account])
 
   return (
     <ProfileModalContext.Provider value={{ openProfileModal, closeProfileModal }}>

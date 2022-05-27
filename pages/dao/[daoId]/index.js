@@ -106,7 +106,6 @@ const Dashboard = ({ dao: initialDAO }) => {
   const { account } = useWallet()
   const membership = useMembership(account, roomId)
   const isAdmin = !!membership?.roles?.includes('admin')
-  const { openProfileModal } = useProfileModal()
 
   const dao = daoSnapshot ? {
     ...daoSnapshot.data(),
@@ -121,33 +120,6 @@ const Dashboard = ({ dao: initialDAO }) => {
   const SEOUrl = "https://app.daonative.xyz"
 
 
-
-  useEffect(() => {
-    const userNameBanner = async () => {
-      const db = getFirestore()
-      const userRef = doc(db, 'users', account)
-      const userDoc = await getDoc(userRef)
-      const user = userDoc.data()
-
-      if (userDoc.exists() && user.name) return
-
-      toast(() => (
-        <span className="text-center hover:cursor-pointer" onClick={(t) => {
-          openProfileModal("settings")
-          toast.dismiss(t.id)
-        }}>
-          Looks like you {"don't"} have a name set. Click here to set one.
-        </span>
-      ), {
-        icon: '💬',
-        duration: 10000
-      })
-    }
-
-    if (!account) return
-
-    userNameBanner()
-  }, [account, openProfileModal])
 
   /*
   useEffect(() => {
