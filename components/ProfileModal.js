@@ -218,9 +218,7 @@ const ProfileModal = ({ show, onClose }) => {
               </div>
             </div>
           </div>
-
         </div>
-
       </ModalTitle>
       <ModalBody>
         <Tab.Group>
@@ -310,7 +308,6 @@ const ProfileModal = ({ show, onClose }) => {
         </Tab.Group>
       </ModalBody>
     </Modal >
-
   )
 }
 
