@@ -70,7 +70,7 @@ const Leaderboard = () => {
 
   return (
     <LayoutWrapper>
-      <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
+      <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-5xl">
         <div className="flex flex-col gap-4">
           <PageHeader>
             <h2 className="text-2xl pb-2">Leaderboard</h2>

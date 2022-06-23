@@ -9,7 +9,7 @@ import { getRoom } from ".";
 const DAOSettings = ({ room, roomId }) => {
   return (
     <LayoutWrapper>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <Tab.Group>
           <PageHeader>
             <h2 className="text-2xl pb-2">Settings</h2>

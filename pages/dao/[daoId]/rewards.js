@@ -273,7 +273,7 @@ const Rewards = () => {
   return (
     <LayoutWrapper>
       <CreateRewardModal show={rewardModalOpen} onClose={handleCloseRewardModal} />
-      <div className="mx-auto px-4 sm:px-0 max-w-4xl" >
+      <div className="mx-auto px-4 sm:px-0 max-w-5xl" >
         <div className="flex flex-col gap-4">
           <PageHeader>
             <div className="flex justify-between pb-2">

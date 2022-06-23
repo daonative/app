@@ -176,7 +176,7 @@ export const Members = () => {
 const MembersPage = () => {
   return (
     <LayoutWrapper>
-      <div className="max-w-4xl m-auto">
+      <div className="max-w-5xl m-auto">
         <Members />
       </div>
     </LayoutWrapper>

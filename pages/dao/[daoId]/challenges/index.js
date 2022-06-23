@@ -275,7 +275,7 @@ const Challenges = () => {
   return (
     <LayoutWrapper>
       <ChallengeModal show={showChallengeModal} onClose={handleCloseChallengeModal} />
-      <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-4xl">
+      <div className="mx-auto px-4 sm:px-6 md:px-8 max-w-5xl">
         <div className="flex flex-col gap-4">
           <PageHeader>
             <div className="flex justify-between pb-2">
