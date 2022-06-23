@@ -40,7 +40,6 @@
     "react-moment": "^1.1.1",
     "remark-gfm": "^3.0.1",
     "tailwindcss": "^3.0.24",
-    "use-wallet": "^0.13.4",
     "wagmi": "^0.4.2",
     "zustand": "^3.7.2"
   },
