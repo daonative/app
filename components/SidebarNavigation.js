@@ -213,7 +213,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                         disabled={item.disabled}
                         href={item.href}
                       >
-                        <div className="flex items-center">
+                        <div className="flex items-center ">
                           <item.icon
                             className={classNames(
                               current ? "text-gray-300" : "text-gray-400 group-hover:text-gray-300",
@@ -264,7 +264,7 @@ const SidebarNavigation = ({ showMobile, onClose }) => {
                     disabled={item.disabled}
                     href={item.href}
                   >
-                    <div className="flex items-center font-semibold ">
+                    <div className="flex items-center text-daonative-white ">
                       <item.icon
                         className={classNames(
                           current ? "text-white" : "text-white group-hover:text-gray-300",

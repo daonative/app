@@ -10,7 +10,7 @@ export const LayoutWrapper = ({ children }) => {
   const handleCloseMobileSidebar = () => setShowSidebarMobile(false);
 
   return (
-    <div className='h-full max-w-6xl m-auto'>
+    <div className='h-full m-auto'>
       <SidebarNavigation showMobile={showSidebarMobile} onClose={handleCloseMobileSidebar} />
       <HeaderNavigation onShowSidebar={handleShowMobileSidebar} onToggleDarkMode={() => { }} showLogWork={false} />
       <div
